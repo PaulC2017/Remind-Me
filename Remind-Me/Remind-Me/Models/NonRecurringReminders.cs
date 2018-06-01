@@ -33,7 +33,7 @@ namespace RemindMe.Models
             // NonRecurringReminderId = nextNonRecurringReminderId;
             // nextNonRecurringReminderId++;
             NonRecuringReminderCreateDate = DateTime.Today.ToString("MM/dd/yyyy");
-            NonRecurringReminderDateAndTimeLastAlertSent = new DateTime(2002, 08, 10); //set a date in the past
+            NonRecurringReminderDateAndTimeLastAlertSent = new DateTime(2001, 01, 01); //set a date that will always be less than the current date
 
         }
         //non default constructor
