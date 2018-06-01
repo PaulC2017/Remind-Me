@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace RemindMe.Models
         public string RecurringReminderSecondAlertTime { get; set; }
         public string RecurringReminderRepeatFrequency { get; set; }  // does the event repeat annually, monthly, etc?
         public string UserCellPhoneNumber { get; set; }
+        public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  //initial value set to a date in the past
+
 
         public int UserId { get; set; }
         public User User { get; set; }
@@ -30,6 +33,7 @@ namespace RemindMe.Models
             RecuringReminderCreateDate = DateTime.Today.ToString("MM/dd/yyyy");
             RecurringReminderFirstAlertTime = "0900";
             RecurringReminderSecondAlertTime = "1500";
+            RecurringReminderDateAndTimeLastAlertSent = new DateTime(2002, 08, 10); //set a date in the past
         }
         //non default constructor
         public RecurringReminders(string recurringReminderName,
