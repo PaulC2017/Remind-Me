@@ -129,7 +129,7 @@ namespace RemindMe
             // launch annual reset of RecurringReminderDateAndTimeLastAlertSent
             // we have to set the dates to 01/01 so the logic in the SendRecurringReminderTextsAnnually() method will work correctly in a new year
 
-            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)), Cron.Yearly(06,01,23,25)); //()Month,day,Hour, minute 12, 31,23, 20 in UTC - starts at the first minute of the hour
+            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)), Cron.Yearly(01,01,04,00)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour - note UTC is +5 hours to EST
 
 
             // this one works!!
