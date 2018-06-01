@@ -257,10 +257,18 @@ namespace RemindMe.Controllers
 
         // Method called from Startup.cs that launches Hangfire background tasks
 
-        public IActionResult LaunchBackGroundJobs(Object j)
+        public IActionResult LaunchSendRecurringReminderTextsAnnually(Object j)
         {
 
             BackgroundJob.Enqueue(() => SendRecurringReminderTextsAnnually());
+
+            return null;
+        }
+
+        public IActionResult LaunchResetRecurringReminderDateAndTimeLastAlertSent(Object j)
+        {
+
+            BackgroundJob.Enqueue(() => ResetRecurringReminderDateAndTimeLastAlertSent());
 
             return null;
         }
@@ -380,6 +388,24 @@ namespace RemindMe.Controllers
             Console.WriteLine("We are after the var message command");
 
         }
+        public IActionResult ResetRecurringReminderDateAndTimeLastAlertSent()
+        {
+
+            Console.WriteLine("Starting to retrieve the records");
+            var annualRecurringReminders = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually").ToList());
+            Console.WriteLine("Finished retrieving the records");
+            Console.WriteLine("Number of records found: " + annualRecurringReminders.Count());
+            foreach (var rr in annualRecurringReminders)
+            {
+                rr.RecurringReminderDateAndTimeLastAlertSent = Convert.ToDateTime("01/01/2001");
+            }
+            context.SaveChanges();
+
+            return null;
+        }
+
+
+
 
     }
 

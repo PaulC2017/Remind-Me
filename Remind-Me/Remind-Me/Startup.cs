@@ -122,8 +122,14 @@ namespace RemindMe
             //start and configure recurring Hangfire jobs on startup
 
             app.UseMvc();
-            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchBackGroundJobs(null)), Cron.Daily(22, 43)); //UTC time of 4 hours ahead of Eastern Daylight Time (EDT)
+            // launch Annual Reminders Backgroind Task
+            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(22, 43)); //UTC (HR, Min) time of 4 hours ahead of Eastern Time
             //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
+
+            // launch annual reset of RecurringReminderDateAndTimeLastAlertSent
+            // we have to set the dates to 01/01 so the logic in the SendRecurringReminderTextsAnnually() method will work correctly in a new year
+
+            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)), Cron.Yearly(06,01,23,25)); //()Month,day,Hour, minute 12, 31,23, 20 in UTC - starts at the first minute of the hour
 
 
             // this one works!!
