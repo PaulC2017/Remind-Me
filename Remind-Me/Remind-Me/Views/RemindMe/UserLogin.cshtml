@@ -1,0 +1,34 @@
+﻿@model RemindMe.ViewModels.UserLoginViewModel
+
+@{
+    ViewData["Title"] = "User Login";
+}
+
+<h2>Login</h2>
+<p style="color:red;font-weight: bold;"> @ViewBag.userNameNotFound</p>
+<p style="color:red;font-weight: bold;"> @ViewBag.userPasswordNotCorrect</p>
+<form asp-controller="RemindMe" asp-action="UserLogin" method="post">
+
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input class="form-control" asp-for="Username" />
+        <span asp-validation-for="Username"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="VerifyPassword"></label>
+        <input class="form-control" asp-for="VerifyPassword" />
+        <span asp-validation-for="VerifyPassword"></span>
+    </div>
+
+    <div class="form-group">
+        @*<label type="hidden"  asp-for="UserId"></label> No label needed since the user doesn't input these values - the app calculates and populates them   *@
+        <input type="hidden" class="form-control" asp-for="ID" value="@Model.ID" />
+    </div>
+
+    <input type="submit" value="Log In" />
+</form>

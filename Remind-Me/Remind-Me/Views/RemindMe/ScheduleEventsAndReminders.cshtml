@@ -1,0 +1,67 @@
+﻿@model RemindMe.ViewModels.ScheduleEventsAndRemindersViewModel
+
+@{
+    ViewData["Title"] = "Schedule Events And Reminders";
+}
+
+<h2>Schedule Events And Reminders</h2>
+
+<form asp-controller="RemindMe" asp-action="ScheduleEventsAndReminders" method="post">
+    <p>@ViewBag.PasswordError @ViewBag.UsernameError @ViewBag.UserNameContentError </p>
+
+    <div class="form-group">
+        <label>Current User</label>
+        <input class="form-control" value="@ViewBag.Username" />
+
+    </div>
+    <div class="form-group">
+        <label asp-for="RecurringEventName"></label>
+        <input class="form-control" asp-for="RecurringEventName" />
+        <span asp-validation-for="RecurringEventName"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RecurringEventDescription"></label>
+        <input class="form-control" asp-for="RecurringEventDescription" />
+        <span asp-validation-for="RecurringEventDescription"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RecurringEventDate"></label>
+        <input class="form-control" asp-for="RecurringEventDate" />
+        <span asp-validation-for="RecurringEventDate"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RecurringReminderStartAlertDate"></label>
+        <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
+        <span asp-validation-for="RecurringReminderStartAlertDate"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RecurringReminderLastAlertDate"></label>
+        <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
+        <span asp-validation-for="RecurringReminderLastAlertDate"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UserCellPhoneNumber"></label>
+        <input class="form-control" asp-for="UserCellPhoneNumber" />
+        <span asp-validation-for="UserCellPhoneNumber"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RecurringReminderRepeatFrequency "></label>
+        <input value="Annually" class="form-control" asp-for="RecurringReminderRepeatFrequency " />
+        <span asp-validation-for="RecurringReminderRepeatFrequency "></span>
+    </div>
+
+
+
+
+    @* This will render a drop down list of all users registerd on the site.
+            It is not necessary since I am using Sessions to manage
+            keeping track of which user is adding the event/reminder
+
+            <div class="form-group">
+            <label asp-for="UserId"></label>
+            <select asp-for=UserId asp-items="Model.Users"></select>
+        </div>
+    *@
+
+    <input type="submit" value="Submit" />
+</form>

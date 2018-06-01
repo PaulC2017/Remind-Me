@@ -1,0 +1,44 @@
+﻿@model IEnumerable<dynamic>
+
+
+@{
+    ViewData["Title"] = "AllRecurringEventsAndReminders";
+
+}
+
+
+<h2> Recurring Events And Reminders  for @ViewBag.Username</h2>
+
+<form method="get">
+    <table class="table">
+
+        <tr>
+            <th>Event Name</th>
+            <th>Event Description</th>
+            <th>Event Date</th>
+            <th>Date to Start Alerts</th>
+            <th>Date to Stop Alerts</th>
+            <th>Cell Phone to Receive Reminder</th>
+            <th>Recurring Frequency</th>
+        </tr>
+        @foreach (dynamic recurringReminder in @Model)
+        {
+            <tr>
+                <td>@recurringReminder.RecurringReminderName</td>
+                <td>@recurringReminder.RecurringReminderDescription</td>
+                <td>@recurringReminder.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</td>
+                <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+                <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+                <td>@recurringReminder.UserCellPhoneNumber</td>
+                <td>@recurringReminder.RecurringReminderRepeatFrequency</td>
+
+            </tr>
+
+        }
+
+    </table>
+
+
+
+    <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@ViewBag.ID">Return to Home Page</a>
+</form>

@@ -1,0 +1,33 @@
+﻿@model RemindMe.Models.RecurringReminders
+@{
+    ViewData["Title"] = "Recurring Event And Reminder";
+}
+
+<h2>@Model.RecurringReminderName</h2>
+
+<form method="get">
+    <table class="table">
+
+        <tr>
+            <th>Event Name</th>
+            <th>Event Description</th>
+            <th>Event Date</th>
+            <th>Date to Start Alerts</th>
+            <th>Date to stop Alerts</th>
+            <th>Cell Phone to Receive Reminder</th>
+            <th>Recurring Frequency</th>
+        </tr>
+
+        <tr>
+            <td>@Model.RecurringReminderName</td>
+            <td>@Model.RecurringReminderDescription</td>
+            <td>@ViewBag.eventDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@Model.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@Model.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@Model.UserCellPhoneNumber</td>
+            <td>@Model.RecurringReminderRepeatFrequency</td>
+
+        </tr>
+    </table>
+    <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@Model.ID">Return to Home Page</a>
+</form>

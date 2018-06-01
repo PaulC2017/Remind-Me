@@ -1,0 +1,37 @@
+﻿@model RemindMe.Models.User
+
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+
+
+<h2>Welcome @Model.Username</h2>
+
+
+<form method="get">
+    <table class="table">
+
+        <tr>
+            <th>Login ID</th>
+            <th>Member Since</th>
+            <th>Google Email ID</th>
+            <th>Cell Phone Number</th>
+            <th>View</th>
+            <th>Schedule</th>
+        </tr>
+
+        <tr>
+            <td>@Model.Username</td>
+            <td>@Model.UserCreateDate</td>
+            <td>@Model.GCalEmail</td>
+            <td>@Model.CellPhoneNumber</td>
+            <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">Events and Reminders</a></td>
+            <td><a asp-controller="RemindMe" asp-action="ScheduleEventsAndReminders" asp-route-id="@ViewBag.ID">Events and Reminders</a></td>
+        </tr>
+
+
+
+    </table>
+
+</form>

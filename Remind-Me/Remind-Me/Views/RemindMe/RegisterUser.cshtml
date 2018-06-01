@@ -1,0 +1,56 @@
+﻿@model RemindMe.ViewModels.RegisterUserViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Register</h2>
+
+
+<br />
+
+@if (@ViewBag.userNameExists != "")
+{
+    <p style="color:red;font-weight: bold;"> @Model.Username @ViewBag.colon @ViewBag.userNameExists </p>
+}
+<form asp-controller="RemindMe" asp-action="RegisterUser" method="post">
+    <p>@ViewBag.PasswordError @ViewBag.UsernameError @ViewBag.UserNameContentError </p>
+
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input class="form-control" asp-for="Username" />
+        <span asp-validation-for="Username"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="VerifyPassword"></label>
+        <input class="form-control" asp-for="VerifyPassword" />
+        <span asp-validation-for="VerifyPassword"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CellPhoneNumber"></label>
+        <input class="form-control" asp-for="CellPhoneNumber" />
+        <span asp-validation-for="CellPhoneNumber"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="GCalEmail"></label>
+        <input class="form-control" asp-for="GCalEmail" />
+        <span asp-validation-for="GCalEmail"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="GCalEmailPassword"></label>
+        <input class="form-control" asp-for="GCalEmailPassword" />
+        <span asp-validation-for="GCalEmailPassword"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="VerifyGCalEmailPassword"></label>
+        <input class="form-control" asp-for="VerifyGCalEmailPassword" />
+        <span asp-validation-for="VerifyGCalEmailPassword"></span>
+    </div>
+
+    <input type="submit" value="Submit" />
+</form>
