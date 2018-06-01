@@ -314,8 +314,10 @@ namespace RemindMe.Controllers
                     Console.WriteLine("RecurringReminderDateAndTimeLastAlertSent.Date = " + rr.RecurringReminderDateAndTimeLastAlertSent.Date);
                     Console.WriteLine("DateTime.Now.Date = " + DateTime.Now.Date);
                     Console.WriteLine("Comparison of above two variables = " + (DateTime.Now > rr.RecurringReminderDateAndTimeLastAlertSent));
-                    string eventDate = rr.RecurringEventDate.ToString("MM/dd");
-                    string textMessage = rr.RecurringReminderName + "\r\n" + eventDate;
+                    
+                    // format text message
+                    string eventDate = rr.RecurringEventDate.ToString("MM/dd"); // Just include the month and day of the event in the text message
+                    string textMessage = "From: Remind Me - Don't Forget!!\r\n" + "Event: " + rr.RecurringReminderName + "\r\n" + "Description: " + rr.RecurringReminderDescription + "\r\nDate " + eventDate;
 
                     SendMessage(rr.UserCellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
                     Console.WriteLine("We are after the TRY command");

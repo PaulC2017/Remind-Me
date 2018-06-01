@@ -122,7 +122,7 @@ namespace RemindMe
             //start and configure recurring Hangfire jobs on startup
 
             app.UseMvc();
-            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchBackGroundJobs(null)), Cron.Daily(19, 35)); //UTC time of 4 hours ahead of Eastern Daylight Time (EDT)
+            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchBackGroundJobs(null)), Cron.Daily(19, 59)); //UTC time of 4 hours ahead of Eastern Daylight Time (EDT)
             //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
 
 
