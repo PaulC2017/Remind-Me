@@ -34,7 +34,8 @@ namespace RemindMe.ViewModels
         [Required(ErrorMessage = "Enter the date you want to start receiving the text message alerts")]
         [DataType(DataType.Date)]
         [Display(Name = "Start Alert Date")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd-yyyy}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd-yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderStartAlertDate { get; set; }
 
         [Required(ErrorMessage = "Enter the stop date for receiving the text message alerts")]
@@ -43,10 +44,10 @@ namespace RemindMe.ViewModels
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
         public DateTime RecurringReminderLastAlertDate { get; set; }
 
-        [Required(ErrorMessage = "Enter the cell phone number you where you want the text reminders sent")]
+        [Required(ErrorMessage = "Enter the cell phone number where you want to receive the text reminders (ie - 2125551212)")]
         [DataType(DataType.PhoneNumber)]
         [RegularExpression(@"^(\d{10})$", ErrorMessage = "Invalid Phone Number")]
-        [Display(Name = "Cell Phone Number")]
+        [Display(Name = "Cell Phone Number (Enter Numbers Only.  ie -  2125551212) ")]
         public string UserCellPhoneNumber { get; set; }
 
 
