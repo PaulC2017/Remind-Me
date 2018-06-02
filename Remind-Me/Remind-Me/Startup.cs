@@ -123,7 +123,7 @@ namespace RemindMe
 
             app.UseMvc();
             // launch Annual Reminders Backgroind Task
-            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(22, 43)); //UTC (HR, Min) time of 4 hours ahead of Eastern Time
+            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(00, 15)); //UTC (HR, Min) time of 4 hours ahead of Eastern Time
             //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
 
             // launch annual reset of RecurringReminderDateAndTimeLastAlertSent

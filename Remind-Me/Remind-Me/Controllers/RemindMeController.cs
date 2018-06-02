@@ -43,13 +43,9 @@ namespace RemindMe.Controllers
             //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
             //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually()).Daily);
 
-
-
-
-            //
-            Console.WriteLine("We are before the SendReminderTextAnually Statement");
-            BackgroundJob.Enqueue(() => SendRecurringReminderTextsAnnually());
-            Console.WriteLine("We are after the SendReminderTextAnually Statement");
+            //Console.WriteLine("We are before the SendReminderTextAnually Statement");
+            // BackgroundJob.Enqueue(() => SendRecurringReminderTextsAnnually());
+            // Console.WriteLine("We are after the SendReminderTextAnually Statement");
 
             return View();
         }
@@ -287,11 +283,17 @@ namespace RemindMe.Controllers
                                                                today >= rr.RecurringReminderStartAlertDate.Date &&
                                                                today <= rr.RecurringReminderLastAlertDate.Date &&
                                                                DateTime.Now.Date > rr.RecurringReminderDateAndTimeLastAlertSent.Date).ToList());
-                                                               */
             var rrDueToday = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually" &&
                                                                today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
                                                                today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 &&
                                                                (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0)).ToList());
+            */
+
+            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually" &&
+                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+                                                               today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 &&
+                                                               (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
+
 
             Console.WriteLine("We are after the var statement");
             Console.WriteLine("Count of items in var rrDueToday: " + rrDueToday.Count());
