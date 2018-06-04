@@ -76,9 +76,21 @@ namespace RemindMe
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+
+            // Use this one to include ahangfire after migratnig and updating the database
+            
+           public void Configure(IApplicationBuilder app, IHostingEnvironment env,
                               ILoggerFactory loggerFactory, IApplicationLifetime lifetime,
                               IRecurringJobManager recurringJobs)
+
+
+        // use this one when migrating and updating the database - it removes IRecurringJobManager recurringJobs
+        /*
+       public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                           ILoggerFactory loggerFactory, IApplicationLifetime lifetime)
+
+        */
+
         {
             if (env.IsDevelopment())
             {
@@ -113,24 +125,42 @@ namespace RemindMe
 
 
 
-            //added for Hangfire
-
+            //added for Hangfire - comment thenm out when migrating and updating the database
+          
             GlobalConfiguration.Configuration.UseSqlServerStorage((Configuration.GetConnectionString("DefaultConnection")));
             app.UseHangfireDashboard();
             app.UseHangfireServer();
 
+            //
+
             //start and configure recurring Hangfire jobs on startup
 
             app.UseMvc();
-            // launch Annual Reminders Backgroind Task
-            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(00, 15)); //UTC (HR, Min) time of 4 hours ahead of Eastern Time
+
+
+
+            //added for Hangfire - comment it out when migrating and updating the database
+            
+            // launch Annual Reminders Backgroond Task
+
+            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(14, 38)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+
+            //
+
             //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
+
+            //added for Hangfire - comment it out when migrating and updating the database
 
             // launch annual reset of RecurringReminderDateAndTimeLastAlertSent
             // we have to set the dates to 01/01 so the logic in the SendRecurringReminderTextsAnnually() method will work correctly in a new year
 
-            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)), Cron.Yearly(01,01,04,00)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour - note UTC is +5 hours to EST
 
+
+           
+            
+            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)), Cron.Yearly(01,01,04,00)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour - note UTC is +5 hours to EST and +4 in EDT
+            
+            //
 
             // this one works!!
             //

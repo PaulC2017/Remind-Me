@@ -28,8 +28,15 @@ namespace RemindMe.ViewModels
 
         [DataType(DataType.Date)]
         [Display(Name = "Event Date")]
-        [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
+        //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringEventDate { get; set; }
+
+        [Required]
+        [Display(Name = "RepeatFrequencyName")]
+        public int RecurringReminderRepeatFrequencyID { get; set; }
+
+        public List<SelectListItem> Frequencies { get; set; }
 
         [Required(ErrorMessage = "Enter the date you want to start receiving the text message alerts")]
         [DataType(DataType.Date)]
@@ -41,7 +48,8 @@ namespace RemindMe.ViewModels
         [Required(ErrorMessage = "Enter the stop date for receiving the text message alerts")]
         [DataType(DataType.Date)]
         [Display(Name = "Last Alert Date")]
-        [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
+        //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderLastAlertDate { get; set; }
 
         [Required(ErrorMessage = "Enter the cell phone number where you want to receive the text reminders (ie - 2125551212)")]
@@ -53,10 +61,7 @@ namespace RemindMe.ViewModels
 
         // we will send a text message once a day on from start date through the last alart date
 
-        [Required(ErrorMessage = "Enter the stop date for receiving the text message alerts")]
-        [Display(Name = "Repeat Alert Frequency (ie - monthly, annually)")]
-        public string RecurringReminderRepeatFrequency { get; set; }
-
+       
         [Required]
         [Display(Name = "User")]
         public int UserId { get; set; }
@@ -64,8 +69,37 @@ namespace RemindMe.ViewModels
         public List<SelectListItem> Users { get; set; }
         public string currentUser;
 
-        public ScheduleEventsAndRemindersViewModel()  // default constructor needed to make model binding work in the EntityFramework 
+        // set up drop down box for reminder frequency for user to select
+
+
+       
+
+        //
+
+            public ScheduleEventsAndRemindersViewModel() //default constructor needed 
+            {                                            //to make model binding work
+
+            }
+        public ScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequency> repeatFrequencies)  // default constructor  
         {
+            //Code for drop down box for reminder frequency for user to select
+
+            Frequencies = new List<SelectListItem>();
+
+            foreach (ReminderRepeatFrequency rrf in repeatFrequencies.ToList())
+
+            {
+
+
+                Frequencies.Add(new SelectListItem
+                {
+                    Value = (rrf.ID.ToString()),
+                    Text = rrf.RepeatFrequencyName.ToString()
+
+                });
+
+            }
+
 
         }
         public ScheduleEventsAndRemindersViewModel(IEnumerable<User> users)

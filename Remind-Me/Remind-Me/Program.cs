@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Hangfire;
+
+
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using RemindMe.Controllers;
-
+using Microsoft.Extensions.DependencyInjection;
+using RemindMe.Data;
 
 namespace RemindMe
 {
     public class Program
     {
-
-
 
         public static void Main(string[] args)
         {

@@ -9,7 +9,7 @@ namespace RemindMe.Data
         public DbSet<RecurringReminders> RecurringReminders { get; set; }
         public DbSet<NonRecurringReminders> NonRecurringReminders { get; set; }
         public DbSet<TextInfo> TextInfo { get; set; }
-
+        public DbSet<ReminderRepeatFrequency> ReminderRepeatFrequencies { get; set; }
 
 
         public DbSet<RecurringEvents> RecurringEvents { get; set; }

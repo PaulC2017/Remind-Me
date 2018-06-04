@@ -17,7 +17,14 @@ namespace RemindMe.Models
         public DateTime RecurringReminderLastAlertDate { get; set; }
         public string RecurringReminderFirstAlertTime { get; set; }
         public string RecurringReminderSecondAlertTime { get; set; }
-        public string RecurringReminderRepeatFrequency { get; set; }  // does the event repeat annually, monthly, etc?
+        // does the event repeat annually, monthly, Once, etc?
+
+        public int RecurringReminderRepeatFrequencyID { get; set; }
+        public ReminderRepeatFrequency RepeatFrequencyName { get; set; }
+
+
+
+
         public string UserCellPhoneNumber { get; set; }
         public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  //initial value to be set to null hence the ?
 
@@ -41,7 +48,7 @@ namespace RemindMe.Models
                                   DateTime recurringEventDate,
                                   DateTime recurringReminderStartAlertDate,
                                   DateTime recurringReminderLastAlertDate,
-                                  string recurringReminderRepeatFrequency,
+                                  ReminderRepeatFrequency recurringReminderRepeatFrequency,
                                   string userCellPhoneNumber) : this()
         {
             RecurringReminderName = recurringReminderName;
@@ -49,7 +56,7 @@ namespace RemindMe.Models
             RecurringEventDate = recurringEventDate;
             RecurringReminderStartAlertDate = recurringReminderStartAlertDate;
             RecurringReminderLastAlertDate = recurringReminderLastAlertDate;
-            RecurringReminderRepeatFrequency = recurringReminderRepeatFrequency;
+            RepeatFrequencyName = recurringReminderRepeatFrequency;
             UserCellPhoneNumber = userCellPhoneNumber;
 
 

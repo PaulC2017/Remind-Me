@@ -137,7 +137,9 @@ namespace RemindMe.Controllers
 
         public IActionResult ScheduleEventsAndReminders()
         {
-            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder = new ScheduleEventsAndRemindersViewModel(context.User.ToList());
+
+            //create the ViewModel with the list of repeat frequency options ))
+            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder = new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());  
 
             if (HttpContext.Session.GetString("Username") == "")
             {
@@ -157,6 +159,9 @@ namespace RemindMe.Controllers
             {
                 // create recurring reminder record
 
+                //first get the Repeat Frequency Selected by the User
+                ReminderRepeatFrequency newReminderRepeatFrequency = context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RecurringReminderRepeatFrequencyID);
+                
                 User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
                 // string userCellPhoneNumber = newUser.CellPhoneNumber;
                 RecurringReminders newRecurringReminder = new
@@ -165,11 +170,11 @@ namespace RemindMe.Controllers
                                        newEventAndReminder.RecurringEventDate.Date,
                                        newEventAndReminder.RecurringReminderStartAlertDate.Date,
                                        newEventAndReminder.RecurringReminderLastAlertDate.Date,
-                                       newEventAndReminder.RecurringReminderRepeatFrequency,
+                                       newReminderRepeatFrequency,
                                        newEventAndReminder.UserCellPhoneNumber);
-
+                
                 newRecurringReminder.User = newUser;
-
+               
 
                 context.RecurringReminders.Add(newRecurringReminder);
 
@@ -211,7 +216,7 @@ namespace RemindMe.Controllers
                                                   ch.RecurringReminderLastAlertDate,
                                                   ch.RecurringReminderFirstAlertTime,
                                                   ch.RecurringReminderSecondAlertTime,
-                                                  ch.RecurringReminderRepeatFrequency,
+                                                  ch.RepeatFrequencyName,
                                                   ch.UserCellPhoneNumber
                                               }).AsEnumerable().Select(c => c.ToExpando());
 
@@ -289,7 +294,7 @@ namespace RemindMe.Controllers
                                                                (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0)).ToList());
             */
 
-            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually" &&
+            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Annually" &&
                                                                today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
                                                                today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 &&
                                                                (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
@@ -394,7 +399,7 @@ namespace RemindMe.Controllers
         {
 
             Console.WriteLine("Starting to retrieve the records");
-            var annualRecurringReminders = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually").ToList());
+            var annualRecurringReminders = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.ToString().Equals("Annually")).ToList());
             Console.WriteLine("Finished retrieving the records");
             Console.WriteLine("Number of records found: " + annualRecurringReminders.Count());
             foreach (var rr in annualRecurringReminders)
