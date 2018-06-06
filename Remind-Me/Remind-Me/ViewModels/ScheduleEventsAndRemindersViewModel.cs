@@ -32,10 +32,11 @@ namespace RemindMe.ViewModels
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringEventDate { get; set; }
 
+        
         [Required]
         [Display(Name = "RepeatFrequencyName")]
-        public int RecurringReminderRepeatFrequencyID { get; set; }
-
+        public int RepeatFrequencyNameID { get; set; }
+        
         public List<SelectListItem> Frequencies { get; set; }
 
         [Required(ErrorMessage = "Enter the date you want to start receiving the text message alerts")]

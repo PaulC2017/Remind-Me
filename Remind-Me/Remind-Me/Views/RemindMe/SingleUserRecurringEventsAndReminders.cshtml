@@ -20,19 +20,22 @@
             <th>Date to Stop Alerts</th>
             <th>Cell Phone to Receive Reminder</th>
             <th>Recurring Frequency</th>
+            <th>              Action</th>
         </tr>
         @foreach (dynamic recurringReminder in @Model)
         {
-            <tr>
-                <td>@recurringReminder.RecurringReminderName</td>
-                <td>@recurringReminder.RecurringReminderDescription</td>
-                <td>@recurringReminder.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</td>
-                <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
-                <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
-                <td>@recurringReminder.UserCellPhoneNumber</td>
-                <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
+        <tr>
+            <td>@recurringReminder.RecurringReminderName</td>
+            <td>@recurringReminder.RecurringReminderDescription</td>
+            <td>@recurringReminder.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@recurringReminder.UserCellPhoneNumber</td>
+            <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
+            <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit</a></td>
+            <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-id="@recurringReminder.ID">Delete</a></td>
 
-            </tr>
+        </tr>
 
         }
 

@@ -24,7 +24,7 @@ namespace RemindMe.Models
 
         //
 
-
+        
         public string UserCellPhoneNumber { get; set; }
         public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  //initial value to be set to null hence the ?
 
@@ -40,6 +40,7 @@ namespace RemindMe.Models
             RecuringReminderCreateDate = DateTime.Today.ToString("MM/dd/yyyy");
             RecurringReminderFirstAlertTime = "0900";
             RecurringReminderSecondAlertTime = "1500";
+            
             RecurringReminderDateAndTimeLastAlertSent = new DateTime(2001, 01, 01); // year, month, day - set a date that will always be less than the current date
         }
         //non default constructor
@@ -49,6 +50,7 @@ namespace RemindMe.Models
                                   DateTime recurringReminderStartAlertDate,
                                   DateTime recurringReminderLastAlertDate,
                                   ReminderRepeatFrequency recurringReminderRepeatFrequency,
+                                  
                                   string userCellPhoneNumber) : this()
         {
             RecurringReminderName = recurringReminderName;

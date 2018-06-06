@@ -145,7 +145,8 @@ namespace RemindMe.Controllers
                 // create recurring reminder record
 
                 //first get the Repeat Frequency Selected by the User
-                ReminderRepeatFrequency newReminderRepeatFrequency = context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RecurringReminderRepeatFrequencyID);
+                ReminderRepeatFrequency newReminderRepeatFrequency = 
+                    context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
                 
                 User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
                 // string userCellPhoneNumber = newUser.CellPhoneNumber;
@@ -201,7 +202,8 @@ namespace RemindMe.Controllers
                                                   ch.RecurringReminderFirstAlertTime,
                                                   ch.RecurringReminderSecondAlertTime,
                                                   ch.RepeatFrequencyName,
-                                                  ch.UserCellPhoneNumber
+                                                  ch.UserCellPhoneNumber,
+                                                  ch.ID
                                               }).AsEnumerable().Select(c => c.ToExpando());
 
             return View(userRecurringReminders);
@@ -224,6 +226,52 @@ namespace RemindMe.Controllers
 
             User currentUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
             return View(currentUser);
+        }
+
+        public IActionResult EditEventsAndReminders(int recurringReminderId)
+        {
+            //make sure user has logged in 
+
+            if (HttpContext.Session.GetString("Username") == "")
+            {
+                return View("Index");
+            }
+            ViewBag.Username = HttpContext.Session.GetString("Username");
+
+
+            //create the ViewModel with the list of repeat frequency options ))
+            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
+            new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
+
+            // get the recurring reminder to be edited
+            RecurringReminders editRecurringReminder = context.RecurringReminders.
+                Single(id => id.ID.Equals(recurringReminderId));
+
+            scheduleEventsAndReminder.RecurringEventName = editRecurringReminder.RecurringReminderName;
+            scheduleEventsAndReminder.RecurringEventDescription = editRecurringReminder.RecurringReminderDescription;
+            scheduleEventsAndReminder.RecurringEventDate = editRecurringReminder.RecurringEventDate;
+            scheduleEventsAndReminder.RecurringReminderStartAlertDate = editRecurringReminder.RecurringReminderStartAlertDate;
+            scheduleEventsAndReminder.RecurringReminderLastAlertDate = editRecurringReminder.RecurringReminderLastAlertDate;
+
+            scheduleEventsAndReminder.UserCellPhoneNumber = editRecurringReminder.UserCellPhoneNumber;
+
+            User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+            editRecurringReminder.User = newUser;
+
+            /*
+            EditScheduleEventsAndRemindersViewModel editRR = new EditScheduleEventsAndRemindersViewModel
+            {
+            RecurringEventName = editRecurringReminder.RecurringReminderName,
+            RecurringEventDescription = editRecurringReminder.RecurringReminderDescription,
+            RecurringEventDate = editRecurringReminder.RecurringEventDate,
+            RecurringReminderStartAlertDate = editRecurringReminder.RecurringReminderStartAlertDate,
+            RecurringReminderLastAlertDate = editRecurringReminder.RecurringReminderLastAlertDate,
+            
+            UserCellPhoneNumber = editRecurringReminder.UserCellPhoneNumber
+
+            };
+            */
+            return View("ScheduleEventsAndReminders",scheduleEventsAndReminder);
         }
 
         // Methods called from Startup.cs that launches Hangfire background tasks

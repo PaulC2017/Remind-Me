@@ -1,19 +1,12 @@
-﻿@model RemindMe.ViewModels.ScheduleEventsAndRemindersViewModel
-
+﻿@model RemindMe.ViewModels.EditScheduleEventsAndRemindersViewModel
 @{
-    ViewData["Title"] = "Schedule Events And Reminders";
+    ViewData["Title"] = "Edit Events And Reminders";
 }
 
-<h2>Schedule Events And Reminders</h2>
+<h2>Edit Events/Reminders @Model.RecurringEventName</h2>
 
-<form asp-controller="RemindMe" asp-action="ScheduleEventsAndReminders" method="post">
-    <p>@ViewBag.PasswordError @ViewBag.UsernameError @ViewBag.UserNameContentError </p>
+<form asp-controller="Cheese" asp-action="Edit" method="post">
 
-    <div class="form-group">
-        <label>Current User</label>
-        <input class="form-control" value="@ViewBag.Username" />
-
-    </div>
     <div class="form-group">
         <label asp-for="RecurringEventName"></label>
         <input class="form-control" asp-for="RecurringEventName" />
@@ -30,11 +23,11 @@
         <span asp-validation-for="RecurringEventDate"></span>
     </div>
     @*
-        <div class="form-group">
-            <label asp-for="RecurringReminderRepeatFrequencyID">How Often Does this Event Occur?</label>
-            <br>
-            <select asp-for="RecurringReminderRepeatFrequencyID" asp-items="Model.Frequencies"></select>
-        </div>
+    <div class="form-group">
+        <label asp-for="RecurringReminderRepeatFrequencyID">How Often Does this Event Occur?</label>
+        <br>
+        <select asp-for="RecurringReminderRepeatFrequencyID" asp-items="Model.Frequencies"></select>
+    </div>
     *@
     <div class="form-group">
         <label asp-for="RecurringReminderStartAlertDate"></label>
@@ -51,25 +44,9 @@
         <input class="form-control" placeholder="9999999999" asp-for="UserCellPhoneNumber" />
         <span asp-validation-for="UserCellPhoneNumber"></span>
     </div>
-    @*
-        <div class="form-group">
-            <label asp-for="RecurringReminderRepeatFrequency "></label>
-            <input value="Annually" class="form-control" asp-for="RecurringReminderRepeatFrequency " />
-            <span asp-validation-for="RecurringReminderRepeatFrequency "></span>
-        </div>
-    *@
-
-
-
-    @* This will render a drop down list of all users registerd on the site.
-            It is not necessary since I am using Sessions to manage
-            keeping track of which user is adding the event/reminder
-
-            <div class="form-group">
-            <label asp-for="UserId"></label>
-            <select asp-for=UserId asp-items="Model.Users"></select>
-        </div>
-    *@
-
+    <div class="form-group">
+        <input type="hidden" class="form-control" asp-for="RecurringReminderId" />
+    </div>
     <input type="submit" value="Submit" />
+
 </form>
