@@ -16,6 +16,7 @@
             <th>Date to stop Alerts</th>
             <th>Cell Phone to Receive Reminder</th>
             <th>Recurring Frequency</th>
+            <th>RepeatFrequencyNameID</th>
         </tr>
 
         <tr>
@@ -26,6 +27,7 @@
             <td>@Model.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@Model.UserCellPhoneNumber</td>
             <td>@Model.RepeatFrequencyName.RepeatFrequencyName</td>
+            <td>@Model.RepeatFrequencyNameID</td>
 
         </tr>
     </table>

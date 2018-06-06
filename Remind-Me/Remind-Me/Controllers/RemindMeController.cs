@@ -20,8 +20,7 @@ using System.Collections.ObjectModel;
 using System.Collections;
 using System.Dynamic;
 using Hangfire;
-
-
+using System.Data;
 
 namespace RemindMe.Controllers
 {
@@ -37,24 +36,13 @@ namespace RemindMe.Controllers
 
         public IActionResult Index()
         {
-            // launch annual recurringreminders at 10:00 am every day
-
-
-            //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
-            //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually()).Daily);
-
-            //Console.WriteLine("We are before the SendReminderTextAnually Statement");
-            // BackgroundJob.Enqueue(() => SendRecurringReminderTextsAnnually());
-            // Console.WriteLine("We are after the SendReminderTextAnually Statement");
-
-            return View();
+             return View();
         }
 
 
         public IActionResult RegisterUser()
         {
             RegisterUserViewModel newUser = new RegisterUserViewModel();
-
 
             return View(newUser);
         }
@@ -65,9 +53,6 @@ namespace RemindMe.Controllers
 
 
             //check to see if the user name entered already exists
-
-
-            //checkUserName = context.User.Single(u => u.Username == registerUserViewModel.Username);
 
             User checkUserName = context.User.FirstOrDefault(u => u.Username == registerUserViewModel.Username);
 
@@ -130,7 +115,6 @@ namespace RemindMe.Controllers
                 return View("UserHomePage", checkUserLogInInfo);
             }
 
-
             return View(userLoginViewModel);
 
         }
@@ -139,7 +123,8 @@ namespace RemindMe.Controllers
         {
 
             //create the ViewModel with the list of repeat frequency options ))
-            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder = new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());  
+            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder = 
+                new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());  
 
             if (HttpContext.Session.GetString("Username") == "")
             {
@@ -186,7 +171,6 @@ namespace RemindMe.Controllers
 
             }
 
-
             return View(newEventAndReminder);
         }
 
@@ -220,20 +204,6 @@ namespace RemindMe.Controllers
                                                   ch.UserCellPhoneNumber
                                               }).AsEnumerable().Select(c => c.ToExpando());
 
-            /*
-            var userRecurringReminders = (from recurringReminder in context.RecurringReminders
-                                          where (recurringReminder.UserId == HttpContext.Session.GetInt32("ID"))
-                                          select new
-                                          {
-                                          recurringReminder.RecurringReminderName,
-                                          recurringReminder.RecurringReminderDescription,
-                                          recurringReminder.RecurringEventDate,
-                                          recurringReminder.RecurringReminderStartAlertDate,
-                                          recurringReminder.RecurringReminderLastAlertDate,
-                                          recurringReminder.RecurringReminderRepeatFrequency
-                                          }).ToList();
-                */
-
             return View(userRecurringReminders);
 
         }
@@ -256,7 +226,7 @@ namespace RemindMe.Controllers
             return View(currentUser);
         }
 
-        // Method called from Startup.cs that launches Hangfire background tasks
+        // Methods called from Startup.cs that launches Hangfire background tasks
 
         public IActionResult LaunchSendRecurringReminderTextsAnnually(Object j)
         {
@@ -274,25 +244,16 @@ namespace RemindMe.Controllers
             return null;
         }
 
+        //
+
         public IActionResult SendRecurringReminderTextsAnnually()
 
         {
             // create a list of the reminders that are scheduled to go out today
-            //DateTime today = DateTime.Now.Date;
+            
             string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to string for comparison to dates in recurringreminders
             Console.WriteLine("today = " + today);
             Console.WriteLine("We are before the var statement");
-
-            /*  this one works
-            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually" &&
-                                                               today >= rr.RecurringReminderStartAlertDate.Date &&
-                                                               today <= rr.RecurringReminderLastAlertDate.Date &&
-                                                               DateTime.Now.Date > rr.RecurringReminderDateAndTimeLastAlertSent.Date).ToList());
-            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RecurringReminderRepeatFrequency == "Annually" &&
-                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
-                                                               today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 &&
-                                                               (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0)).ToList());
-            */
 
             var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Annually" &&
                                                                today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
@@ -399,15 +360,28 @@ namespace RemindMe.Controllers
         {
 
             Console.WriteLine("Starting to retrieve the records");
-            var annualRecurringReminders = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.ToString().Equals("Annually")).ToList());
+            
+            //get ID of "Annually" from the database
+
+            var repeatFreq = context.ReminderRepeatFrequencies.Where(rfn => rfn.RepeatFrequencyName == "Annually").ToList();
+            
+            ReminderRepeatFrequency annually = repeatFreq[0];  //this is a list with one element
+           
+            //retireve the recurring reminder records that are "annual" reminders
+
+            var annualRecurringReminders = context.RecurringReminders.Where(rr => rr.RepeatFrequencyNameID == annually.ID).ToList();
+            
             Console.WriteLine("Finished retrieving the records");
             Console.WriteLine("Number of records found: " + annualRecurringReminders.Count());
+            
+            //reset the RecurringReminderDateAndTimeLastAlertSent for annual reminders to 01/01/2001
+
             foreach (var rr in annualRecurringReminders)
             {
                 rr.RecurringReminderDateAndTimeLastAlertSent = Convert.ToDateTime("01/01/2001");
             }
             context.SaveChanges();
-
+            
             return null;
         }
 

@@ -77,7 +77,7 @@ namespace RemindMe
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 
-            // Use this one to include ahangfire after migratnig and updating the database
+            // Use this one to include hangfire after migrating and updating the database
             
            public void Configure(IApplicationBuilder app, IHostingEnvironment env,
                               ILoggerFactory loggerFactory, IApplicationLifetime lifetime,
@@ -143,7 +143,8 @@ namespace RemindMe
             
             // launch Annual Reminders Backgroond Task
 
-            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>(x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(14, 38)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+            recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>
+                (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(12, 51)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
 
             //
 
@@ -154,11 +155,10 @@ namespace RemindMe
             // launch annual reset of RecurringReminderDateAndTimeLastAlertSent
             // we have to set the dates to 01/01 so the logic in the SendRecurringReminderTextsAnnually() method will work correctly in a new year
 
-
-
-           
-            
-            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)), Cron.Yearly(01,01,04,00)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour - note UTC is +5 hours to EST and +4 in EDT
+            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", 
+                Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)),
+                Cron.Yearly(06,06,12,37)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour 
+                                           // note UTC is +5 hours to EST and +4 in EDT
             
             //
 

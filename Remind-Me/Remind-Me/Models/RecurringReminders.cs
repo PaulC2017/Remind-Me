@@ -19,10 +19,10 @@ namespace RemindMe.Models
         public string RecurringReminderSecondAlertTime { get; set; }
         // does the event repeat annually, monthly, Once, etc?
 
-        public int RecurringReminderRepeatFrequencyID { get; set; }
+        public int RepeatFrequencyNameID { get; set; }
         public ReminderRepeatFrequency RepeatFrequencyName { get; set; }
 
-
+        //
 
 
         public string UserCellPhoneNumber { get; set; }
