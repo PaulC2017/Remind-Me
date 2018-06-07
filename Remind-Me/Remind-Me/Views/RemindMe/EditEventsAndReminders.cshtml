@@ -5,11 +5,11 @@
 
 <h2>Edit Events/Reminders @Model.RecurringEventName</h2>
 
-<form asp-controller="Cheese" asp-action="Edit" method="post">
-
+<form asp-controller="RemindMe" asp-action="EditEventsAndReminders" method="post">
+    
     <div class="form-group">
         <label asp-for="RecurringEventName"></label>
-        <input class="form-control" asp-for="RecurringEventName" />
+        <input class="form-control" asp-for="RecurringEventName"/>
         <span asp-validation-for="RecurringEventName"></span>
     </div>
     <div class="form-group">
@@ -22,13 +22,13 @@
         <input class="form-control" asp-for="RecurringEventDate" />
         <span asp-validation-for="RecurringEventDate"></span>
     </div>
-    @*
+
     <div class="form-group">
-        <label asp-for="RecurringReminderRepeatFrequencyID">How Often Does this Event Occur?</label>
+        <label asp-for="RepeatFrequencyNameID">How Often Does this Event Occur?</label>
         <br>
-        <select asp-for="RecurringReminderRepeatFrequencyID" asp-items="Model.Frequencies"></select>
+        <select asp-for="RepeatFrequencyNameID" asp-items="Model.Frequencies"></select>
     </div>
-    *@
+
     <div class="form-group">
         <label asp-for="RecurringReminderStartAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
@@ -44,9 +44,12 @@
         <input class="form-control" placeholder="9999999999" asp-for="UserCellPhoneNumber" />
         <span asp-validation-for="UserCellPhoneNumber"></span>
     </div>
+
+    
     <div class="form-group">
-        <input type="hidden" class="form-control" asp-for="RecurringReminderId" />
+        <input type="hidden" class="form-control" asp-for="recurringReminderId" />
     </div>
+    
     <input type="submit" value="Submit" />
 
 </form>

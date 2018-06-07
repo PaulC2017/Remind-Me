@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RemindMe.Models
 {
-    public class ReminderRepeatFrequency
+    public class ReminderRepeatFrequencies
     {
         public string RepeatFrequencyName { get; set; }
         public int ID { get; set; }

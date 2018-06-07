@@ -1,9 +1,6 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RemindMe.ViewModels;
@@ -33,24 +30,20 @@ namespace RemindMe.Controllers
             context = dbContext;
         }
 
-
         public IActionResult Index()
         {
              return View();
         }
 
-
         public IActionResult RegisterUser()
         {
             RegisterUserViewModel newUser = new RegisterUserViewModel();
-
             return View(newUser);
         }
 
         [HttpPost]
         public IActionResult RegisterUser(RegisterUserViewModel registerUserViewModel)
         {
-
 
             //check to see if the user name entered already exists
 
@@ -77,7 +70,6 @@ namespace RemindMe.Controllers
 
             }
             return View(registerUserViewModel);
-
         }
 
         public IActionResult UserLogin()
@@ -100,8 +92,7 @@ namespace RemindMe.Controllers
                 return View(userLoginViewModel);
             }
             User checkUserLogInInfo = context.User.Single(u => u.Username == userLoginViewModel.Username);
-
-
+            
             if (ModelState.IsValid)
             {
                 if (checkUserLogInInfo.Password != userLoginViewModel.Password)
@@ -134,18 +125,16 @@ namespace RemindMe.Controllers
             return View(scheduleEventsAndReminder);
         }
 
-
         [HttpPost]
         public IActionResult ScheduleEventsAndReminders(ScheduleEventsAndRemindersViewModel newEventAndReminder)
 
         {
-
             if (ModelState.IsValid)
             {
                 // create recurring reminder record
 
                 //first get the Repeat Frequency Selected by the User
-                ReminderRepeatFrequency newReminderRepeatFrequency = 
+                ReminderRepeatFrequencies newReminderRepeatFrequency = 
                     context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
                 
                 User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
@@ -161,14 +150,13 @@ namespace RemindMe.Controllers
                 
                 newRecurringReminder.User = newUser;
                
-
                 context.RecurringReminders.Add(newRecurringReminder);
 
                 // save the new event and reminder to the data base
 
                 context.SaveChanges();
                 ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
-                return View("RecurringEventsAndReminders", newRecurringReminder);
+                return View("RecurringEventsAndReminders",newRecurringReminder);
 
             }
 
@@ -184,7 +172,6 @@ namespace RemindMe.Controllers
             }
 
             ViewBag.Username = HttpContext.Session.GetString("Username");
-
 
             dynamic userRecurringReminders = (from ch in context.RecurringReminders
                                               join
@@ -216,7 +203,6 @@ namespace RemindMe.Controllers
             return View("Index");
         }
 
-
         public IActionResult UserHomePage()
         {
             if (HttpContext.Session.GetString("Username") == "")
@@ -228,8 +214,10 @@ namespace RemindMe.Controllers
             return View(currentUser);
         }
 
+        [HttpGet]
         public IActionResult EditEventsAndReminders(int recurringReminderId)
         {
+            
             //make sure user has logged in 
 
             if (HttpContext.Session.GetString("Username") == "")
@@ -237,43 +225,84 @@ namespace RemindMe.Controllers
                 return View("Index");
             }
             ViewBag.Username = HttpContext.Session.GetString("Username");
-
-
-            //create the ViewModel with the list of repeat frequency options ))
-            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
-            new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
-
-            // get the recurring reminder to be edited
-            RecurringReminders editRecurringReminder = context.RecurringReminders.
-                Single(id => id.ID.Equals(recurringReminderId));
-
-            scheduleEventsAndReminder.RecurringEventName = editRecurringReminder.RecurringReminderName;
-            scheduleEventsAndReminder.RecurringEventDescription = editRecurringReminder.RecurringReminderDescription;
-            scheduleEventsAndReminder.RecurringEventDate = editRecurringReminder.RecurringEventDate;
-            scheduleEventsAndReminder.RecurringReminderStartAlertDate = editRecurringReminder.RecurringReminderStartAlertDate;
-            scheduleEventsAndReminder.RecurringReminderLastAlertDate = editRecurringReminder.RecurringReminderLastAlertDate;
-
-            scheduleEventsAndReminder.UserCellPhoneNumber = editRecurringReminder.UserCellPhoneNumber;
-
-            User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
-            editRecurringReminder.User = newUser;
-
-            /*
-            EditScheduleEventsAndRemindersViewModel editRR = new EditScheduleEventsAndRemindersViewModel
-            {
-            RecurringEventName = editRecurringReminder.RecurringReminderName,
-            RecurringEventDescription = editRecurringReminder.RecurringReminderDescription,
-            RecurringEventDate = editRecurringReminder.RecurringEventDate,
-            RecurringReminderStartAlertDate = editRecurringReminder.RecurringReminderStartAlertDate,
-            RecurringReminderLastAlertDate = editRecurringReminder.RecurringReminderLastAlertDate,
             
-            UserCellPhoneNumber = editRecurringReminder.UserCellPhoneNumber
+            // get the recurring reminder to be edited
 
+            RecurringReminders editRecurringReminder = context.RecurringReminders.
+                FirstOrDefault(id => id.ID == recurringReminderId);
+            
+            //create the ViewModel with the list of repeat frequency options ))
+            EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
+            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList())
+            {
+                // populate the fields for the reminder to be edited
+                RecurringEventName = editRecurringReminder.RecurringReminderName,
+                RecurringEventDescription = editRecurringReminder.RecurringReminderDescription,
+                RecurringEventDate = editRecurringReminder.RecurringEventDate,
+                RecurringReminderStartAlertDate = editRecurringReminder.RecurringReminderStartAlertDate,
+                RecurringReminderLastAlertDate = editRecurringReminder.RecurringReminderLastAlertDate,
+                UserCellPhoneNumber = editRecurringReminder.UserCellPhoneNumber,
+                RepeatFrequencyNameID = editRecurringReminder.RepeatFrequencyNameID,
+                UserId = editRecurringReminder.UserId
             };
-            */
-            return View("ScheduleEventsAndReminders",scheduleEventsAndReminder);
+                        
+            // save the ID for use in the Post method
+            HttpContext.Session.SetString("recurringReminderId", recurringReminderId.ToString());
+
+            return View(editEventsAndReminder);
         }
 
+        [HttpPost]
+        public IActionResult EditEventsAndReminders(EditScheduleEventsAndRemindersViewModel recurringReminder)
+        {
+            
+            if (ModelState.IsValid)
+            {
+                // get the Repeat Frequency selected by the user
+                ReminderRepeatFrequencies newReminderRepeatFrequency =
+                                     context.ReminderRepeatFrequencies.
+                                     Single(c => c.ID == recurringReminder.RepeatFrequencyNameID);
+
+                // get User info for the recurring reminder
+                User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+
+                //Get the recurring reminder record the user wants to modify 
+                //we will delete that record once we add the revised recurring reminder
+                //with the data entered by the user in the edit form
+
+                RecurringReminders editRR = context.RecurringReminders.
+                    Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
+
+                // create new Recurring Reminder with data input from the user from the edit form
+
+                RecurringReminders revisedRR = new RecurringReminders
+                    (
+                
+                                recurringReminder.RecurringEventName,
+                                recurringReminder.RecurringEventDescription,
+                                recurringReminder.RecurringEventDate,
+                                recurringReminder.RecurringReminderStartAlertDate,
+                                recurringReminder.RecurringReminderLastAlertDate,
+                                newReminderRepeatFrequency,
+                                recurringReminder.UserCellPhoneNumber
+                
+                   );
+
+                    revisedRR.User = newUser;
+
+                //save the recurring reminder with ther revised data 
+                context.RecurringReminders.Add(revisedRR);
+
+                // remove the original recurring reminder the user wanted to edit
+                context.RecurringReminders.Remove(editRR);
+                context.SaveChanges();
+                ViewBag.eventDate = recurringReminder.RecurringEventDate.Date;
+                return View("RecurringEventsAndReminders", revisedRR);
+            }
+            
+            return View("RecurringEventsAndreminders", recurringReminder);
+        }
+        
         // Methods called from Startup.cs that launches Hangfire background tasks
 
         public IActionResult LaunchSendRecurringReminderTextsAnnually(Object j)
@@ -292,12 +321,11 @@ namespace RemindMe.Controllers
             return null;
         }
 
-        //
-
+      
         public IActionResult SendRecurringReminderTextsAnnually()
 
         {
-            // create a list of the reminders that are scheduled to go out today
+            // create a list of the annual reminders that are scheduled to go out today
             
             string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to string for comparison to dates in recurringreminders
             Console.WriteLine("today = " + today);
@@ -311,7 +339,7 @@ namespace RemindMe.Controllers
 
             Console.WriteLine("We are after the var statement");
             Console.WriteLine("Count of items in var rrDueToday: " + rrDueToday.Count());
-            //
+            
 
             //Get TextInfo and populate text parameters//
             string TextId = "";
@@ -328,10 +356,10 @@ namespace RemindMe.Controllers
                 TextSecret = ti.TextSecret;
                 TextFrom = ti.TextFrom;
             }
-            Console.WriteLine("Text ID = " + TextId);
-            Console.WriteLine("Text Token = " + TextToken);
-            Console.WriteLine("Text Secret = " + TextSecret);
-            Console.WriteLine("Text From = " + TextFrom);
+            Console.WriteLine("Text ID = See PW Doc");     //  + TextId);
+            Console.WriteLine("Text Token = See PW Doc");  // + TextToken);
+            Console.WriteLine("Text Secret = See PW Doc");  // + TextSecret);
+            Console.WriteLine("Text From = See PW Doc");                //  + TextFrom);
             //
             // send reminders
             foreach (var rr in rrDueToday)
@@ -373,12 +401,7 @@ namespace RemindMe.Controllers
         }
 
         //retrieve text info
-
-
-
-        //
-
-
+                    
         private static async Task SendMessage(string to, string from, string text, string textId, string textToken, string textSecret)
 
         {
@@ -413,7 +436,7 @@ namespace RemindMe.Controllers
 
             var repeatFreq = context.ReminderRepeatFrequencies.Where(rfn => rfn.RepeatFrequencyName == "Annually").ToList();
             
-            ReminderRepeatFrequency annually = repeatFreq[0];  //this is a list with one element
+            ReminderRepeatFrequencies annually = repeatFreq[0];  //this is a list with one element
            
             //retireve the recurring reminder records that are "annual" reminders
 
@@ -432,10 +455,7 @@ namespace RemindMe.Controllers
             
             return null;
         }
-
-
-
-
+        
     }
 
 }

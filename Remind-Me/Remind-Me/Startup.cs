@@ -41,10 +41,10 @@ namespace RemindMe
 
             services.AddMvc();
 
-            // Access to database 
+            // Access to database
 
             services.AddDbContext<RemindMeDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                                                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
 
@@ -61,35 +61,35 @@ namespace RemindMe
 
             services.AddIdentity<IdentityUser, IdentityRole>();
             services.AddAuthentication(
-                     v =>
-                     {
-                         v.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                         v.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                                       v =>
+                                       {
+                                           v.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                                           v.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 
-                     }).AddGoogle(googelOptions =>
-                     {
-                         googelOptions.ClientId = "723770158612-3h09hjsoaei13hm6k3n4dp3dip402r5a.apps.googleusercontent.com";
-                         googelOptions.ClientSecret = "8_lrbaCJxOjUmCrLPCYD5VSJ";
-                     });
+                                       }).AddGoogle(googelOptions =>
+                                       {
+                                           googelOptions.ClientId = "723770158612-3h09hjsoaei13hm6k3n4dp3dip402r5a.apps.googleusercontent.com";
+                                           googelOptions.ClientSecret = "8_lrbaCJxOjUmCrLPCYD5VSJ";
+                                       });
 
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 
-            // Use this one to include hangfire after migrating and updating the database
-            
-           public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+        // Use this one to include hangfire after migrating and updating the database
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,
                               ILoggerFactory loggerFactory, IApplicationLifetime lifetime,
                               IRecurringJobManager recurringJobs)
 
 
         // use this one when migrating and updating the database - it removes IRecurringJobManager recurringJobs
         /*
-       public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-                           ILoggerFactory loggerFactory, IApplicationLifetime lifetime)
+            public void Configure(IApplicationBuilder app, IHostingEnvironment env,
+                                  ILoggerFactory loggerFactory, IApplicationLifetime lifetime)
 
-        */
+                */
 
         {
             if (env.IsDevelopment())
@@ -119,14 +119,14 @@ namespace RemindMe
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                                name: "default",
+                                template: "{controller=Home}/{action=Index}/{id?}");
             });
 
 
 
             //added for Hangfire - comment thenm out when migrating and updating the database
-          
+
             GlobalConfiguration.Configuration.UseSqlServerStorage((Configuration.GetConnectionString("DefaultConnection")));
             app.UseHangfireDashboard();
             app.UseHangfireServer();
@@ -140,11 +140,11 @@ namespace RemindMe
 
 
             //added for Hangfire - comment it out when migrating and updating the database
-            
+
             // launch Annual Reminders Backgroond Task
 
             recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>
-                (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(12, 51)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+                                      (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(12, 51)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
 
             //
 
@@ -155,11 +155,11 @@ namespace RemindMe
             // launch annual reset of RecurringReminderDateAndTimeLastAlertSent
             // we have to set the dates to 01/01 so the logic in the SendRecurringReminderTextsAnnually() method will work correctly in a new year
 
-            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent", 
-                Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)),
-                Cron.Yearly(06,06,12,37)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour 
-                                           // note UTC is +5 hours to EST and +4 in EDT
-            
+            recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent",
+                                      Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)),
+                                      Cron.Yearly(06, 06, 12, 37)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour 
+                                                                    // note UTC is +5 hours to EST and +4 in EDT
+
             //
 
             // this one works!!

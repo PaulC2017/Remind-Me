@@ -20,7 +20,7 @@ namespace RemindMe.Models
         // does the event repeat annually, monthly, Once, etc?
 
         public int RepeatFrequencyNameID { get; set; }
-        public ReminderRepeatFrequency RepeatFrequencyName { get; set; }
+        public ReminderRepeatFrequencies RepeatFrequencyName { get; set; }
 
         //
 
@@ -49,7 +49,7 @@ namespace RemindMe.Models
                                   DateTime recurringEventDate,
                                   DateTime recurringReminderStartAlertDate,
                                   DateTime recurringReminderLastAlertDate,
-                                  ReminderRepeatFrequency recurringReminderRepeatFrequency,
+                                  ReminderRepeatFrequencies recurringReminderRepeatFrequency,
                                   
                                   string userCellPhoneNumber) : this()
         {

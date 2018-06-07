@@ -25,7 +25,7 @@ namespace RemindMe.ViewModels
 
         // we will use the above  value for the RecurringReminderDescription in the controller
 
-
+        [Required(ErrorMessage = "You must enter a date")]
         [DataType(DataType.Date)]
         [Display(Name = "Event Date")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
@@ -36,7 +36,6 @@ namespace RemindMe.ViewModels
         [Required]
         [Display(Name = "RepeatFrequencyName")]
         public int RepeatFrequencyNameID { get; set; }
-        
         public List<SelectListItem> Frequencies { get; set; }
 
         [Required(ErrorMessage = "Enter the date you want to start receiving the text message alerts")]
@@ -81,13 +80,13 @@ namespace RemindMe.ViewModels
             {                                            //to make model binding work
 
             }
-        public ScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequency> repeatFrequencies)  // default constructor  
+        public ScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequencies> repeatFrequencies)  // default constructor  
         {
             //Code for drop down box for reminder frequency for user to select
 
             Frequencies = new List<SelectListItem>();
 
-            foreach (ReminderRepeatFrequency rrf in repeatFrequencies.ToList())
+            foreach (ReminderRepeatFrequencies rrf in repeatFrequencies.ToList())
 
             {
 
