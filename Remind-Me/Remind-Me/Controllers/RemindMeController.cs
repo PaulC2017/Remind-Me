@@ -190,8 +190,10 @@ namespace RemindMe.Controllers
                                                   ch.RecurringReminderSecondAlertTime,
                                                   ch.RepeatFrequencyName,
                                                   ch.UserCellPhoneNumber,
+                                                  ch.RecurringReminderDateAndTimeLastAlertSent,
                                                   ch.ID
                                               }).AsEnumerable().Select(c => c.ToExpando());
+
 
             return View(userRecurringReminders);
 

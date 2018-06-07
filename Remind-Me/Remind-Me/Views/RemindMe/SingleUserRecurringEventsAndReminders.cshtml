@@ -18,18 +18,29 @@
             <th>Event Date</th>
             <th>Date to Start Alerts</th>
             <th>Date to Stop Alerts</th>
+            <th>Date the Last Alert Was Sent</th>
             <th>Cell Phone to Receive Reminder</th>
             <th>Recurring Frequency</th>
             <th>              Action</th>
         </tr>
         @foreach (dynamic recurringReminder in @Model)
         {
+            @if (@recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("yyyy") == "2001")
+            {
+                ViewBag.lastDateSent = "Never Sent";
+
+            }
+            else
+            {
+                ViewBag.lastDateSent = @recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("dddd, MMMM dd yyyy");
+            }
         <tr>
             <td>@recurringReminder.RecurringReminderName</td>
             <td>@recurringReminder.RecurringReminderDescription</td>
             <td>@recurringReminder.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@ViewBag.lastDateSent</td>
             <td>@recurringReminder.UserCellPhoneNumber</td>
             <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
             <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit</a></td>
