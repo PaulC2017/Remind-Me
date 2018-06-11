@@ -1,7 +1,4 @@
 ﻿@model IEnumerable<dynamic>
-
-
-
 @{
     ViewData["Title"] = "AllRecurringEventsAndReminders";
 
@@ -9,51 +6,65 @@
 
 
 <h2> Recurring Events And Reminders  for @ViewBag.Username</h2>
+@if (ViewBag.numOfReminders > 0)
 
-<form method="get">
-    <table class="table">
+{
 
-        <tr>
-            <th>Event Name</th>
-            <th>Event Description</th>
-            <th>Event Date</th>
-            <th>Date to Start Alerts</th>
-            <th>Date to Stop Alerts</th>
-            <th>Date the Last Alert Was Sent</th>
-            <th>Cell Phone to Receive Reminder</th>
-            <th>Recurring Frequency</th>
-            <th>              Action</th>
-        </tr>
-        @foreach (dynamic recurringReminder in @Model)
-        {
-            @if (@recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("yyyy") == "2001")
+    <form method="get">
+        <table class="table">
+
+            <tr>
+                <th>Event Name</th>
+                <th>Event Description</th>
+                <th>Event Date</th>
+                <th>Date to Start Alerts</th>
+                <th>Date to Stop Alerts</th>
+                <th>Date the Last Alert Was Sent</th>
+                <th>Cell Phone to Receive Reminder</th>
+                <th>Recurring Frequency</th>
+                <th>              Action</th>
+            </tr>
+            @foreach (dynamic recurringReminder in @Model)
             {
-                ViewBag.lastDateSent = "Never Sent";
+                @if (@recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("yyyy") == "2001")
+                {
+                    ViewBag.lastDateSent = "Never Sent";
+
+                }
+                else
+                {
+                    ViewBag.lastDateSent = @recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("dddd, MMMM dd yyyy");
+                }
+                <tr>
+                    <td>@recurringReminder.RecurringReminderName</td>
+                    <td>@recurringReminder.RecurringReminderDescription</td>
+                    <td>@recurringReminder.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</td>
+                    <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+                    <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+                    <td>@ViewBag.lastDateSent</td>
+                    <td>@recurringReminder.UserCellPhoneNumber</td>
+                    <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
+                    <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit This Event/Reminder</a></td>
+                    <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Delete This Event/ReminderReminder</a></td>
+
+                </tr>
 
             }
-            else
-            {
-                ViewBag.lastDateSent = @recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("dddd, MMMM dd yyyy");
-            }
-        <tr>
-            <td>@recurringReminder.RecurringReminderName</td>
-            <td>@recurringReminder.RecurringReminderDescription</td>
-            <td>@recurringReminder.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</td>
-            <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
-            <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
-            <td>@ViewBag.lastDateSent</td>
-            <td>@recurringReminder.UserCellPhoneNumber</td>
-            <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
-            <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit</a></td>
-            <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Delete</a></td>
 
-        </tr>
+        </table>
 
-        }
+        <a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders"><strong>Delete Multiple Reminders</strong></a>
+        &nbsp&nbsp&nbsp&nbsp&nbsp @*add blank spaces between the two anchor tags <a></a>*@
+        <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@ViewBag.ID"><strong>Return to Home Page</strong></a>
+    </form>
 
-    </table>
+}
+else
+{
 
+    <br /><br />
+    <h3><p style="color:red"><strong>You have no Events/Reminders Scheduled</strong></p></h3>
+    <br /><br /><br /><br />
+    <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@ViewBag.ID"><strong>Return to Home Page</strong></a>
 
-
-    <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@ViewBag.ID">Return to Home Page</a>
-</form>
+}

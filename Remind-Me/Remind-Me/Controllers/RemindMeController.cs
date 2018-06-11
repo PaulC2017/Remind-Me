@@ -223,7 +223,7 @@ namespace RemindMe.Controllers
             {
                 sortedUserRecurringReminders.Add(reminder);
             }
-            
+            ViewBag.numOfReminders = sortedUserRecurringReminders.Count();
             return View(sortedUserRecurringReminders);
             
 
@@ -341,7 +341,7 @@ namespace RemindMe.Controllers
         }
 
         [HttpGet]
-        public IActionResult DeleteEventsAndReminders()
+        public IActionResult DeleteEventsAndReminders(int recurringReminderId = -1)
         {
             
 
@@ -352,27 +352,51 @@ namespace RemindMe.Controllers
             }
 
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            // get the users events/recurring reminders
+            // get all of the users events/recurring reminders for 
+            //multiple event/reminder deletions
 
-            var userRecurringReminders = context.RecurringReminders.
-                Where(un => un.UserId == HttpContext.Session.GetInt32("ID")).ToList();
-            
-            //sort the list of reminders
-            userRecurringReminders.Sort((p, q) => p.RecurringReminderName.CompareTo(q.RecurringReminderName));
-
-            
-            //remove ambiguity in re List type
-
-            List<RecurringReminders> recurringReminders = new List<RecurringReminders>();
-
-            foreach (RecurringReminders rr in userRecurringReminders)
+            if (recurringReminderId == -1)
             {
-                recurringReminders.Add(rr);
-            }
-            
+                var userRecurringReminders = context.RecurringReminders.
+                    Where(un => un.UserId == HttpContext.Session.GetInt32("ID")).ToList();
 
+                //sort the list of reminders
+                userRecurringReminders.Sort((p, q) => p.RecurringReminderName.CompareTo(q.RecurringReminderName));
+
+
+                //remove ambiguity in re List type: 
+                //cast from var to List<RecurringReminders>
+
+                List<RecurringReminders> recurringReminders = new List<RecurringReminders>();
+
+                foreach (RecurringReminders rr in userRecurringReminders)
+                {
+                    recurringReminders.Add(rr);
+                }
+                ViewBag.recurringReminders = recurringReminders;
+            }
+            //retrieve single event/reminder to be deleted
+            // search for the UserId and ID in recurring reminder table 
+            // associated with the event/reminder the user wants to delete
+            else
+            {
+                var userRecurringReminders = context.RecurringReminders.
+                      Where(un => un.UserId == HttpContext.Session.GetInt32("ID")).
+                      Where(id => id.ID == recurringReminderId).ToList();
+                
+                //remove ambiguity in re List type: 
+                //cast from var to List<RecurringReminders>
+
+                List<RecurringReminders> recurringReminders = new List<RecurringReminders>();
+
+                foreach (RecurringReminders rr in userRecurringReminders)
+                {
+                    recurringReminders.Add(rr);
+                }
+                ViewBag.recurringReminders = recurringReminders;
+            }
             ViewBag.title = "Remove Events/Reminders";
-            ViewBag.recurringReminders = recurringReminders;
+            
           
             return View();
 
