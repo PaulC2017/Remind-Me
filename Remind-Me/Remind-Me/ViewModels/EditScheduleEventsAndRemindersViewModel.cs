@@ -84,8 +84,9 @@ namespace RemindMe.ViewModels
 
         //
 
-        public EditScheduleEventsAndRemindersViewModel() //default constructor needed 
-        {                                            //to make model binding work
+        //default constructor needed to make model binding work
+        public EditScheduleEventsAndRemindersViewModel() 
+        {                                            
 
         }
         public EditScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequencies> repeatFrequencies)  // default constructor  

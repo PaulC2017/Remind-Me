@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<dynamic>
 
 
+
 @{
     ViewData["Title"] = "AllRecurringEventsAndReminders";
 
@@ -44,7 +45,7 @@
             <td>@recurringReminder.UserCellPhoneNumber</td>
             <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
             <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit</a></td>
-            <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-id="@recurringReminder.ID">Delete</a></td>
+            <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Delete</a></td>
 
         </tr>
 

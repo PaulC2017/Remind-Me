@@ -1,0 +1,30 @@
+﻿
+<h2>@ViewBag.title</h2>
+
+<form asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" method="post">
+    <table class="table">
+
+        <tr>
+            <th>Select</th>
+            <th>Event Name</th>
+            <th>Event Description</th>
+            <th>Event Date</th>
+        </tr>
+
+
+        @foreach (var rr in ViewBag.recurringReminders)
+        {
+            <tr>
+                <td><input type="checkbox" name="recurringReminderId" id="@rr.ID" value="@rr.ID"/></td>
+                <td> <label for="@rr.ID">@rr.RecurringReminderName</label></td>
+                <td> <label for="Description">@rr.RecurringReminderDescription</label></td>
+                <td> <label for="EventDate">@rr.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</label></td>
+                
+            </tr>
+
+
+        }
+    </table>
+
+    <input type="submit" value="Review Delete Request" />
+</form>

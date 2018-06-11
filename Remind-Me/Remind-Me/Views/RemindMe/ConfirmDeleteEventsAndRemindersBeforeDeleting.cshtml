@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "ConfirmDeleteEventsAndRemindersBeforeDeleting";
+}
+
+<h2>Are you sure you want to delete the Event(s)/Reminder(s) listed below?</h2>
+<br />
+<br />
+<p>Click <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@ViewBag.ID" style="color:blue"><strong>NO</strong></a> to Cancel the Delete Request</p>
+
+<form asp-controller="RemindMe" asp-action="ConfirmDeleteEventsAndRemindersBeforeDeleting" method="post">
+
+    <table class="table">
+
+        <tr>
+            <th>Selected</th>
+            <th>Event Name</th>
+            <th>Event Description</th>
+            <th>Event Date</th>
+
+        </tr>
+        @foreach (var rr in ViewBag.deleteTheseReminders)
+        {
+
+        <tr>
+            <td><input type="checkbox" checked onclick="return false;" name="recurringReminderId" id="@rr.ID" value="@rr.ID" /></td>
+            <td> <label for="@rr.ID">@rr.RecurringReminderName</label></td>
+            <td> <label for="Description">@rr.RecurringReminderDescription</label></td>
+            <td> <label for="EventDate">@rr.RecurringEventDate.ToString("dddd, MMMM dd yyyy")</label></td>
+        </tr>
+
+        }
+
+    </table>
+
+    
+    <input type="submit" value="Remove Selected Reminder(s)" />
+</form>
