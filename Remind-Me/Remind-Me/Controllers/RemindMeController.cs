@@ -57,7 +57,18 @@ namespace RemindMe.Controllers
             }
             if (ModelState.IsValid)
             {
-                User newUser = new User(registerUserViewModel.Username, registerUserViewModel.Password, registerUserViewModel.GCalEmail, registerUserViewModel.GCalEmailPassword, registerUserViewModel.CellPhoneNumber);
+                /* temporarily hide google calendar input -  will deal with google calendar in release 2
+                User newUser = new User(registerUserViewModel.Username, 
+                                         registerUserViewModel.Password, 
+                                         registerUserViewModel.GCalEmail, 
+                                         registerUserViewModel.GCalEmailPassword, 
+                                         registerUserViewModel.CellPhoneNumber);
+                */
+                User newUser = new User(registerUserViewModel.Username, 
+                                       registerUserViewModel.Password, 
+                                       "dummy gcal email", 
+                                       "dummy gcal email password", 
+                                       registerUserViewModel.CellPhoneNumber);
                 context.User.Add(newUser);
                 context.SaveChanges();
                 ViewBag.User = registerUserViewModel;
@@ -121,8 +132,15 @@ namespace RemindMe.Controllers
             //create the ViewModel with the list of repeat frequency options ))
             ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
                 new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
+            //get user's cell phone number
 
+            User currentUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
             ViewBag.Username = HttpContext.Session.GetString("Username");
+            string formattedCellPhone  = "(" + currentUser.CellPhoneNumber.Substring(0, 3)+ ") " +
+                                            currentUser.CellPhoneNumber.Substring(3,3) + "-" +
+                                            currentUser.CellPhoneNumber.Substring(6, 4);
+
+            ViewBag.userCellPhone = formattedCellPhone;
             return View(scheduleEventsAndReminder);
         }
 

@@ -23,11 +23,12 @@ namespace RemindMe.ViewModels
         [Compare("Password")]
         public string VerifyPassword { get; set; }
 
-        [Required(ErrorMessage = "You must enter a 10 digit cell phone number where reminder text messages will be sent")]
+        [Required]
         [Display(Name = "Cell Phone Number")]
-        [StringLength(10, MinimumLength = 10)]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "You must enter a 10 digit cell phone number.")]
         public string CellPhoneNumber { get; set; }
 
+        /* temporarily hide google calendar input -  will deal with google calendar in release 2
         [Required(ErrorMessage = "Your Google Calendar Email is Required")]
         [Display(Name = "Google Calendar Email")]
         [EmailAddress]
@@ -44,7 +45,7 @@ namespace RemindMe.ViewModels
         [Display(Name = "Verify Google Calendar Email Password")]
         [Compare("GCalEmailPassword")]
         public string VerifyGCalEmailPassword { get; set; }
-
+        */
 
         public string UserCreateDate { get; set; }
         public int ID { get; set; }

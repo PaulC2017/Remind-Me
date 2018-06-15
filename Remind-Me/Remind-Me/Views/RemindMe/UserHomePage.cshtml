@@ -15,7 +15,7 @@
         <tr>
             <th>Login ID</th>
             <th>Member Since</th>
-            <th>Google Email ID</th>
+            @*we will address googel email in release 2<th>Google Email ID</th>*@
             <th>Cell Phone Number</th>
             <th colspan="4">Events and Reminders</th>
             <th></th>
@@ -27,16 +27,16 @@
         <tr>
             <td>@Model.Username</td>
             <td>@Model.UserCreateDate</td>
-            <td>@Model.GCalEmail</td>
+            @*we will address googel email in release 2<td>@Model.GCalEmail</td>*@
             <td>@Model.CellPhoneNumber</td>
             <td><a asp-controller="RemindMe" asp-action="ScheduleEventsAndReminders" asp-route-id="@ViewBag.ID">Add</a></td>
             <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">View</a></td>
-            <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">Edit</a></td>
-            <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-id="@ViewBag.UserId">Delete</a></td>
-        </tr>
+                    <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">Edit</a></td>
+                    <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-id="@ViewBag.UserId">Delete</a></td>
+                </tr>
 
 
 
-    </table>
+            </table>
 
-</form>
+        </form>
