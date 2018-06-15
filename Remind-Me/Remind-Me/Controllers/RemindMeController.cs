@@ -166,8 +166,22 @@ namespace RemindMe.Controllers
                 return View("RecurringEventsAndReminders", newRecurringReminder);
 
             }
+            // if we get here the model is not valid and we need to create
+            // a new viewmodel to include the repeat frequency choices
+            // and populate it with the data the user entered
 
-            return View(newEventAndReminder);
+            ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
+                new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
+
+            scheduleEventsAndReminder.RecurringEventName = newEventAndReminder.RecurringEventName;
+            scheduleEventsAndReminder.RecurringEventDescription = newEventAndReminder.RecurringEventDescription;
+            scheduleEventsAndReminder.RecurringEventDate = newEventAndReminder.RecurringEventDate;
+            scheduleEventsAndReminder.RecurringReminderStartAlertDate = newEventAndReminder.RecurringReminderStartAlertDate;
+            scheduleEventsAndReminder.RecurringReminderLastAlertDate = newEventAndReminder.RecurringReminderLastAlertDate;
+            scheduleEventsAndReminder.UserCellPhoneNumber = newEventAndReminder.UserCellPhoneNumber;
+            
+            ViewBag.Username = HttpContext.Session.GetString("Username");
+            return View(scheduleEventsAndReminder);
         }
 
         public ActionResult SingleUserRecurringEventsAndReminders()
