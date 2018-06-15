@@ -141,14 +141,18 @@ namespace RemindMe
 
             //added for Hangfire - comment it out when migrating and updating the database
 
-            // launch Annual Reminders Backgroond Task
+            // launch Annual Reminders Background Task
 
             recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>
-                                      (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(12, 51)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+                                      (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(19, 25)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
 
             //
+            // launch "Once" reminders Background task
 
-            //RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
+            recurringJobs.AddOrUpdate("Once_Reminders", Job.FromExpression<RemindMeController>
+                                      (x => x.LaunchSendRecurringReminderTextsOnce(null)), Cron.Daily(21, 35)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+
+            //reference for how to schedule using cron expressions:  RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
 
             //added for Hangfire - comment it out when migrating and updating the database
 

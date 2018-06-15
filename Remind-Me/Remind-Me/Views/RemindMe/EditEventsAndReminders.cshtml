@@ -17,7 +17,7 @@
         <input class="form-control" asp-for="RecurringEventDescription" />
         <span asp-validation-for="RecurringEventDescription"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group" required>
         <label asp-for="RecurringEventDate"></label>
         <input class="form-control" asp-for="RecurringEventDate" />
         <span asp-validation-for="RecurringEventDate"></span>
@@ -29,12 +29,12 @@
         <select asp-for="RepeatFrequencyNameID" asp-items="Model.Frequencies"></select>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" required>
         <label asp-for="RecurringReminderStartAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
         <span asp-validation-for="RecurringReminderStartAlertDate"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group" required>
         <label asp-for="RecurringReminderLastAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
         <span asp-validation-for="RecurringReminderLastAlertDate"></span>

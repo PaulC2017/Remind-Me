@@ -515,6 +515,14 @@ namespace RemindMe.Controllers
             return null;
         }
 
+        public IActionResult LaunchSendRecurringReminderTextsOnce(Object j)
+        {
+
+            BackgroundJob.Enqueue(() => SendRecurringReminderTextsOnce());
+
+            return null;
+        }
+
         public IActionResult LaunchResetRecurringReminderDateAndTimeLastAlertSent(Object j)
         {
 
@@ -569,10 +577,10 @@ namespace RemindMe.Controllers
                 try
                 {
                     Console.WriteLine("We are before the TRY command");
-                    Console.WriteLine("Text ID = " + TextId);
-                    Console.WriteLine("Text Token = " + TextToken);
-                    Console.WriteLine("Text Secret = " + TextSecret);
-                    Console.WriteLine("Text From = " + TextFrom);
+                    Console.WriteLine("Text ID = See PW Doc");
+                    Console.WriteLine("Text Token = See PW Doc");
+                    Console.WriteLine("Text Secret = See PW Doc");
+                    Console.WriteLine("Text From = See PW Doc");
                     Console.WriteLine("RecurringReminderDateAndTimeLastAlertSent.Date = " + rr.RecurringReminderDateAndTimeLastAlertSent.Date);
                     Console.WriteLine("DateTime.Now.Date = " + DateTime.Now.Date);
                     Console.WriteLine("Comparison of above two variables = " + (DateTime.Now > rr.RecurringReminderDateAndTimeLastAlertSent));
@@ -602,8 +610,87 @@ namespace RemindMe.Controllers
             return null;
         }
 
+        public IActionResult SendRecurringReminderTextsOnce()
+
+        {
+            // create a list of the annual reminders that are scheduled to go out today
+
+            string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to string for comparison to dates in recurringreminders
+            Console.WriteLine("today = " + today);
+            Console.WriteLine("We are before the var statement");
+
+            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Once" &&
+                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+                                                               today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 &&
+                                                               (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
+
+
+            Console.WriteLine("We are after the var statement");
+            Console.WriteLine("Count of items in var rrDueToday: " + rrDueToday.Count());
+
+
+            //Get TextInfo and populate text parameters//
+            string TextId = "";
+            string TextToken = "";
+            string TextSecret = "";
+            string TextFrom = "";
+
+            var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
+
+            foreach (var ti in textInfo)
+            {
+                TextId = ti.TextUserId;
+                TextToken = ti.TextToken;
+                TextSecret = ti.TextSecret;
+                TextFrom = ti.TextFrom;
+            }
+            Console.WriteLine("Text ID = See PW Doc");     //  + TextId);
+            Console.WriteLine("Text Token = See PW Doc");  // + TextToken);
+            Console.WriteLine("Text Secret = See PW Doc");  // + TextSecret);
+            Console.WriteLine("Text From = See PW Doc");                //  + TextFrom);
+            //
+            // send reminders
+            foreach (var rr in rrDueToday)
+            {
+                try
+                {
+                    Console.WriteLine("We are before the TRY command");
+                    Console.WriteLine("Text ID = See PW Doc");
+                    Console.WriteLine("Text Token = See PW Doc");
+                    Console.WriteLine("Text Secret = See PW Doc");
+                    Console.WriteLine("Text From = See PW Doc");
+                    Console.WriteLine("RecurringReminderDateAndTimeLastAlertSent.Date = " + rr.RecurringReminderDateAndTimeLastAlertSent.Date);
+                    Console.WriteLine("DateTime.Now.Date = " + DateTime.Now.Date);
+                    Console.WriteLine("Comparison of above two variables = " + (DateTime.Now > rr.RecurringReminderDateAndTimeLastAlertSent));
+
+                    // format text message
+                    string eventDate = rr.RecurringEventDate.ToString("MM/dd"); // Just include the month and day of the event in the text message
+                    string textMessage = "From: Remind Me - Don't Forget!!\r\n" + "Event: " + rr.RecurringReminderName + "\r\n" + "Description: " + rr.RecurringReminderDescription + "\r\nDate " + eventDate;
+
+                    SendMessage(rr.UserCellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
+                    Console.WriteLine("We are after the TRY command");
+
+                    // Update the current record to reflect the date the latest alert was sent
+
+                    rr.RecurringReminderDateAndTimeLastAlertSent = DateTime.Now;
+                    context.SaveChanges();
+
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex.Message);
+                }
+
+            }
+
+            //
+
+            return null;
+        }
+
+
         //retrieve text info
-                    
+
         private static async Task SendMessage(string to, string from, string text, string textId, string textToken, string textSecret)
 
         {
@@ -614,10 +701,10 @@ namespace RemindMe.Controllers
                 Text = text  // reminder
             };
 
-            Console.WriteLine("Text ID = " + textId);
-            Console.WriteLine("Text Token = " + textToken);
-            Console.WriteLine("Text Secret = " + textSecret);
-            Console.WriteLine("Text From = " + from);
+            Console.WriteLine("Text ID = See PW Doc"); //+ textId;
+            Console.WriteLine("Text Token = See PW Doc"); // + textToken);
+            Console.WriteLine("Text Secret = See PW Doc"); // + textSecret);
+            Console.WriteLine("Text From = See PW Doc"); // + from);
 
 
             Console.WriteLine("We are before the var client command");
