@@ -6,10 +6,10 @@
 <h2>Edit Events/Reminders @Model.RecurringEventName</h2>
 
 <form asp-controller="RemindMe" asp-action="EditEventsAndReminders" method="post">
-    
+
     <div class="form-group">
         <label asp-for="RecurringEventName"></label>
-        <input class="form-control" asp-for="RecurringEventName"/>
+        <input class="form-control" asp-for="RecurringEventName" />
         <span asp-validation-for="RecurringEventName"></span>
     </div>
     <div class="form-group">
@@ -39,17 +39,22 @@
         <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
         <span asp-validation-for="RecurringReminderLastAlertDate"></span>
     </div>
+    
     <div class="form-group">
+        @*  commented out
+            while we restrict the user to only getting texts on the registered
+            cell phone number
         <label asp-for="UserCellPhoneNumber"></label>
-        <input class="form-control" placeholder="9999999999" asp-for="UserCellPhoneNumber" />
+        <input class="form-control" placeholder="9999999999" asp-for="UserCellPhoneNumber" />*@
+        <input class="form-control" type="hidden" value="@Model.UserCellPhoneNumber" asp-for="UserCellPhoneNumber" />
         <span asp-validation-for="UserCellPhoneNumber"></span>
     </div>
-
-    
+    <p style="color:blue">This reminder will be sent to @ViewBag.formattedUserCellPhone</p>
+   
     <div class="form-group">
         <input type="hidden" class="form-control" asp-for="recurringReminderId" />
     </div>
-    
+
     <input type="submit" value="Submit" />
 
 </form>

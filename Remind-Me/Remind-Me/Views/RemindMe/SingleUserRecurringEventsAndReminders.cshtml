@@ -42,13 +42,13 @@
                 <td>@recurringReminder.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
                 <td>@recurringReminder.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
                 <td>@ViewBag.lastDateSent</td>
-                <td>@recurringReminder.UserCellPhoneNumber</td>
+                <td>@Convert.ToInt64(@recurringReminder.UserCellPhoneNumber).ToString("(###) ###-####")</td>
+                @*<td>@recurringReminder.UserCellPhoneNumber</td>*@
                 <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
                 <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit This Event/Reminder</a></td>
                 <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Delete This Event/ReminderReminder</a></td>
-
             </tr>
-
+            
         }
 
     </table>

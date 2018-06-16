@@ -46,21 +46,15 @@
         <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
         <span asp-validation-for="RecurringReminderLastAlertDate"></span>
     </div>
-
-
-    @* reseerved for future use when offering the user the opportunity to 
-        declare more than one cell phone nuebr to receive
-        texts.  Will do a drop down box for here when adding that 
-        code.
     <div class="form-group">
-        <label asp-for="UserCellPhoneNumber"></label>
-        <input class="form-control" placeholder="9999999999" asp-for="UserCellPhoneNumber" />
+        @*<label asp-for="UserCellPhoneNumber"></label>  commented out
+            while we restrict the user to only getting texts on the registered
+            cell phone number*@
+        <input  class="form-control" type="hidden" value = "@Model.UserCellPhoneNumber"  asp-for="UserCellPhoneNumber" />
         <span asp-validation-for="UserCellPhoneNumber"></span>
     </div>
-    *@
-
-    <br />
-    <p>This reminder will be sent to @ViewBag.userCellPhone</p>
+    <p style="color:blue">This reminder will be sent to @ViewBag.formattedUserCellPhone</p>
+   
     @*
         <div class="form-group">
             <label asp-for="RecurringReminderRepeatFrequency "></label>

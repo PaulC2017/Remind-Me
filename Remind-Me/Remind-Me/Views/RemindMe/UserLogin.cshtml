@@ -19,12 +19,13 @@
         <input class="form-control" asp-for="Password" />
         <span asp-validation-for="Password"></span>
     </div>
+    @*remove requirement to verify password when user logs in
     <div class="form-group">
         <label asp-for="VerifyPassword"></label>
         <input class="form-control" asp-for="VerifyPassword" />
         <span asp-validation-for="VerifyPassword"></span>
     </div>
-
+    *@
     <div class="form-group">
         @*<label type="hidden"  asp-for="UserId"></label> No label needed since the user doesn't input these values - the app calculates and populates them   *@
         <input type="hidden" class="form-control" asp-for="ID" value="@Model.ID" />

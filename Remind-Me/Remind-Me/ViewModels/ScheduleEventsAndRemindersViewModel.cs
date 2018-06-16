@@ -55,7 +55,9 @@ namespace RemindMe.ViewModels
         [Required(ErrorMessage = "Enter the cell phone number where you want to receive the text reminders (ie - 2125551212)")]
         [DataType(DataType.PhoneNumber)]
         [RegularExpression(@"^(\d{10})$", ErrorMessage = "Invalid Phone Number")]
-        [Display(Name = "Cell Phone Number (Enter Numbers Only.  ie -  2125551212) ")]
+        //[Display(Name = "Cell Phone Number (Enter Numbers Only.  ie -  2125551212) ")]
+        // display removed since we only allow the registerd cell
+        //phone to receive the text reminders
         public string UserCellPhoneNumber { get; set; }
 
 

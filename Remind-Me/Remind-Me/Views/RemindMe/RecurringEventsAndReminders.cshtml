@@ -25,10 +25,9 @@
             <td>@ViewBag.eventDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@Model.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@Model.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
-            <td>@Model.UserCellPhoneNumber</td>
+            <td>@Convert.ToInt64(@Model.UserCellPhoneNumber).ToString("(###) ###-####")</td>
+            @*<td>@Model.UserCellPhoneNumber</td>*@
             <td>@Model.RepeatFrequencyName.RepeatFrequencyName</td>
-            
-
         </tr>
     </table>
     <a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@Model.ID">Return to Home Page</a>

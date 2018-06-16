@@ -28,15 +28,17 @@
             <td>@Model.Username</td>
             <td>@Model.UserCreateDate</td>
             @*we will address googel email in release 2<td>@Model.GCalEmail</td>*@
-            <td>@Model.CellPhoneNumber</td>
+            @*<td>@Model.CellPhoneNumber</td>*@
+            <td> @Convert.ToInt64(@Model.CellPhoneNumber).ToString("(###) ###-####")</td>
             <td><a asp-controller="RemindMe" asp-action="ScheduleEventsAndReminders" asp-route-id="@ViewBag.ID">Add</a></td>
             <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">View</a></td>
-                    <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">Edit</a></td>
-                    <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-id="@ViewBag.UserId">Delete</a></td>
-                </tr>
+            <td><a asp-controller="RemindMe" asp-action="SingleUserRecurringEventsAndReminders" asp-route-id="@ViewBag.UserId">Edit</a></td>
+            <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-id="@ViewBag.UserId">Delete</a></td>
+        </tr>
+
+        @Convert.ToInt64(@Model.CellPhoneNumber).ToString("(###) ###-####");
 
 
-
-            </table>
+    </table>
 
         </form>

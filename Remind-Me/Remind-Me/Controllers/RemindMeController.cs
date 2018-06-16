@@ -132,15 +132,15 @@ namespace RemindMe.Controllers
             //create the ViewModel with the list of repeat frequency options ))
             ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
                 new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
+            
             //get user's cell phone number
 
             User currentUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
             ViewBag.Username = HttpContext.Session.GetString("Username");
-            string formattedCellPhone  = "(" + currentUser.CellPhoneNumber.Substring(0, 3)+ ") " +
-                                            currentUser.CellPhoneNumber.Substring(3,3) + "-" +
-                                            currentUser.CellPhoneNumber.Substring(6, 4);
-
-            ViewBag.userCellPhone = formattedCellPhone;
+            ViewBag.formattedUserCellPhone = Convert.ToInt64(currentUser.CellPhoneNumber).ToString("(###) ###-####");
+            
+            //set cell phone number to users cell ohone number
+            scheduleEventsAndReminder.UserCellPhoneNumber = currentUser.CellPhoneNumber;
             return View(scheduleEventsAndReminder);
         }
 
@@ -163,7 +163,7 @@ namespace RemindMe.Controllers
                     context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
 
                 User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
-                // string userCellPhoneNumber = newUser.CellPhoneNumber;
+                
                 RecurringReminders newRecurringReminder = new
                     RecurringReminders(newEventAndReminder.RecurringEventName,
                                        newEventAndReminder.RecurringEventDescription,
@@ -181,6 +181,7 @@ namespace RemindMe.Controllers
 
                 context.SaveChanges();
                 ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
+                
                 return View("RecurringEventsAndReminders", newRecurringReminder);
 
             }
@@ -199,6 +200,8 @@ namespace RemindMe.Controllers
             scheduleEventsAndReminder.UserCellPhoneNumber = newEventAndReminder.UserCellPhoneNumber;
             
             ViewBag.Username = HttpContext.Session.GetString("Username");
+            ViewBag.formattedUserCellPhone = Convert.ToInt64(newEventAndReminder.UserCellPhoneNumber).ToString("(###) ###-####");
+            
             return View(scheduleEventsAndReminder);
         }
 
@@ -312,7 +315,7 @@ namespace RemindMe.Controllers
 
             // save the ID for use in the Post method
             HttpContext.Session.SetString("recurringReminderId", recurringReminderId.ToString());
-
+            ViewBag.formattedUserCellPhone = Convert.ToInt64(editRecurringReminder.UserCellPhoneNumber).ToString("(###) ###-####");
             return View(editEventsAndReminder);
         }
 
@@ -368,8 +371,24 @@ namespace RemindMe.Controllers
                 ViewBag.eventDate = recurringReminder.RecurringEventDate.Date;
                 return View("RecurringEventsAndReminders", revisedRR);
             }
-
-            return View("RecurringEventsAndreminders", recurringReminder);
+            // if model is not valid we create an editviewmodel with
+            // the data the user entered and render it back to the user
+            // for corrections
+            EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
+            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList())
+            {
+                // populate the fields for the reminder to be edited
+                RecurringEventName = recurringReminder.RecurringEventName,
+                RecurringEventDescription = recurringReminder.RecurringEventDescription,
+                RecurringEventDate = recurringReminder.RecurringEventDate,
+                RecurringReminderStartAlertDate = recurringReminder.RecurringReminderStartAlertDate,
+                RecurringReminderLastAlertDate = recurringReminder.RecurringReminderLastAlertDate,
+                UserCellPhoneNumber = recurringReminder.UserCellPhoneNumber,
+                RepeatFrequencyNameID = recurringReminder.RepeatFrequencyNameID,
+                UserId = recurringReminder.UserId
+            };
+            ViewBag.formattedUserCellPhone = Convert.ToInt64(recurringReminder.UserCellPhoneNumber).ToString("(###) ###-####");
+            return View(editEventsAndReminder);
         }
 
         [HttpGet]

@@ -14,12 +14,13 @@ namespace RemindMe.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        /*  no need to validate password when user logins in
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Verify password Must Match password")]
         [Display(Name = "Verify Password")]
         [Compare("Password")]
         public string VerifyPassword { get; set; }
-
+        */
 
         public string UserCreateDate { get; set; }
         public int ID { get; set; }
