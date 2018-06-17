@@ -31,7 +31,7 @@ namespace RemindMe.ViewModels
         [DataType(DataType.Date)]
         [Display(Name = "Event Date")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringEventDate { get; set; }
 
 
@@ -44,14 +44,14 @@ namespace RemindMe.ViewModels
         [DataType(DataType.Date)]
         [Display(Name = "Start Alert Date")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd-yyyy}")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderStartAlertDate { get; set; }
 
         [Required(ErrorMessage = "Enter the stop date for receiving the text message alerts")]
         [DataType(DataType.Date)]
         [Display(Name = "Last Alert Date")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderLastAlertDate { get; set; }
 
         [Required(ErrorMessage = "Enter the cell phone number where you want to receive the text reminders (ie - 2125551212)")]

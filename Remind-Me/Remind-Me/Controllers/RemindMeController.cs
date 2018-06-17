@@ -297,7 +297,11 @@ namespace RemindMe.Controllers
 
             RecurringReminders editRecurringReminder = context.RecurringReminders.
                 FirstOrDefault(id => id.ID == recurringReminderId);
-
+            Console.WriteLine("*************");
+            Console.WriteLine("editRecurringReminder.RecurringEventDate is " + 
+                              editRecurringReminder.RecurringEventDate +
+                              " ToString " + editRecurringReminder.RecurringEventDate.ToString());
+            Console.WriteLine("*************");
             //create the ViewModel with the list of repeat frequency options ))
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
             EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList())
