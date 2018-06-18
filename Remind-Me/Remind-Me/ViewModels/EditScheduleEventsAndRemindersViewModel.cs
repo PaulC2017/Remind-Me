@@ -40,16 +40,16 @@ namespace RemindMe.ViewModels
         public int RepeatFrequencyNameID { get; set; }
         public List<SelectListItem> Frequencies { get; set; }
 
-        [Required(ErrorMessage = "Enter the date you want to start receiving the text message alerts")]
+        [Required(ErrorMessage = "Enter the date you want to start receiving the Reminders")]
         [DataType(DataType.Date)]
-        [Display(Name = "Start Alert Date")]
+        [Display(Name = "Date to Start Sending Reminders")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd-yyyy}")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderStartAlertDate { get; set; }
 
-        [Required(ErrorMessage = "Enter the stop date for receiving the text message alerts")]
+        [Required(ErrorMessage = "Enter the date to stop receiving the Reminders")]
         [DataType(DataType.Date)]
-        [Display(Name = "Last Alert Date")]
+        [Display(Name = "Date to Stop Sending Reminders")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderLastAlertDate { get; set; }

@@ -121,6 +121,7 @@ namespace RemindMe.Controllers
 
         }
 
+        
         public IActionResult ScheduleEventsAndReminders()
         {
             // check to see if the user has logged in

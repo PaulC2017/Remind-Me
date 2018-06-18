@@ -17,9 +17,9 @@
             <th>Event Name</th>
             <th>Event Description</th>
             <th>Event Date</th>
-            <th>Date to Start Alerts</th>
-            <th>Date to Stop Alerts</th>
-            <th>Date the Last Alert Was Sent</th>
+            <th>Date to Start Sending Reminders</th>
+            <th>Date to Stop Sending Reminders</th>
+            <th>Date the Last Reminder Was Sent</th>
             <th>Cell Phone to Receive Reminder</th>
             <th>Recurring Frequency</th>
             <th>              Action</th>
@@ -46,7 +46,7 @@
                 @*<td>@recurringReminder.UserCellPhoneNumber</td>*@
                 <td>@recurringReminder.RepeatFrequencyName.RepeatFrequencyName</td>
                 <td><a asp-controller="RemindMe" asp-action="EditEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Edit This Event/Reminder</a></td>
-                <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Delete This Event/ReminderReminder</a></td>
+                <td><a asp-controller="RemindMe" asp-action="DeleteEventsAndReminders" asp-route-recurringReminderId="@recurringReminder.ID">Delete This Event/Reminder</a></td>
             </tr>
             
         }

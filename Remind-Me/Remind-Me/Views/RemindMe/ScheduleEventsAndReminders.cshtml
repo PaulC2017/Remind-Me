@@ -33,14 +33,14 @@
         <label asp-for="RepeatFrequencyNameID">How Often Does this Event Occur?</label>
         <br />
         <select asp-for="RepeatFrequencyNameID" asp-items="Model.Frequencies"></select>
-        <p>For "once" events reminders will be sent at 10:00 am ET</p>
+        <br />
     </div>
-    
     <div class="form-group">
         <label asp-for="RecurringReminderStartAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
         <span asp-validation-for="RecurringReminderStartAlertDate"></span>
     </div>
+    <p style="color:blue">Reminders will be sent at 10:00 am ET every day they are scheduled</p>
     <div class="form-group">
         <label asp-for="RecurringReminderLastAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
@@ -50,11 +50,11 @@
         @*<label asp-for="UserCellPhoneNumber"></label>  commented out
             while we restrict the user to only getting texts on the registered
             cell phone number*@
-        <input  class="form-control" type="hidden" value = "@Model.UserCellPhoneNumber"  asp-for="UserCellPhoneNumber" />
+        <input class="form-control" type="hidden" value="@Model.UserCellPhoneNumber" asp-for="UserCellPhoneNumber" />
         <span asp-validation-for="UserCellPhoneNumber"></span>
     </div>
     <p style="color:blue">This reminder will be sent to @ViewBag.formattedUserCellPhone</p>
-   
+
     @*
         <div class="form-group">
             <label asp-for="RecurringReminderRepeatFrequency "></label>
@@ -75,5 +75,8 @@
         </div>
     *@
 
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" />&nbsp;&nbsp;&nbsp;
+    <a href="UserHomePage">
+        <input type="button" value="Cancel" />
+    </a>
 </form>
