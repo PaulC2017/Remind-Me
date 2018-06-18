@@ -52,13 +52,11 @@
     </div>
     <p style="color:blue">This reminder will be sent to @ViewBag.formattedUserCellPhone</p>
 
-    <div class="form-group">
-        <input type="hidden" class="form-control" asp-for="recurringReminderId" />&nbsp;&nbsp;&nbsp;
-        <a href="UserHomePage">
-            <input type="button" value="Cancel" />
-        </a>
-    </div>
+    
 
-    <input type="submit" value="Submit" />&nbsp;&nbsp;&nbsp;<a asp-controller="RemindMe" asp-action="UserHomePage" asp-route-id="@ViewBag.ID"><strong>Return to Home Page</strong></a>
+    <input type="submit" value="Submit" />&nbsp;&nbsp;&nbsp;
+    <a href="UserHomePage">
+    <input type="button" value="Cancel" />
+    </a>
 
 </form>
