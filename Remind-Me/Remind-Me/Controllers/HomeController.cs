@@ -24,7 +24,8 @@ namespace Remind_Me.Controllers
 
         public IActionResult Contact()
         {
-            ViewData["Message"] = "TheReminderFactory Support";
+            ViewData["Message"] = "";
+
 
             return View();
         }
