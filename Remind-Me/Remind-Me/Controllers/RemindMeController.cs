@@ -23,6 +23,8 @@ namespace RemindMe.Controllers
 {
     public class RemindMeController : Controller
     {
+        //every controller accessing data bases must have these lines at the top
+
         private readonly RemindMeDbContext context;
 
         public RemindMeController(RemindMeDbContext dbContext)
@@ -30,6 +32,7 @@ namespace RemindMe.Controllers
             context = dbContext;
         }
 
+        //
         public IActionResult Index()
         {
             return View();
@@ -97,7 +100,7 @@ namespace RemindMe.Controllers
             {
                 User checkUserLogInUserName = context.User.Single(u => u.Username == userLoginViewModel.Username);
             }
-            catch (System.InvalidOperationException)
+            catch (InvalidOperationException e)
             {
                 ViewBag.userNameNotFound = "User Name was not found";
                 return View(userLoginViewModel);
@@ -278,8 +281,17 @@ namespace RemindMe.Controllers
                 return View("Index");
             }
 
-            User currentUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
-            return View(currentUser);
+            // if Session("Username") has not been set yet we need to catch the error
+            try
+            {
+                User currentUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+                return View(currentUser);
+            }
+            catch (System.InvalidOperationException e)
+            {
+                return View("Index");
+            }
+
         }
 
         [HttpGet]
