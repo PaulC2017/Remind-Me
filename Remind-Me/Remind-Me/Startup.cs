@@ -156,13 +156,13 @@ namespace RemindMe
             // launch Annual Reminders Background Task
 
             recurringJobs.AddOrUpdate("Annual_Reminders", Job.FromExpression<RemindMeController>
-                                      (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(19, 25)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+                                      (x => x.LaunchSendRecurringReminderTextsAnnually(null)), Cron.Daily(13, 00)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
 
             //
             // launch "Once" reminders Background task
 
             recurringJobs.AddOrUpdate("Once_Reminders", Job.FromExpression<RemindMeController>
-                                      (x => x.LaunchSendRecurringReminderTextsOnce(null)), Cron.Daily(21, 35)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
+                                      (x => x.LaunchSendRecurringReminderTextsOnce(null)), Cron.Daily(13, 30)); //UTC (HR, Min) time of 4 hours ahead of EDT and 5 hours ahead of EST
 
             //reference for how to schedule using cron expressions:  RecurringJob.AddOrUpdate("Annual_Reminders", () => SendRecurringReminderTextsAnnually(), "44 10 * * *");  // every day at 10:44 am
 
@@ -173,7 +173,7 @@ namespace RemindMe
 
             recurringJobs.AddOrUpdate("Reset_RecurringReminderDateAndTimeLastAlertSent",
                                       Job.FromExpression<RemindMeController>(x => x.LaunchResetRecurringReminderDateAndTimeLastAlertSent(null)),
-                                      Cron.Yearly(06, 06, 12, 37)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour 
+                                      Cron.Yearly(01, 01, 04, 30)); //()Month,day,Hour, minute  in UTC - starts at the first minute of the hour 
                                                                     // note UTC is +5 hours to EST and +4 in EDT
 
             //

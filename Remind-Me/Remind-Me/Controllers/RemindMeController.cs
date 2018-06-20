@@ -560,6 +560,57 @@ namespace RemindMe.Controllers
             return RedirectToAction("UserHomePage");
             
         }
+        //method to add event frequencies 
+        //and Text Credentials to the database- ie Annually, Once, etc
+
+        [HttpGet]
+        public IActionResult AddTextCredentialsAndFrequencies()
+        {
+            // a security device - this method will only work on 06/19/2018
+            // in order to run it on another date I will have to change 06/19/2018
+            // to the date I want to run it on
+            if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/20/2018"))
+            {
+
+                AddTextCredentialsAndFrequenciesViewModel addTextCredentialsAndEventFrequencies = new AddTextCredentialsAndFrequenciesViewModel();
+                return View(addTextCredentialsAndEventFrequencies);
+            }
+            // if it is not the date in the if statement above, do notmpermit
+            // changes to these data items and return the Index view
+            return View("Index");
+        }
+
+        [HttpPost]
+        public IActionResult AddTextCredentialsAndFrequencies(AddTextCredentialsAndFrequenciesViewModel textAndFrequencies)
+        {
+          if (ModelState.IsValid)
+            {
+                
+                if (textAndFrequencies.RepeatFrequencyNameOne != "")
+                {
+                    ReminderRepeatFrequencies newFreq = new ReminderRepeatFrequencies();
+                    newFreq.RepeatFrequencyName = textAndFrequencies.RepeatFrequencyNameOne;
+                    context.ReminderRepeatFrequencies.Add(newFreq);
+                }
+                if (textAndFrequencies.RepeatFrequencyNameTwo != "")
+                {
+                    ReminderRepeatFrequencies newFreq = new ReminderRepeatFrequencies();
+                    newFreq.RepeatFrequencyName = textAndFrequencies.RepeatFrequencyNameTwo;
+                    context.ReminderRepeatFrequencies.Add(newFreq);
+                }
+                
+                    TextInfo newTextInfo = new TextInfo();
+                    newTextInfo.TextFrom = textAndFrequencies.TextFrom;
+                    newTextInfo.TextSecret = textAndFrequencies.TextSecret;
+                    newTextInfo.TextUserId = textAndFrequencies.TextUserId;
+                    newTextInfo.TextToken = textAndFrequencies.TextToken;
+
+                context.TextInfo.Add(newTextInfo);
+                context.SaveChanges();
+                return View("../Home/About");
+            }
+            return View("Index");
+        }
         
         // These Methods are called from Startup.cs  - that launches Hangfire background tasks
 
