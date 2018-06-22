@@ -178,6 +178,10 @@ namespace RemindMe.Controllers
                     ReminderRepeatFrequencies newReminderRepeatFrequency =
                         context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
 
+                    // save the name of the repeat frequency so it can be sent in the confirmaiton text message
+
+                    string repeatFreqNameUserSelected = newReminderRepeatFrequency.RepeatFrequencyName;
+
                     User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
 
                     RecurringReminders newRecurringReminder = new
@@ -201,6 +205,8 @@ namespace RemindMe.Controllers
                     //send a confirming text to the user.
                     // first get the text credentials
                     var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
+                    
+                    // now send the confirmation text
                     SendTextMessagesController sendConfirmation = new SendTextMessagesController();
                     sendConfirmation.SendTextMessage
                         (
@@ -210,7 +216,8 @@ namespace RemindMe.Controllers
                         newEventAndReminder.RecurringEventDescription,
                         newEventAndReminder.RecurringReminderStartAlertDate.Date,
                         newEventAndReminder.RecurringReminderLastAlertDate.Date,
-                        textInfo
+                        textInfo,
+                        repeatFreqNameUserSelected
                         );
 
                     return View("RecurringEventsAndReminders", newRecurringReminder);
@@ -421,6 +428,8 @@ namespace RemindMe.Controllers
 
                     revisedRR.User = newUser;
 
+                    
+
                     //save the recurring reminder with ther revised data 
                     context.RecurringReminders.Add(revisedRR);
 
@@ -428,6 +437,13 @@ namespace RemindMe.Controllers
                     //send a confirming text to the user.
                     // first get the text credentials
                     var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
+
+                    // save the name of the repeat frequency so it can be sent in the confirmaiton text message
+
+                    string repeatFreqNameUserSelected = newReminderRepeatFrequency.RepeatFrequencyName;
+
+
+
                     SendTextMessagesController sendConfirmation = new SendTextMessagesController();
                     sendConfirmation.SendTextMessage
                         (
@@ -437,7 +453,8 @@ namespace RemindMe.Controllers
                         recurringReminder.RecurringEventDescription,
                         recurringReminder.RecurringReminderStartAlertDate.Date,
                         recurringReminder.RecurringReminderLastAlertDate.Date,
-                        textInfo
+                        textInfo,
+                        repeatFreqNameUserSelected
                         );
                     // remove the original recurring reminder the user wanted to edit
                     context.RecurringReminders.Remove(editRR);

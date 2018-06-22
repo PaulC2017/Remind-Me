@@ -31,7 +31,11 @@ namespace RemindMe.Controllers
         {
         }
         // non default constructor
-        public  IActionResult SendTextMessage(string cellPhoneNumber, string eventName, DateTime eventDate, string description, DateTime startReminders, DateTime stopReminders, List<RemindMe.Models.TextInfo> textInfo)
+        public  IActionResult SendTextMessage(string cellPhoneNumber, 
+            string eventName, DateTime eventDate, string description, 
+            DateTime startReminders, DateTime stopReminders, 
+            List<RemindMe.Models.TextInfo> textInfo,
+            string repeatFreqNameUserSelected)
 
             {
 
@@ -61,7 +65,8 @@ namespace RemindMe.Controllers
                      "Description: " +description + 
                      "\r\nEvent Date: " + sEventDate +
                      "\r\nReminders will start: " + startReminders.ToString("MM/dd") +
-                     "\r\nReminders will end: " + stopReminders.ToString("MM/dd");
+                     "\r\nReminders will end: " + stopReminders.ToString("MM/dd") +
+                     "\r\nThese Reminders will be sent: " + repeatFreqNameUserSelected;
 
                 SendMessage(cellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
 
