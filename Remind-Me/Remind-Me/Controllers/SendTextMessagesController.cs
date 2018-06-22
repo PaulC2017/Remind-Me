@@ -58,9 +58,9 @@ namespace RemindMe.Controllers
                 string sEventDate = eventDate.ToString("MM/dd"); // Just include the month and day of the event in the text message
                 string textMessage = "From: TheReminderFactory" + "\u2122" + "\r\n" +
                      "Event: " + eventName + "\r\n" + "Description: " +
-                     description + "\r\nEvent Date: " + eventDate.ToString("DD/mm/yyyy") +
-                     " Reminders will start " + startReminders.ToString("MM/dd") +
-                     " Reminders will end " + stopReminders.ToString("MM/dd");
+                     description + "\r\nEvent Date: " + eventDate.ToString("MM/dd/yyyy") +
+                     " Reminders will start: " + startReminders.ToString("MM/dd") +
+                     " Reminders will end: " + stopReminders.ToString("MM/dd");
 
                 SendMessage(cellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
 
