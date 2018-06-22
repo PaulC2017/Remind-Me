@@ -424,6 +424,21 @@ namespace RemindMe.Controllers
                     //save the recurring reminder with ther revised data 
                     context.RecurringReminders.Add(revisedRR);
 
+                    // Since editing the event/reminder was successful we will
+                    //send a confirming text to the user.
+                    // first get the text credentials
+                    var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
+                    SendTextMessagesController sendConfirmation = new SendTextMessagesController();
+                    sendConfirmation.SendTextMessage
+                        (
+                        recurringReminder.UserCellPhoneNumber,
+                        recurringReminder.RecurringEventName,
+                        recurringReminder.RecurringEventDate.Date,
+                        recurringReminder.RecurringEventDescription,
+                        recurringReminder.RecurringReminderStartAlertDate.Date,
+                        recurringReminder.RecurringReminderLastAlertDate.Date,
+                        textInfo
+                        );
                     // remove the original recurring reminder the user wanted to edit
                     context.RecurringReminders.Remove(editRR);
                     context.SaveChanges();
