@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RemindMe.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using RemindMe.ViewModels;
 using Bandwidth.Net;
@@ -196,6 +197,21 @@ namespace RemindMe.Controllers
 
                     context.SaveChanges();
                     ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
+                    // Since adding the event/reminder was successful we will
+                    //send a confirming text to the user.
+                    // first get the text credentials
+                    var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
+                    SendTextMessagesController sendConfirmation = new SendTextMessagesController();
+                    sendConfirmation.SendTextMessage
+                        (
+                        newEventAndReminder.UserCellPhoneNumber,
+                        newEventAndReminder.RecurringEventName,
+                        newEventAndReminder.RecurringEventDate.Date,
+                        newEventAndReminder.RecurringEventDescription,
+                        newEventAndReminder.RecurringReminderStartAlertDate.Date,
+                        newEventAndReminder.RecurringReminderLastAlertDate.Date,
+                        textInfo
+                        );
 
                     return View("RecurringEventsAndReminders", newRecurringReminder);
                 }
