@@ -29,12 +29,22 @@
         <input class="form-control" asp-for="RecurringEventDate" />
         <span asp-validation-for="RecurringEventDate"></span>
     </div>
+    
     <div class="form-group">
         <label asp-for="RepeatFrequencyNameID">How Often Does this Event Occur?</label>
-        <br />
+        <p style="color:blue">
+            If you select Annually, the reminders
+            will be sent every year between
+            the start month/day and stop month/day of the dates entered below.
+            <br />
+            If you select Once, the reminders will be sent one time only, between
+            the start month/day and stop month/day entered below.
+        </p>
         <select asp-for="RepeatFrequencyNameID" asp-items="Model.Frequencies"></select>
         <br />
     </div>
+    <p style="color:red"><strong>@ViewBag.calendarYearError</strong></p>
+
     <div class="form-group">
         <label asp-for="RecurringReminderStartAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderStartAlertDate" />

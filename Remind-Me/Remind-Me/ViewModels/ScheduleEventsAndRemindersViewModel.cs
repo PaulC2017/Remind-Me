@@ -27,7 +27,7 @@ namespace RemindMe.ViewModels
 
         [Required(ErrorMessage = "You must enter a date")]
         [DataType(DataType.Date)]
-        [Display(Name = "Event Date")]
+        [Display(Name = "What Date Will This Event Occur Next?")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringEventDate { get; set; }
@@ -37,17 +37,18 @@ namespace RemindMe.ViewModels
         [Display(Name = "RepeatFrequencyName")]
         public int RepeatFrequencyNameID { get; set; }
         public List<SelectListItem> Frequencies { get; set; }
-
+        
         [Required(ErrorMessage = "Enter the date you want to start receiving the Reminders")]
         [DataType(DataType.Date)]
-        [Display(Name = "Date to Start Sending Reminders")]
+        [Display(Name = "Date to Start Sending Reminders For This Event")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd-yyyy}")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
+        //allow StartAlertDate to be nullable for use in enforcing reminders into a calendar year
         public DateTime RecurringReminderStartAlertDate { get; set; }
 
         [Required(ErrorMessage = "Enter the date to stop receiving the Reminders")]
         [DataType(DataType.Date)]
-        [Display(Name = "Date to Stop Sending Reminders")]
+        [Display(Name = "Date to Stop Sending Reminders For This Event")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderLastAlertDate { get; set; }

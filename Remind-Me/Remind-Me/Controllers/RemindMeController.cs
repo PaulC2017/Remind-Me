@@ -157,42 +157,58 @@ namespace RemindMe.Controllers
             {
                 return View("Index");
             }
+            //check to make sure all reminders are scheduled in the same  year
 
-            if (ModelState.IsValid)
+            string start = newEventAndReminder.RecurringReminderStartAlertDate.ToString("yyyy");
+            string end = newEventAndReminder.RecurringReminderLastAlertDate.Date.ToString("yyyy");
+            bool remindersInSameYear = false;
+            ViewBag.calendarYearError = "";
+
+            if (start == end)
             {
-                // create recurring reminder record
-
-                //first get the Repeat Frequency Selected by the User
-                ReminderRepeatFrequencies newReminderRepeatFrequency =
-                    context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
-
-                User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+                remindersInSameYear = true;
                 
-                RecurringReminders newRecurringReminder = new
-                    RecurringReminders(newEventAndReminder.RecurringEventName,
-                                       newEventAndReminder.RecurringEventDescription,
-                                       newEventAndReminder.RecurringEventDate.Date,
-                                       newEventAndReminder.RecurringReminderStartAlertDate.Date,
-                                       newEventAndReminder.RecurringReminderLastAlertDate.Date,
-                                       newReminderRepeatFrequency,
-                                       newEventAndReminder.UserCellPhoneNumber);
+                if (ModelState.IsValid)
+                {
 
-                newRecurringReminder.User = newUser;
+                    // create recurring reminder record
 
-                context.RecurringReminders.Add(newRecurringReminder);
+                    //first get the Repeat Frequency Selected by the User
+                    ReminderRepeatFrequencies newReminderRepeatFrequency =
+                        context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
 
-                // save the new event and reminder to the data base
+                    User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
 
-                context.SaveChanges();
-                ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
-                
-                return View("RecurringEventsAndReminders", newRecurringReminder);
+                    RecurringReminders newRecurringReminder = new
+                        RecurringReminders(newEventAndReminder.RecurringEventName,
+                                           newEventAndReminder.RecurringEventDescription,
+                                           newEventAndReminder.RecurringEventDate.Date,
+                                           newEventAndReminder.RecurringReminderStartAlertDate.Date,
+                                           newEventAndReminder.RecurringReminderLastAlertDate.Date,
+                                           newReminderRepeatFrequency,
+                                           newEventAndReminder.UserCellPhoneNumber);
 
+                    newRecurringReminder.User = newUser;
+
+                    context.RecurringReminders.Add(newRecurringReminder);
+
+                    // save the new event and reminder to the data base
+
+                    context.SaveChanges();
+                    ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
+
+                    return View("RecurringEventsAndReminders", newRecurringReminder);
+                }
             }
-            // if we get here the model is not valid and we need to create
+            // if we get here the model is not valid or the reminders 
+            // are not in the same year. So we need to create
             // a new viewmodel to include the repeat frequency choices
             // and populate it with the data the user entered
-
+            if (remindersInSameYear == false)
+            {
+                ViewBag.calendarYearError = "Both the Start and Stop Dates for " +
+                                             "Reminders must be in the same year"; 
+            }
             ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
                 new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
 
@@ -345,52 +361,69 @@ namespace RemindMe.Controllers
                 return View("Index");
             }
 
-            if (ModelState.IsValid)
+            //check to make sure all reminders are scheduled in the current calendar year
+
+            string start = recurringReminder.RecurringReminderStartAlertDate.ToString("yyyy");
+            string end = recurringReminder.RecurringReminderLastAlertDate.Date.ToString("yyyy");
+            bool remindersInSameYear = false;
+            ViewBag.calendarYearError = "";
+
+            if (start == end)
             {
-                // get the Repeat Frequency selected by the user
-                ReminderRepeatFrequencies newReminderRepeatFrequency =
-                                     context.ReminderRepeatFrequencies.
-                                     Single(c => c.ID == recurringReminder.RepeatFrequencyNameID);
+                remindersInSameYear = true;
+                if (ModelState.IsValid)
+                {
+                    // get the Repeat Frequency selected by the user
+                    ReminderRepeatFrequencies newReminderRepeatFrequency =
+                                         context.ReminderRepeatFrequencies.
+                                         Single(c => c.ID == recurringReminder.RepeatFrequencyNameID);
 
-                // get User info for the recurring reminder
-                User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+                    // get User info for the recurring reminder
+                    User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
 
-                //Get the recurring reminder record the user wants to modify 
-                //we will delete that record once we add the revised recurring reminder
-                //with the data entered by the user in the edit form
+                    //Get the recurring reminder record the user wants to modify 
+                    //we will delete that record once we add the revised recurring reminder
+                    //with the data entered by the user in the edit form
 
-                RecurringReminders editRR = context.RecurringReminders.
-                    Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
+                    RecurringReminders editRR = context.RecurringReminders.
+                        Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
 
-                // create new Recurring Reminder with data input from the user from the edit form
+                    // create new Recurring Reminder with data input from the user from the edit form
 
-                RecurringReminders revisedRR = new RecurringReminders
-                    (
+                    RecurringReminders revisedRR = new RecurringReminders
+                        (
 
-                                recurringReminder.RecurringEventName,
-                                recurringReminder.RecurringEventDescription,
-                                recurringReminder.RecurringEventDate,
-                                recurringReminder.RecurringReminderStartAlertDate,
-                                recurringReminder.RecurringReminderLastAlertDate,
-                                newReminderRepeatFrequency,
-                                recurringReminder.UserCellPhoneNumber
+                                    recurringReminder.RecurringEventName,
+                                    recurringReminder.RecurringEventDescription,
+                                    recurringReminder.RecurringEventDate,
+                                    recurringReminder.RecurringReminderStartAlertDate,
+                                    recurringReminder.RecurringReminderLastAlertDate,
+                                    newReminderRepeatFrequency,
+                                    recurringReminder.UserCellPhoneNumber
 
-                   );
+                       );
 
-                revisedRR.User = newUser;
+                    revisedRR.User = newUser;
 
-                //save the recurring reminder with ther revised data 
-                context.RecurringReminders.Add(revisedRR);
+                    //save the recurring reminder with ther revised data 
+                    context.RecurringReminders.Add(revisedRR);
 
-                // remove the original recurring reminder the user wanted to edit
-                context.RecurringReminders.Remove(editRR);
-                context.SaveChanges();
-                ViewBag.eventDate = recurringReminder.RecurringEventDate.Date;
-                return View("RecurringEventsAndReminders", revisedRR);
+                    // remove the original recurring reminder the user wanted to edit
+                    context.RecurringReminders.Remove(editRR);
+                    context.SaveChanges();
+                    ViewBag.eventDate = recurringReminder.RecurringEventDate.Date;
+                    return View("RecurringEventsAndReminders", revisedRR);
+                }
             }
-            // if model is not valid we create an editviewmodel with
-            // the data the user entered and render it back to the user
-            // for corrections
+            // if we get here the model is not valid or the reminders 
+            // are not in the current year. So we need to create
+            // a new viewmodel to include the repeat frequency choices
+            // and populate it with the data the user entered
+            if (remindersInSameYear == false)
+            {
+                ViewBag.calendarYearError = "Both the Start and Stop Dates for " +
+                                             "Reminders must be in the current year";
+            }
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
             EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList())
             {
@@ -578,8 +611,8 @@ namespace RemindMe.Controllers
         [HttpGet]
         public IActionResult AddTextCredentialsAndFrequencies()
         {
-            // a security device - this method will only work on 06/19/2018
-            // in order to run it on another date I will have to change 06/19/2018
+            // a security device - this method will only work on 06/20/2018
+            // in order to run it on another date I will have to change 06/20/2018
             // to the date I want to run it on
             if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/20/2018"))
             {
@@ -661,13 +694,13 @@ namespace RemindMe.Controllers
             Console.WriteLine("We are before the var statement");
 
             var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Annually" &&
-                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd/yyyy")) >= 0 &&
-                                                               today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0 &&
+                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+                                                               (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 || today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) &&
                                                                (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
 
 
             Console.WriteLine("We are after the var statement");
-            Console.WriteLine("Count of items in var rrDueToday: " + rrDueToday.Count());
+            Console.WriteLine("Count of Annual Reminders in var rrDueToday: " + rrDueToday.Count());
             
 
             //Get TextInfo and populate text parameters//
@@ -706,7 +739,7 @@ namespace RemindMe.Controllers
 
                     // format text message
                     string eventDate = rr.RecurringEventDate.ToString("MM/dd"); // Just include the month and day of the event in the text message
-                    string textMessage = "From: Remind Me - Don't Forget!!\r\n" + "Event: " + rr.RecurringReminderName + "\r\n" + "Description: " + rr.RecurringReminderDescription + "\r\nDate " + eventDate;
+                    string textMessage = "From: TheReminderFactory" + "\u2122" + "\r\n" + "Event: " + rr.RecurringReminderName + "\r\n" + "Description: " + rr.RecurringReminderDescription + "\r\nEvent Date: " + eventDate;
 
                     SendMessage(rr.UserCellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
                     Console.WriteLine("We are after the TRY command");
@@ -732,20 +765,20 @@ namespace RemindMe.Controllers
         public IActionResult SendRecurringReminderTextsOnce()
 
         {
-            // create a list of the annual reminders that are scheduled to go out today
+            // create a list of the Once reminders that are scheduled to go out today
 
             string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to string for comparison to dates in recurringreminders
             Console.WriteLine("today = " + today);
             Console.WriteLine("We are before the var statement");
 
             var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Once" &&
-                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
-                                                               today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 &&
+                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 && 
+                                                               (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 || today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) &&
                                                                (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
 
 
             Console.WriteLine("We are after the var statement");
-            Console.WriteLine("Count of items in var rrDueToday: " + rrDueToday.Count());
+            Console.WriteLine("Count of Once Reminders in var rrDueToday: " + rrDueToday.Count());
 
 
             //Get TextInfo and populate text parameters//
@@ -784,7 +817,7 @@ namespace RemindMe.Controllers
 
                     // format text message
                     string eventDate = rr.RecurringEventDate.ToString("MM/dd"); // Just include the month and day of the event in the text message
-                    string textMessage = "From: Remind Me - Don't Forget!!\r\n" + "Event: " + rr.RecurringReminderName + "\r\n" + "Description: " + rr.RecurringReminderDescription + "\r\nDate " + eventDate;
+                    string textMessage = "From: TheReminderFactory" + "\u2122" + "\r\n" + "Event: " + rr.RecurringReminderName + "\r\n" + "Description: " + rr.RecurringReminderDescription + "\r\nEvent Date: " + eventDate;
 
                     SendMessage(rr.UserCellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
                     Console.WriteLine("We are after the TRY command");
@@ -850,8 +883,8 @@ namespace RemindMe.Controllers
 
             var annualRecurringReminders = context.RecurringReminders.Where(rr => rr.RepeatFrequencyNameID == annually.ID).ToList();
             
-            Console.WriteLine("Finished retrieving the records");
-            Console.WriteLine("Number of records found: " + annualRecurringReminders.Count());
+            Console.WriteLine("Finished retrieving the Annually records");
+            Console.WriteLine("Number of Annually records found: " + annualRecurringReminders.Count());
             
             //reset the RecurringReminderDateAndTimeLastAlertSent for annual reminders to 01/01/2001
 

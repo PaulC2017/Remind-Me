@@ -13,7 +13,10 @@ namespace RemindMe.Models
         public string RecurringReminderDescription { get; set; } // this is also the event description
         public DateTime RecurringEventDate { get; set; }
         public string RecuringReminderCreateDate { get; set; }
-        public DateTime RecurringReminderStartAlertDate { get; set; }
+        
+        
+        public DateTime RecurringReminderStartAlertDate { get; set; } 
+                  
         public DateTime RecurringReminderLastAlertDate { get; set; }
         public string RecurringReminderFirstAlertTime { get; set; }
         public string RecurringReminderSecondAlertTime { get; set; }
