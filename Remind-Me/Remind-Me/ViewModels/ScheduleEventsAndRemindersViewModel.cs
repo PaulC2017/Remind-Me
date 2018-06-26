@@ -8,6 +8,7 @@ using RemindMe.Data;
 using RemindMe.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace RemindMe.ViewModels
 {
     public class ScheduleEventsAndRemindersViewModel
@@ -19,8 +20,8 @@ namespace RemindMe.ViewModels
 
         // we will use this value for the RecurringReminderName in the controller
 
-        [Required(ErrorMessage = "A description of the event is requred")]
-        [Display(Name = "Event Description")]
+        
+        [Display(Name = "Event Description (Optional)")]
         public string RecurringEventDescription { get; set; }
 
         // we will use the above  value for the RecurringReminderDescription in the controller
@@ -46,6 +47,17 @@ namespace RemindMe.ViewModels
         //allow StartAlertDate to be nullable for use in enforcing reminders into a calendar year
         public DateTime RecurringReminderStartAlertDate { get; set; }
 
+        [Required]
+        [Display(Name = "ReminderTimes")]
+        private int reminderTimesID = 10; //setting defaut value in drop down list
+        public int ReminderTimesID { get { return reminderTimesID; } set { reminderTimesID = value; } }// set default value to ID = 10 in List<SelectListItem> - 9:00 Am
+        public List<SelectListItem> ReminderTimes { get; set; }
+        
+        [Display(Name = "ReminderTimes2")]
+        private int reminderTimes2ID = 0;  // setting default value in drop down list
+        public int ReminderTimes2ID { get { return reminderTimes2ID; } set { reminderTimes2ID = value; } }  //set default value to ID = 0 (9:00 AM)
+        public List<SelectListItem> ReminderTimes2 { get; set; } 
+     
         [Required(ErrorMessage = "Enter the date to stop receiving the Reminders")]
         [DataType(DataType.Date)]
         [Display(Name = "Date to Stop Sending Reminders For This Event")]
@@ -83,7 +95,8 @@ namespace RemindMe.ViewModels
             {                                            //to make model binding work
 
             }
-        public ScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequencies> repeatFrequencies)  // default constructor  
+        public ScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequencies> repeatFrequencies,
+            IEnumerable<ReminderTimes> reminderTimes)
         {
             //Code for drop down box for reminder frequency for user to select
 
@@ -93,7 +106,6 @@ namespace RemindMe.ViewModels
 
             {
 
-
                 Frequencies.Add(new SelectListItem
                 {
                     Value = (rrf.ID.ToString()),
@@ -102,9 +114,44 @@ namespace RemindMe.ViewModels
                 });
 
             }
+            //Code for drop down box for reminder times for user to select - 1st reminder of the day
+            
+            ReminderTimes = new List<SelectListItem>();
+            foreach (ReminderTimes rt in reminderTimes)
+            {
+                ReminderTimes.Add(new SelectListItem
+                {
+                    Value = (rt.ID.ToString()),
+                    Text = rt.ReminderTimesName.ToString(),
+                    //Selected = rt.ID == 10 ? true : false
+
+                });
+            }
 
 
+            //Code for drop down box for reminder times for user to select - 2nd reminder of the day
+
+
+            ReminderTimes2 = new List<SelectListItem>();
+
+            //add "Do Not Select" option
+            SelectListItem doNotSelect = new SelectListItem() { Text = "Do Not Schedule", Value = "0" } ;
+            ReminderTimes2.Add(doNotSelect);
+           
+            foreach (ReminderTimes rt in reminderTimes)
+            {
+                
+                ReminderTimes2.Add(new SelectListItem
+                {
+                    Value = (rt.ID.ToString()),
+                    Text = rt.ReminderTimesName.ToString()
+
+                });
+            }
+            
         }
+
+        // drop down list for users - not used currently
         public ScheduleEventsAndRemindersViewModel(IEnumerable<User> users)
         {
 

@@ -53,7 +53,8 @@ namespace RemindMe.Models
                                   DateTime recurringReminderStartAlertDate,
                                   DateTime recurringReminderLastAlertDate,
                                   ReminderRepeatFrequencies recurringReminderRepeatFrequency,
-                                  
+                                  string reminderTime,
+                                  string reminderTime2,
                                   string userCellPhoneNumber) : this()
         {
             RecurringReminderName = recurringReminderName;
@@ -62,6 +63,8 @@ namespace RemindMe.Models
             RecurringReminderStartAlertDate = recurringReminderStartAlertDate;
             RecurringReminderLastAlertDate = recurringReminderLastAlertDate;
             RepeatFrequencyName = recurringReminderRepeatFrequency;
+            RecurringReminderFirstAlertTime = reminderTime;
+            RecurringReminderSecondAlertTime = reminderTime2;
             UserCellPhoneNumber = userCellPhoneNumber;
 
 

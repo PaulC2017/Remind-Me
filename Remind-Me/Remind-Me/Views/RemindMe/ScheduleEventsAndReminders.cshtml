@@ -4,15 +4,16 @@
     ViewData["Title"] = "Schedule";
 }
 
-<h2>Schedule Events And Reminders</h2>
+<h2> @ViewBag.Username - Schedule Events And Reminders</h2>
 
 <form asp-controller="RemindMe" asp-action="ScheduleEventsAndReminders" method="post">
     <p>@ViewBag.PasswordError @ViewBag.UsernameError @ViewBag.UserNameContentError </p>
 
+     
     <div class="form-group">
-        <label>Current User</label>
-        <input class="form-control" value="@ViewBag.Username" />
-
+        <label></label>
+        <input type="hidden" class="form-control" value="@ViewBag.Username" />
+    
     </div>
     <div class="form-group">
         <label asp-for="RecurringEventName"></label>
@@ -29,15 +30,15 @@
         <input class="form-control" asp-for="RecurringEventDate" />
         <span asp-validation-for="RecurringEventDate"></span>
     </div>
-    
+
     <div class="form-group">
         <label asp-for="RepeatFrequencyNameID">How Often Does this Event Occur?</label>
         <p style="color:blue">
-            If you select Annually, the reminders
+            If you select Annually, the Reminders
             will be sent every year between
             the start month/day and stop month/day of the dates entered below.
             <br />
-            If you select Once, the reminders will be sent one time only between
+            If you select Once, the Reminders will be sent one time only between
             the dates entered below.
         </p>
         <select asp-for="RepeatFrequencyNameID" asp-items="Model.Frequencies"></select>
@@ -50,12 +51,22 @@
         <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
         <span asp-validation-for="RecurringReminderStartAlertDate"></span>
     </div>
-    <p style="color:blue">Reminders will be sent between 9:00 am and 10:00 am ET every day they are scheduled</p>
     <div class="form-group">
         <label asp-for="RecurringReminderLastAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
         <span asp-validation-for="RecurringReminderLastAlertDate"></span>
     </div>
+    <p style="color:blue">You can schedule 1 or 2 Reminders to be sent to you daily.  The first Reminder is required. The second one is optional</p>
+    <div class="form-group">
+        <label asp-for="ReminderTimesID">Select the time of day you want the first reminder to be sent to you   </label>
+        <select  asp-for="ReminderTimesID" asp-items="Model.ReminderTimes"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="ReminderTimes2ID">Select a time of day if you want the second reminder to be sent to you. If not, select "Do Not Schedule"   </label>
+        <select asp-for="ReminderTimes2ID" asp-items="Model.ReminderTimes2"></select>
+    </div>
+
+
     <div class="form-group">
         @*<label asp-for="UserCellPhoneNumber"></label>  commented out
             while we restrict the user to only getting texts on the registered
@@ -63,7 +74,7 @@
         <input class="form-control" type="hidden" value="@Model.UserCellPhoneNumber" asp-for="UserCellPhoneNumber" />
         <span asp-validation-for="UserCellPhoneNumber"></span>
     </div>
-    <p style="color:blue">This reminder will be sent to @ViewBag.formattedUserCellPhone</p>
+    <p style="color:blue">These Reminders will be sent to @ViewBag.formattedUserCellPhone</p>
 
     @*
         <div class="form-group">

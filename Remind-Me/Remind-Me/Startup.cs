@@ -46,7 +46,7 @@ namespace RemindMe
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Hangfire
+            //Hangfire - comment this out when migratig and updating the database 
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
             //
 

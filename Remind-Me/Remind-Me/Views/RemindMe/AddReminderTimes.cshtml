@@ -1,0 +1,23 @@
+﻿@model RemindMe.ViewModels.AddReminderTimesViewModel
+@{
+    ViewData["Title"] = "Add Reminder Times";
+}
+
+<h2>Add Reminder Times</h2>
+
+<form asp-controller="RemindMe" asp-action="AddReminderTimes" method="post">
+    <div class="form-group">
+        <label asp-for="ReminderTimesName"></label>
+        <input class="form-control" asp-for="ReminderTimesName" />
+        <span asp-validation-for="ReminderTimesName"></span>
+    </div>
+
+    <input type="submit" value="Submit" />&nbsp;&nbsp;&nbsp;
+    <a href="UserHomePage">
+        <input type="button" value="Finished Adding Times" />
+    </a>
+
+
+</form>
+
+

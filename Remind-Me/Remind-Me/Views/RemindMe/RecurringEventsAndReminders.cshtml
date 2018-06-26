@@ -3,6 +3,11 @@
     ViewData["Title"] = "Recurring Event And Reminder";
 }
 
+@* Check to see if a second reminder was scheduled by the user *@
+@if (@Model.RecurringReminderSecondAlertTime == "Do Not Schedule")
+{ 
+    @Model.RecurringReminderSecondAlertTime.Equals("Not Scheduled");
+}
 <h2>@Model.RecurringReminderName</h2>
 
 <form method="get">
@@ -14,6 +19,8 @@
             <th>Event Date</th>
             <th>Date to Start Sending Reminders</th>
             <th>Date to Stop Sending Reminders</th>
+            <th>First Daily Reminder Scheduled Time</th>
+            <th>Second Daily Reminder Scheduled Time</th>
             <th>Cell Phone to Receive Reminder</th>
             <th>Recurring Frequency</th>
 
@@ -25,6 +32,8 @@
             <td>@ViewBag.eventDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@Model.RecurringReminderStartAlertDate.ToString("dddd, MMMM dd yyyy")</td>
             <td>@Model.RecurringReminderLastAlertDate.ToString("dddd, MMMM dd yyyy")</td>
+            <td>@Model.RecurringReminderFirstAlertTime</td>
+            <td> @Model.RecurringReminderSecondAlertTime</td>
             <td>@Convert.ToInt64(@Model.UserCellPhoneNumber).ToString("(###) ###-####")</td>
             @*<td>@Model.UserCellPhoneNumber</td>*@
             <td>@Model.RepeatFrequencyName.RepeatFrequencyName</td>

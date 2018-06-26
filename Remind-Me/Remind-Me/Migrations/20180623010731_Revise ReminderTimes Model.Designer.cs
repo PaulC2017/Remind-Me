@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180623010731_Revise ReminderTimes Model")]
+    partial class ReviseReminderTimesModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,7 +166,55 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ReminderTimesName");
+                    b.Property<string>("eightAm");
+
+                    b.Property<string>("eightPm");
+
+                    b.Property<string>("elevenAm");
+
+                    b.Property<string>("elevenPm");
+
+                    b.Property<string>("fiveAm");
+
+                    b.Property<string>("fivePm");
+
+                    b.Property<string>("fourAm");
+
+                    b.Property<string>("fourPm");
+
+                    b.Property<string>("midnight");
+
+                    b.Property<string>("nineAm");
+
+                    b.Property<string>("ninePm");
+
+                    b.Property<string>("noon");
+
+                    b.Property<string>("oneAm");
+
+                    b.Property<string>("onePm");
+
+                    b.Property<string>("sevenAm");
+
+                    b.Property<string>("sevenPm");
+
+                    b.Property<string>("sixAm");
+
+                    b.Property<string>("sixPm");
+
+                    b.Property<string>("skipThisOne");
+
+                    b.Property<string>("tenAm");
+
+                    b.Property<string>("tenPm");
+
+                    b.Property<string>("threeAm");
+
+                    b.Property<string>("threePm");
+
+                    b.Property<string>("twoAm");
+
+                    b.Property<string>("twoPm");
 
                     b.HasKey("ID");
 

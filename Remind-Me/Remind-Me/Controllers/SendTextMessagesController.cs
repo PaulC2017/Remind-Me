@@ -1,24 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Bandwidth.Net;
 using Microsoft.AspNetCore.Mvc;
-using RemindMe.ViewModels;
-using Bandwidth.Net;
-using Bandwidth.Net.Api;
-using RemindMe.Models;
-using RemindMe.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
-using System.Text;
-using Microsoft.EntityFrameworkCore.Storage;
-using System.Collections.ObjectModel;
-using System.Collections;
-using System.Dynamic;
-using Hangfire;
-using System.Data;
-using RemindMe.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace RemindMe.Controllers
@@ -61,12 +45,13 @@ namespace RemindMe.Controllers
                 // format text message
                 string sEventDate = eventDate.ToString("MM/dd"); // Just include the month and day of the event in the text message
                 string textMessage = "From: TheReminderFactory" + "\u2122" + "\r\n" +
-                     "Event: " + eventName + "\r\n" + 
+                     "Confirmation of Event Reminder schedule" +
+                     "\r\nEvent: " + eventName + "\r\n" + 
                      "Description: " +description + 
                      "\r\nEvent Date: " + sEventDate +
                      "\r\nReminders will start: " + startReminders.ToString("MM/dd") +
                      "\r\nReminders will end: " + stopReminders.ToString("MM/dd") +
-                     "\r\nThese Reminders will be sent: " + repeatFreqNameUserSelected;
+                     "\r\nThis schedule of Reminders will be sent: " + repeatFreqNameUserSelected;
 
                 SendMessage(cellPhoneNumber, TextFrom, textMessage, TextId, TextToken, TextSecret).Wait();
 

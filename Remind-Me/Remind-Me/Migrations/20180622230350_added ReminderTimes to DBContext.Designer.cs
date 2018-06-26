@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180622230350_added ReminderTimes to DBContext")]
+    partial class addedReminderTimestoDBContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,8 +128,6 @@ namespace RemindMe.Migrations
 
                     b.Property<DateTime>("RecurringReminderStartAlertDate");
 
-                    b.Property<int?>("ReminderTimesID");
-
                     b.Property<int>("RepeatFrequencyNameID");
 
                     b.Property<string>("UserCellPhoneNumber");
@@ -135,8 +135,6 @@ namespace RemindMe.Migrations
                     b.Property<int>("UserId");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("ReminderTimesID");
 
                     b.HasIndex("RepeatFrequencyNameID");
 
@@ -156,19 +154,6 @@ namespace RemindMe.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("ReminderRepeatFrequencies");
-                });
-
-            modelBuilder.Entity("RemindMe.Models.ReminderTimes", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ReminderTimesName");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("ReminderTimes");
                 });
 
             modelBuilder.Entity("RemindMe.Models.TextInfo", b =>
@@ -241,10 +226,6 @@ namespace RemindMe.Migrations
 
             modelBuilder.Entity("RemindMe.Models.RecurringReminders", b =>
                 {
-                    b.HasOne("RemindMe.Models.ReminderTimes")
-                        .WithMany("Reminders")
-                        .HasForeignKey("ReminderTimesID");
-
                     b.HasOne("RemindMe.Models.ReminderRepeatFrequencies", "RepeatFrequencyName")
                         .WithMany("Reminders")
                         .HasForeignKey("RepeatFrequencyNameID")

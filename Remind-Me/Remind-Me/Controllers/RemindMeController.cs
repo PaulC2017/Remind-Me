@@ -19,6 +19,7 @@ using System.Collections;
 using System.Dynamic;
 using Hangfire;
 using System.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RemindMe.Controllers
 {
@@ -36,6 +37,10 @@ namespace RemindMe.Controllers
         //
         public IActionResult Index()
         {
+            ReminderTimes test = new ReminderTimes();
+
+           
+
             return View();
         }
 
@@ -134,10 +139,11 @@ namespace RemindMe.Controllers
                 return View("Index");
             }
 
-            //create the ViewModel with the list of repeat frequency options ))
+            //create the ViewModel with the list of repeat frequency options 
+            // and reminder time options))
             ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
-                new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
-            
+            new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList());
+           
             //get user's cell phone number
 
             User currentUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
@@ -146,6 +152,7 @@ namespace RemindMe.Controllers
             
             //set cell phone number to users cell ohone number
             scheduleEventsAndReminder.UserCellPhoneNumber = currentUser.CellPhoneNumber;
+            
             return View(scheduleEventsAndReminder);
         }
 
@@ -178,11 +185,34 @@ namespace RemindMe.Controllers
                     ReminderRepeatFrequencies newReminderRepeatFrequency =
                         context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
 
-                    // save the name of the repeat frequency so it can be sent in the confirmaiton text message
+                    // save the name of the repeat frequency so it can be sent in the confirmation text message
 
                     string repeatFreqNameUserSelected = newReminderRepeatFrequency.RepeatFrequencyName;
 
                     User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+                    /*RecurringReminders editRecurringReminder = context.RecurringReminders.
+                FirstOrDefault(id => id.ID == recurringReminderId); */
+
+                    //get the ReminderTimes the user selected
+                    ReminderTimes firstTimeSelected = 
+                    context.ReminderTimes.FirstOrDefault(id => id.ID == newEventAndReminder.ReminderTimesID) ;
+
+                    //check to see if user chose "Do No Select" for the second daily reminder
+                    // if the user did, then a context statement will throw
+                    //an exception since we don't have "Do Not Schedule" stored
+                    // in the ReminderTimes table
+                    string secondTime = "";
+                    if (newEventAndReminder.ReminderTimes2ID != 0)
+                    { 
+                    ReminderTimes secondTimeSelected =
+                    context.ReminderTimes.FirstOrDefault(id => id.ID == newEventAndReminder.ReminderTimes2ID);
+                        secondTime = secondTimeSelected.ReminderTimesName;
+                    }
+                    else
+                    {
+                        secondTime = "Not Scheduled";
+                    }
+                    //create the RecurringReminder record
 
                     RecurringReminders newRecurringReminder = new
                         RecurringReminders(newEventAndReminder.RecurringEventName,
@@ -191,6 +221,8 @@ namespace RemindMe.Controllers
                                            newEventAndReminder.RecurringReminderStartAlertDate.Date,
                                            newEventAndReminder.RecurringReminderLastAlertDate.Date,
                                            newReminderRepeatFrequency,
+                                           firstTimeSelected.ReminderTimesName,
+                                           secondTime,
                                            newEventAndReminder.UserCellPhoneNumber);
 
                     newRecurringReminder.User = newUser;
@@ -233,7 +265,7 @@ namespace RemindMe.Controllers
                                              "Reminders must be in the same year"; 
             }
             ScheduleEventsAndRemindersViewModel scheduleEventsAndReminder =
-                new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList());
+                new ScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList());
 
             scheduleEventsAndReminder.RecurringEventName = newEventAndReminder.RecurringEventName;
             scheduleEventsAndReminder.RecurringEventDescription = newEventAndReminder.RecurringEventDescription;
@@ -356,7 +388,7 @@ namespace RemindMe.Controllers
             Console.WriteLine("*************");
             //create the ViewModel with the list of repeat frequency options ))
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
-            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList())
+            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList())
             {
                 // populate the fields for the reminder to be edited
                 RecurringEventName = editRecurringReminder.RecurringReminderName,
@@ -411,6 +443,29 @@ namespace RemindMe.Controllers
                     RecurringReminders editRR = context.RecurringReminders.
                         Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
 
+                    //get the ReminderTimes the user selected
+                    ReminderTimes firstTimeSelected =
+                    context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimesID);
+
+
+                    //check to see if user chose "Do No Select" for the second daily reminder
+                    // if the user did, then a context statement will throw
+                    //an exception since we don't have "Do Not Schedule" stored
+                    // in the ReminderTimes table
+                    string secondTime = "";
+                    if (recurringReminder.ReminderTimes2ID != 0)
+                    {
+                        ReminderTimes secondTimeSelected =
+                        context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimes2ID);
+                        secondTime = secondTimeSelected.ReminderTimesName;
+                    }
+                    else
+                    {
+                        secondTime = "Not Scheduled";
+                    }
+
+
+
                     // create new Recurring Reminder with data input from the user from the edit form
 
                     RecurringReminders revisedRR = new RecurringReminders
@@ -422,6 +477,8 @@ namespace RemindMe.Controllers
                                     recurringReminder.RecurringReminderStartAlertDate,
                                     recurringReminder.RecurringReminderLastAlertDate,
                                     newReminderRepeatFrequency,
+                                    firstTimeSelected.ReminderTimesName,
+                                    secondTime,
                                     recurringReminder.UserCellPhoneNumber
 
                        );
@@ -465,7 +522,7 @@ namespace RemindMe.Controllers
             }
             // if we get here the model is not valid or the reminders 
             // are not in the current year. So we need to create
-            // a new viewmodel to include the repeat frequency choices
+            // a new viewmodel to include the repeat frequency choices and ReminderTimes choices
             // and populate it with the data the user entered
             if (remindersInSameYear == false)
             {
@@ -473,7 +530,7 @@ namespace RemindMe.Controllers
                                              "Reminders must be in the current year";
             }
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
-            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList())
+            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList())
             {
                 // populate the fields for the reminder to be edited
                 RecurringEventName = recurringReminder.RecurringEventName,
@@ -483,6 +540,8 @@ namespace RemindMe.Controllers
                 RecurringReminderLastAlertDate = recurringReminder.RecurringReminderLastAlertDate,
                 UserCellPhoneNumber = recurringReminder.UserCellPhoneNumber,
                 RepeatFrequencyNameID = recurringReminder.RepeatFrequencyNameID,
+                ReminderTimes = recurringReminder.ReminderTimes,
+                ReminderTimes2 = recurringReminder.ReminderTimes2,
                 UserId = recurringReminder.UserId
             };
             ViewBag.formattedUserCellPhone = Convert.ToInt64(recurringReminder.UserCellPhoneNumber).ToString("(###) ###-####");
@@ -653,6 +712,49 @@ namespace RemindMe.Controllers
             return RedirectToAction("UserHomePage");
             
         }
+        //method to add ReminderTimes to the database
+        // a security device - this method will only work on 06/20/2018
+        // in order to run it on another date I will have to change 06/20/2018
+        // to the date I want to run it on
+
+        [HttpGet]
+        public IActionResult AddReminderTimes()
+        {
+            // a security device - this method will only work on 06/20/2018
+            // in order to run it on another date I will have to change 06/20/2018
+            // to the date I want to run it on
+            if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/23/2018"))
+            {
+
+                AddReminderTimesViewModel addReminderTimes = new AddReminderTimesViewModel();
+                return View(addReminderTimes);
+            }
+            // if it is not the date in the if statement above, do notmpermit
+            // changes to these data items and return the Index view
+            return View("Index");
+        }
+        [HttpPost]
+        public IActionResult AddReminderTimes(AddReminderTimesViewModel reminderTime)
+        {
+            if (ModelState.IsValid)
+            {
+
+                if (reminderTime.ReminderTimesName != "")
+                {
+                    ReminderTimes newReminderTime = new ReminderTimes();
+                    newReminderTime.ReminderTimesName = reminderTime.ReminderTimesName;
+                    
+                    context.ReminderTimes.Add(newReminderTime);
+                    context.SaveChanges();
+                }
+                
+                
+                return RedirectToAction("AddReminderTimes");
+            }
+            return View(reminderTime);
+        }
+
+
         //method to add event frequencies 
         //and Text Credentials to the database- ie Annually, Once, etc
 
