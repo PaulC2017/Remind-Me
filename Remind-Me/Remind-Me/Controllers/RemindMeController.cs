@@ -179,9 +179,9 @@ namespace RemindMe.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    // create recurring reminder record
+                   
 
-                    //first get the Repeat Frequency Selected by the User
+                    //  get the Repeat Frequency Selected by the User
                     ReminderRepeatFrequencies newReminderRepeatFrequency =
                         context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
 
@@ -190,8 +190,7 @@ namespace RemindMe.Controllers
                     string repeatFreqNameUserSelected = newReminderRepeatFrequency.RepeatFrequencyName;
 
                     User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
-                    /*RecurringReminders editRecurringReminder = context.RecurringReminders.
-                FirstOrDefault(id => id.ID == recurringReminderId); */
+                    
 
                     //get the ReminderTimes the user selected
                     ReminderTimes firstTimeSelected = 
@@ -201,16 +200,22 @@ namespace RemindMe.Controllers
                     // if the user did, then a context statement will throw
                     //an exception since we don't have "Do Not Schedule" stored
                     // in the ReminderTimes table
+
+                    /*
                     string secondTime = "";
+                    */
+
+                    ReminderTimes secondTimeSelected = new ReminderTimes();
                     if (newEventAndReminder.ReminderTimes2ID != 0)
                     { 
-                    ReminderTimes secondTimeSelected =
-                    context.ReminderTimes.FirstOrDefault(id => id.ID == newEventAndReminder.ReminderTimes2ID);
-                        secondTime = secondTimeSelected.ReminderTimesName;
+                        secondTimeSelected = context.ReminderTimes.FirstOrDefault(id => id.ID == newEventAndReminder.ReminderTimes2ID);
+                        /* ReminderTimes secondTimeSelected =
+                         context.ReminderTimes.FirstOrDefault(id => id.ID == newEventAndReminder.ReminderTimes2ID);
+                             secondTime = secondTimeSelected.ReminderTimesName;  */
                     }
                     else
                     {
-                        secondTime = "Not Scheduled";
+                        secondTimeSelected.ReminderTimesName = "Not Scheduled";
                     }
                     //create the RecurringReminder record
 
@@ -222,14 +227,40 @@ namespace RemindMe.Controllers
                                            newEventAndReminder.RecurringReminderLastAlertDate.Date,
                                            newReminderRepeatFrequency,
                                            firstTimeSelected.ReminderTimesName,
-                                           secondTime,
+                                           secondTimeSelected.ReminderTimesName,
                                            newEventAndReminder.UserCellPhoneNumber);
 
                     newRecurringReminder.User = newUser;
 
                     context.RecurringReminders.Add(newRecurringReminder);
 
-                    // save the new event and reminder to the data base
+                    //create the appropriate SendReminder records for the First and Second Alert Times
+                    // first see what times the user selected
+                    
+                    switch (firstTimeSelected.ReminderTimesName)
+                    {
+                        case "01:00 AM":
+                            SendRemindersMidnightToFiveAm firstReminderTime = new SendRemindersMidnightToFiveAm();
+                            firstReminderTime.TimeToSendReminder = firstTimeSelected.ReminderTimesName;
+                            firstReminderTime.RecurringReminderId = newRecurringReminder.ID;
+                            context.SendRemindersMidnightToFiveAm.Add(firstReminderTime);
+                            break;
+                    }
+
+                    // if the user did not schedule a secdond reminder time then no 
+                    // record will be added in the SendReminderTimesMidnightToFive Table
+                    switch (secondTimeSelected.ReminderTimesName)
+                    {
+                        case "02:00 AM" :
+                            SendRemindersMidnightToFiveAm secondReminderTime = new SendRemindersMidnightToFiveAm();
+                            secondReminderTime.TimeToSendReminder = secondTimeSelected.ReminderTimesName;
+                            secondReminderTime.RecurringReminderId = newRecurringReminder.ID;
+                            context.SendRemindersMidnightToFiveAm.Add(secondReminderTime);
+                            break;
+                    }
+                    
+
+                    // save the new event and reminder and ReminderTimes to the data base
 
                     context.SaveChanges();
                     ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
@@ -723,7 +754,7 @@ namespace RemindMe.Controllers
             // a security device - this method will only work on 06/20/2018
             // in order to run it on another date I will have to change 06/20/2018
             // to the date I want to run it on
-            if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/23/2018"))
+            if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/27/2018"))
             {
 
                 AddReminderTimesViewModel addReminderTimes = new AddReminderTimesViewModel();
@@ -764,7 +795,7 @@ namespace RemindMe.Controllers
             // a security device - this method will only work on 06/20/2018
             // in order to run it on another date I will have to change 06/20/2018
             // to the date I want to run it on
-            if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/20/2018"))
+            if ((DateTime.Now.ToString("MM/dd/yyyy")).Equals("06/27/2018"))
             {
 
                 AddTextCredentialsAndFrequenciesViewModel addTextCredentialsAndEventFrequencies = new AddTextCredentialsAndFrequenciesViewModel();

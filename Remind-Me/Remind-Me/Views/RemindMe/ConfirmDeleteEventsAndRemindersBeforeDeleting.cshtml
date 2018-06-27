@@ -19,7 +19,9 @@
             <th>Event Date</th>
 
         </tr>
-        @*removed onclick="return false;" from input element in td*@
+        @*removed onclick="return false;" from input element in td
+            This onclick statement prevents the user from un checking a
+            checkbox*@
         @foreach (var rr in ViewBag.deleteTheseReminders)
         {
 

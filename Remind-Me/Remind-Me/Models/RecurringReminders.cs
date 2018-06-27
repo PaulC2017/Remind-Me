@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RemindMe.Models;
 
 namespace RemindMe.Models
 {
@@ -29,11 +30,16 @@ namespace RemindMe.Models
 
         
         public string UserCellPhoneNumber { get; set; }
-        public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  //initial value to be set to null hence the ?
+        public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  
 
 
         public int UserId { get; set; }
         public User User { get; set; }
+
+        /*
+        public int SendRemindersMidnightToFiveAmId { get; set; }
+        public SendRemindersMidnightToFiveAm SendRemindersMidnightToFiveAm { get; set; }
+        */
 
         //default constructor
         public RecurringReminders()
@@ -69,27 +75,6 @@ namespace RemindMe.Models
 
 
         }
-        public string RemoveChar(string theString, string charsToRemove)
-        {
-            theString = theString.Replace(charsToRemove, "");
-            return theString;
-        }
-
-        public string ConvertTo24HourFormat(string time)
-        {
-            time = RemoveChar(time, ":");
-            if (time.IndexOf("AM") == -1)
-            {
-                time = RemoveChar(time, "PM");
-                int timeInt = int.Parse(time);
-                timeInt = timeInt + 12;
-                time = timeInt.ToString();
-            }
-            else
-            {
-                time = RemoveChar(time, "AM");
-            }
-            return time;
-        }
+        
     }
 }

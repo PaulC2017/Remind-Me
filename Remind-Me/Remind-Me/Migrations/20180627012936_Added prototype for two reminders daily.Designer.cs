@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180627012936_Added prototype for two reminders daily")]
+    partial class Addedprototypefortworemindersdaily
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,9 +183,19 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("FiveAm");
+
+                    b.Property<string>("FourAm");
+
+                    b.Property<string>("Midnight");
+
+                    b.Property<string>("OneAm");
+
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminder");
+                    b.Property<string>("ThreeAm");
+
+                    b.Property<string>("TwoAm");
 
                     b.HasKey("ID");
 
