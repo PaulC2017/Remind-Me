@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180630195433_updated sendremindertimexxxxx models")]
+    partial class updatedsendremindertimexxxxxmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,13 +130,13 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RepeatFrequencyNameID");
 
-                    b.Property<int>("TimeToSendReminderMTFAMID");
+                    b.Property<int>("SendRemindersMidnightToFiveAmId");
 
-                    b.Property<int>("TimeToSendReminderNTFPMID");
+                    b.Property<int>("SendRemindersNoonToFivePmId");
 
-                    b.Property<int>("TimeToSendReminderSTEAMID");
+                    b.Property<int>("SendRemindersSixAmToElevenAmId");
 
-                    b.Property<int>("TimeToSendReminderSTEPMID");
+                    b.Property<int>("SendRemindersSixPmToElevenPmId");
 
                     b.Property<string>("UserCellPhoneNumber");
 
@@ -143,6 +145,14 @@ namespace RemindMe.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("RepeatFrequencyNameID");
+
+                    b.HasIndex("SendRemindersMidnightToFiveAmId");
+
+                    b.HasIndex("SendRemindersNoonToFivePmId");
+
+                    b.HasIndex("SendRemindersSixAmToElevenAmId");
+
+                    b.HasIndex("SendRemindersSixPmToElevenPmId");
 
                     b.HasIndex("UserId");
 
@@ -181,9 +191,7 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("RecurringReminderId");
-
-                    b.Property<string>("TimeToSendReminderMTFAM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -196,9 +204,7 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("RecurringReminderId");
-
-                    b.Property<string>("TimeToSendReminderNTFPM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -211,9 +217,7 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("RecurringReminderId");
-
-                    b.Property<string>("TimeToSendReminderSTEAM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -226,9 +230,7 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("RecurringReminderId");
-
-                    b.Property<string>("TimeToSendReminderSTEPM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -308,6 +310,26 @@ namespace RemindMe.Migrations
                     b.HasOne("RemindMe.Models.ReminderRepeatFrequencies", "RepeatFrequencyName")
                         .WithMany("Reminders")
                         .HasForeignKey("RepeatFrequencyNameID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersMidnightToFiveAm", "SendRemindersMidnightToFiveAm")
+                        .WithMany("RecurringReminders")
+                        .HasForeignKey("SendRemindersMidnightToFiveAmId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersNoonToFivePm", "SendRemindersNoonToFivePm")
+                        .WithMany("RecurringReminders")
+                        .HasForeignKey("SendRemindersNoonToFivePmId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersSixAmToElevenAm", "SendRemindersSixAmToElevenAm")
+                        .WithMany("RecurringReminders")
+                        .HasForeignKey("SendRemindersSixAmToElevenAmId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersSixPmToElevenPm", "SendRemindersSixPmToElevenPm")
+                        .WithMany("RecurringReminders")
+                        .HasForeignKey("SendRemindersSixPmToElevenPmId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("RemindMe.Models.User", "User")

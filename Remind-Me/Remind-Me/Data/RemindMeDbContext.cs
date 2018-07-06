@@ -13,10 +13,19 @@ namespace RemindMe.Data
         public DbSet<ReminderTimes> ReminderTimes { get; set; }
 
         public DbSet<SendRemindersMidnightToFiveAm> SendRemindersMidnightToFiveAm { get; set; }
-
+        public DbSet<SendRemindersSixAmToElevenAm> SendRemindersSixAmToElevenAm { get; set; }
+        public DbSet<SendRemindersNoonToFivePm> SendRemindersNoonToFivePm { get; set; }
+        public DbSet<SendRemindersSixPmToElevenPm> SendRemindersSixPmToElevenPm { get; set; }
+        
 
         public DbSet<RecurringEvents> RecurringEvents { get; set; }
         public DbSet<NonRecurringEvents> NonRecurringEvents { get; set; }
+
+        //default constructor
+        public RemindMeDbContext()
+        {
+        }
+            
 
         public RemindMeDbContext(DbContextOptions<RemindMeDbContext> options)
               : base(options)

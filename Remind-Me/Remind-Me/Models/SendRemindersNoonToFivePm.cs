@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 namespace RemindMe.Models
 {
     public class SendRemindersNoonToFivePm
-{
+    {
+        public int ID { get; set; }
+        public string TimeToSendReminderNTFPM { get; set; }
+        //public IList<RecurringReminders> RecurringReminders { get; set; }
+
+        public int RecurringReminderId { get; set; }
+        //public RecurringReminders RecurringReminders { get; set; }
     }
 }
+

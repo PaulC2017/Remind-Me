@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180701203333_more modifications to RecurringReminders and SendreminderTimesXXXXX")]
+    partial class moremodificationstoRecurringRemindersandSendreminderTimesXXXXX
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,14 +130,6 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RepeatFrequencyNameID");
 
-                    b.Property<int>("TimeToSendReminderMTFAMID");
-
-                    b.Property<int>("TimeToSendReminderNTFPMID");
-
-                    b.Property<int>("TimeToSendReminderSTEAMID");
-
-                    b.Property<int>("TimeToSendReminderSTEPMID");
-
                     b.Property<string>("UserCellPhoneNumber");
 
                     b.Property<int>("UserId");
@@ -183,9 +177,13 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderMTFAM");
+                    b.Property<int?>("RecurringRemindersID");
+
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("RecurringRemindersID");
 
                     b.ToTable("SendRemindersMidnightToFiveAm");
                 });
@@ -198,9 +196,13 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderNTFPM");
+                    b.Property<int?>("RecurringRemindersID");
+
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("RecurringRemindersID");
 
                     b.ToTable("SendRemindersNoonToFivePm");
                 });
@@ -213,9 +215,13 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderSTEAM");
+                    b.Property<int?>("RecurringRemindersID");
+
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("RecurringRemindersID");
 
                     b.ToTable("SendRemindersSixAmToElevenAm");
                 });
@@ -228,9 +234,13 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderSTEPM");
+                    b.Property<int?>("RecurringRemindersID");
+
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("RecurringRemindersID");
 
                     b.ToTable("SendRemindersSixPmToElevenPm");
                 });
@@ -314,6 +324,34 @@ namespace RemindMe.Migrations
                         .WithMany("RecurringReminders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("RemindMe.Models.SendRemindersMidnightToFiveAm", b =>
+                {
+                    b.HasOne("RemindMe.Models.RecurringReminders", "RecurringReminders")
+                        .WithMany("SendRemindersMidnightToFiveAm")
+                        .HasForeignKey("RecurringRemindersID");
+                });
+
+            modelBuilder.Entity("RemindMe.Models.SendRemindersNoonToFivePm", b =>
+                {
+                    b.HasOne("RemindMe.Models.RecurringReminders", "RecurringReminders")
+                        .WithMany("SendRemindersNoonToFivePm")
+                        .HasForeignKey("RecurringRemindersID");
+                });
+
+            modelBuilder.Entity("RemindMe.Models.SendRemindersSixAmToElevenAm", b =>
+                {
+                    b.HasOne("RemindMe.Models.RecurringReminders", "RecurringReminders")
+                        .WithMany("SendRemindersSixAmToElevenAm")
+                        .HasForeignKey("RecurringRemindersID");
+                });
+
+            modelBuilder.Entity("RemindMe.Models.SendRemindersSixPmToElevenPm", b =>
+                {
+                    b.HasOne("RemindMe.Models.RecurringReminders", "RecurringReminders")
+                        .WithMany("SendRemindersSixPmToElevenPm")
+                        .HasForeignKey("RecurringRemindersID");
                 });
 #pragma warning restore 612, 618
         }

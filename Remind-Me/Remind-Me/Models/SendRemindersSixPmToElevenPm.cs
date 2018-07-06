@@ -7,5 +7,11 @@ namespace RemindMe.Models
 {
     public class SendRemindersSixPmToElevenPm
     {
+        public int ID { get; set; }
+        public string TimeToSendReminderSTEPM { get; set; }
+        //public IList<RecurringReminders> RecurringReminders { get; set; }
+
+        public int RecurringReminderId { get; set; }
+        //public RecurringReminders RecurringReminders { get; set; }
     }
 }

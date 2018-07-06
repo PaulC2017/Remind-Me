@@ -21,26 +21,41 @@ namespace RemindMe.Models
         public DateTime RecurringReminderLastAlertDate { get; set; }
         public string RecurringReminderFirstAlertTime { get; set; }
         public string RecurringReminderSecondAlertTime { get; set; }
+       
         // does the event repeat annually, monthly, Once, etc?
 
         public int RepeatFrequencyNameID { get; set; }
         public ReminderRepeatFrequencies RepeatFrequencyName { get; set; }
 
+        //for the SendReminderXXXXXXX times
+        public int TimeToSendReminderMTFAMID { get; set; }
+        //public SendRemindersMidnightToFiveAm TimeToSendReminderMTFAM { get; set; }
+
+        public int TimeToSendReminderSTEAMID { get; set; }
+        //public SendRemindersSixAmToElevenAm TimeToSendReminderSTEAM { get; set; }
+
+        public int TimeToSendReminderNTFPMID { get; set; }
+       // public SendRemindersNoonToFivePm TimeToSendReminderNTFPM { get; set; }
+
+        public int TimeToSendReminderSTEPMID { get; set; }
+       // public SendRemindersSixPmToElevenPm TimeToSendReminderSTEPM { get; set; }
+
+        /*
+        public IList<SendRemindersMidnightToFiveAm> SendRemindersMidnightToFiveAm { get; set; }
+        public IList<SendRemindersSixAmToElevenAm> SendRemindersSixAmToElevenAm   { get; set; }
+        public IList<SendRemindersNoonToFivePm> SendRemindersNoonToFivePm  { get; set; }
+        public IList<SendRemindersSixPmToElevenPm> SendRemindersSixPmToElevenPm  { get; set; }
+        */
         //
 
-        
+
         public string UserCellPhoneNumber { get; set; }
         public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  
-
 
         public int UserId { get; set; }
         public User User { get; set; }
 
-        /*
-        public int SendRemindersMidnightToFiveAmId { get; set; }
-        public SendRemindersMidnightToFiveAm SendRemindersMidnightToFiveAm { get; set; }
-        */
-
+       
         //default constructor
         public RecurringReminders()
         {

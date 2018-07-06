@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180703002031_changed to just using ID in recurringreminders and sendTimesXXX")]
+    partial class changedtojustusingIDinrecurringremindersandsendTimesXXX
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,6 +145,14 @@ namespace RemindMe.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("RepeatFrequencyNameID");
+
+                    b.HasIndex("TimeToSendReminderMTFAMID");
+
+                    b.HasIndex("TimeToSendReminderNTFPMID");
+
+                    b.HasIndex("TimeToSendReminderSTEAMID");
+
+                    b.HasIndex("TimeToSendReminderSTEPMID");
 
                     b.HasIndex("UserId");
 
@@ -308,6 +318,26 @@ namespace RemindMe.Migrations
                     b.HasOne("RemindMe.Models.ReminderRepeatFrequencies", "RepeatFrequencyName")
                         .WithMany("Reminders")
                         .HasForeignKey("RepeatFrequencyNameID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersMidnightToFiveAm", "TimeToSendReminderMTFAM")
+                        .WithMany()
+                        .HasForeignKey("TimeToSendReminderMTFAMID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersNoonToFivePm", "TimeToSendReminderNTFPM")
+                        .WithMany()
+                        .HasForeignKey("TimeToSendReminderNTFPMID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersSixAmToElevenAm", "TimeToSendReminderSTEAM")
+                        .WithMany()
+                        .HasForeignKey("TimeToSendReminderSTEAMID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("RemindMe.Models.SendRemindersSixPmToElevenPm", "TimeToSendReminderSTEPM")
+                        .WithMany()
+                        .HasForeignKey("TimeToSendReminderSTEPMID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("RemindMe.Models.User", "User")

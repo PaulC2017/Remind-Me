@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180701110725_more chnages to SendReminderTimes and RecurringReminders models")]
+    partial class morechnagestoSendReminderTimesandRecurringRemindersmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,14 +130,6 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RepeatFrequencyNameID");
 
-                    b.Property<int>("TimeToSendReminderMTFAMID");
-
-                    b.Property<int>("TimeToSendReminderNTFPMID");
-
-                    b.Property<int>("TimeToSendReminderSTEAMID");
-
-                    b.Property<int>("TimeToSendReminderSTEPMID");
-
                     b.Property<string>("UserCellPhoneNumber");
 
                     b.Property<int>("UserId");
@@ -183,7 +177,7 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderMTFAM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -198,7 +192,7 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderNTFPM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -213,7 +207,7 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderSTEAM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
@@ -228,7 +222,7 @@ namespace RemindMe.Migrations
 
                     b.Property<int>("RecurringReminderId");
 
-                    b.Property<string>("TimeToSendReminderSTEPM");
+                    b.Property<string>("TimeToSendReminder");
 
                     b.HasKey("ID");
 
