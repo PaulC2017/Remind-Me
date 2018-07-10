@@ -29,10 +29,11 @@
             </tr>
             @foreach (dynamic recurringReminder in @Model)
             {
+                
                 @if (@recurringReminder.RecurringReminderDateAndTimeLastAlertSent.ToString("yyyy") == "2001")
                 {
                     ViewBag.lastDateSent = "Never Sent";
-                    
+
                 }
                 else
                 {

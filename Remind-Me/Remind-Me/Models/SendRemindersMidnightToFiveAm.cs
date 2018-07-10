@@ -8,12 +8,10 @@ namespace RemindMe.Models
     public class SendRemindersMidnightToFiveAm
     {
        public int ID { get; set; }
-       public string TimeToSendReminderMTFAM { get; set; }
-        //public int RecurringReminderId { get; set; }
-        //public IList<RecurringReminders> RecurringReminders { get; set; }
 
-        public int RecurringReminderId { get; set; }
-        //public RecurringReminders RecurringReminders { get; set; }
+       public string TimeToSendReminderMTFAM { get; set; }
+       public int RecurringReminderId { get; set; }
+        
 
 
     }

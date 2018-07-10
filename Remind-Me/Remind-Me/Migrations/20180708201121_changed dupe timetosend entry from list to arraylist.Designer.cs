@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180708201121_changed dupe timetosend entry from list to arraylist")]
+    partial class changeddupetimetosendentryfromlisttoarraylist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,8 +129,6 @@ namespace RemindMe.Migrations
                     b.Property<DateTime>("RecurringReminderStartAlertDate");
 
                     b.Property<int>("RepeatFrequencyNameID");
-
-                    b.Property<int>("TimeToSendReminderDuplicatesID");
 
                     b.Property<int>("TimeToSendReminderMTFAMID");
 
