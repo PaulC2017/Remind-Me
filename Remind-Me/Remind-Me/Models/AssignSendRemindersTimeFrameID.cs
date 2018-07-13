@@ -33,7 +33,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 0;
                     return TimeSelectedAsinteger;
 
+                case "12:30 AM":
+                    TimeSelectedAsinteger = 0;
+                    return TimeSelectedAsinteger;
+
                 case "01:00 AM":
+                    TimeSelectedAsinteger = 0;
+                    return TimeSelectedAsinteger;
+
+                case "01:30 AM":
                     TimeSelectedAsinteger = 0;
                     return TimeSelectedAsinteger;
 
@@ -41,7 +49,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 0;
                     return TimeSelectedAsinteger;
 
+                case "02:30 AM":
+                    TimeSelectedAsinteger = 0;
+                    return TimeSelectedAsinteger;
+
                 case "03:00 AM":
+                    TimeSelectedAsinteger = 0;
+                    return TimeSelectedAsinteger;
+
+                case "03:30 AM":
                     TimeSelectedAsinteger = 0;
                     return TimeSelectedAsinteger;
 
@@ -49,11 +65,23 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 0;
                     return TimeSelectedAsinteger;
 
+                case "04:300 AM":
+                    TimeSelectedAsinteger = 0;
+                    return TimeSelectedAsinteger;
+
                 case "05:00 AM":
                     TimeSelectedAsinteger = 0;
                     return TimeSelectedAsinteger;
-                    
+
+                case "05:30 AM":
+                    TimeSelectedAsinteger = 0;
+                    return TimeSelectedAsinteger;
+
                 case "06:00 AM":
+                    TimeSelectedAsinteger = 1;
+                    return TimeSelectedAsinteger;
+
+                case "06:30 AM":
                     TimeSelectedAsinteger = 1;
                     return TimeSelectedAsinteger;
 
@@ -61,7 +89,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 1;
                     return TimeSelectedAsinteger;
 
+                case "07:30 AM":
+                    TimeSelectedAsinteger = 1;
+                    return TimeSelectedAsinteger;
+
                 case "08:00 AM":
+                    TimeSelectedAsinteger = 1;
+                    return TimeSelectedAsinteger;
+
+                case "08:30 AM":
                     TimeSelectedAsinteger = 1;
                     return TimeSelectedAsinteger;
 
@@ -69,7 +105,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 1;
                     return TimeSelectedAsinteger;
 
+                case "09:30 AM":
+                    TimeSelectedAsinteger = 1;
+                    return TimeSelectedAsinteger;
+
                 case "10:00 AM":
+                    TimeSelectedAsinteger = 1;
+                    return TimeSelectedAsinteger;
+
+                case "10:30 AM":
                     TimeSelectedAsinteger = 1;
                     return TimeSelectedAsinteger;
 
@@ -77,7 +121,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 1;
                     return TimeSelectedAsinteger;
 
+                case "11:30 AM":
+                    TimeSelectedAsinteger = 1;
+                    return TimeSelectedAsinteger;
+
                 case "12:00 PM":
+                    TimeSelectedAsinteger = 2;
+                    return TimeSelectedAsinteger;
+
+                case "12:30 PM":
                     TimeSelectedAsinteger = 2;
                     return TimeSelectedAsinteger;
 
@@ -85,7 +137,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 2;
                     return TimeSelectedAsinteger;
 
+                case "01:30 PM":
+                    TimeSelectedAsinteger = 2;
+                    return TimeSelectedAsinteger;
+
                 case "02:00 PM":
+                    TimeSelectedAsinteger = 2;
+                    return TimeSelectedAsinteger;
+
+                case "02:30 PM":
                     TimeSelectedAsinteger = 2;
                     return TimeSelectedAsinteger;
 
@@ -93,7 +153,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 2;
                     return TimeSelectedAsinteger;
 
+                case "03:30 PM":
+                    TimeSelectedAsinteger = 2;
+                    return TimeSelectedAsinteger;
+
                 case "04:00 PM":
+                    TimeSelectedAsinteger = 2;
+                    return TimeSelectedAsinteger;
+
+                case "04:30 PM":
                     TimeSelectedAsinteger = 2;
                     return TimeSelectedAsinteger;
 
@@ -101,7 +169,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 2;
                     return TimeSelectedAsinteger;
 
+                case "05:30 PM":
+                    TimeSelectedAsinteger = 2;
+                    return TimeSelectedAsinteger;
+
                 case "06:00 PM":
+                    TimeSelectedAsinteger = 3;
+                    return TimeSelectedAsinteger;
+
+                case "06:30 PM":
                     TimeSelectedAsinteger = 3;
                     return TimeSelectedAsinteger;
 
@@ -109,7 +185,15 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 3;
                     return TimeSelectedAsinteger;
 
+                case "07:30 PM":
+                    TimeSelectedAsinteger = 3;
+                    return TimeSelectedAsinteger;
+
                 case "08:00 PM":
+                    TimeSelectedAsinteger = 3;
+                    return TimeSelectedAsinteger;
+
+                case "08:30 PM":
                     TimeSelectedAsinteger = 3;
                     return TimeSelectedAsinteger;
 
@@ -117,14 +201,26 @@ namespace RemindMe.Models
                     TimeSelectedAsinteger = 3;
                     return TimeSelectedAsinteger;
 
+                case "09:30 PM":
+                    TimeSelectedAsinteger = 3;
+                    return TimeSelectedAsinteger;
+
                 case "10:00 PM":
+                    TimeSelectedAsinteger = 3;
+                    return TimeSelectedAsinteger;
+
+                case "10:30 PM":
                     TimeSelectedAsinteger = 3;
                     return TimeSelectedAsinteger;
 
                 case "11:00 PM":
                     TimeSelectedAsinteger = 3;
                     return TimeSelectedAsinteger;
-                
+
+                case "11:30 PM":
+                    TimeSelectedAsinteger = 3;
+                    return TimeSelectedAsinteger;
+
                 default:
                     TimeSelectedAsinteger = -99; //the user selected Do Not Schedule" from the drop down box
                     return TimeSelectedAsinteger;
