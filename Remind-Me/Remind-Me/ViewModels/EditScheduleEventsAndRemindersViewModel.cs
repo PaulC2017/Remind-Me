@@ -14,6 +14,7 @@ namespace RemindMe.ViewModels
     {
 
         public int recurringReminderId { get; set; }
+         
 
         [Required(ErrorMessage = "An Event Name is Required")]
         [Display(Name = "Event Name")]
@@ -49,13 +50,15 @@ namespace RemindMe.ViewModels
 
         [Required]
         [Display(Name = "ReminderTimes")]
-        private int reminderTimesID = 10; //setting defaut value in drop down list
-        public int ReminderTimesID { get { return reminderTimesID; } set { reminderTimesID = value; } }// set default value to ID = 10 in List<SelectListItem> - 9:00 Am
+        // private int reminderTimesID = FirstTime; //setting defaut value in drop down list
+        private int reminderTimesID;
+        public int ReminderTimesID { get { return reminderTimesID; } set { reminderTimesID = value; } }// set default value to what the user selected when creating this reminder
         public List<SelectListItem> ReminderTimes { get; set; }
 
         [Display(Name = "ReminderTimes2")]
-        private int reminderTimes2ID = 0;  // setting default value in drop down list
-        public int ReminderTimes2ID { get { return reminderTimes2ID; } set { reminderTimes2ID = value; } }  //set default value to ID = 0 (9:00 AM)
+        //private int reminderTimes2ID = SecondTime;  // setting default value in drop down list
+        private int reminderTimes2ID;
+        public int ReminderTimes2ID { get { return reminderTimes2ID; } set { reminderTimes2ID = value; } }  //set default value to what the user selected when creating this reminder
         public List<SelectListItem> ReminderTimes2 { get; set; }
 
         [Required(ErrorMessage = "Enter the date to stop receiving the Reminders")]
@@ -82,16 +85,11 @@ namespace RemindMe.ViewModels
         public List<SelectListItem> Users { get; set; }
         public string currentUser;
 
+        // we need this to capture the times the user originally selected
+        
+       // public  int FirstTime { get; set; } = -99;  //we will definitelt change this based on user selection
 
-
-
-
-
-
-        // set up drop down box for reminder frequency for user to select
-
-
-
+      //  public  int SecondTime { get; set; } = 0; //if the user did not schedule a second alert, this will stay at 0
 
         //
 
@@ -101,10 +99,14 @@ namespace RemindMe.ViewModels
 
         }
         public EditScheduleEventsAndRemindersViewModel(IEnumerable<ReminderRepeatFrequencies> repeatFrequencies,
-            IEnumerable<ReminderTimes> reminderTimes)  // default constructor  
+            IEnumerable<ReminderTimes> reminderTimes)//, int theFirstTime, int theSecondTime)//added the two int)    
         {
-            //Code for drop down box for reminder frequency for user to select
+            
+            // set the sendreminderXXXX times the user selected when originally creating this reminder
+            //FirstTime = theFirstTime;
+            //SecondTime = theSecondTime;
 
+            //Code for drop down box for reminder frequency for user to select
             Frequencies = new List<SelectListItem>();
 
             foreach (ReminderRepeatFrequencies rrf in repeatFrequencies.ToList())

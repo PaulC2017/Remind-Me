@@ -298,6 +298,7 @@ namespace RemindMe.Controllers
 
 
                     ViewBag.eventDate = newEventAndReminder.RecurringEventDate.Date;
+                   
                     // Since adding the event/reminder was successful we will
                     //send a confirming text to the user.
                     // first get the text credentials
@@ -446,11 +447,29 @@ namespace RemindMe.Controllers
 
             RecurringReminders editRecurringReminder = context.RecurringReminders.
                 FirstOrDefault(id => id.ID == recurringReminderId);
-            Console.WriteLine("*************");
-            Console.WriteLine("editRecurringReminder.RecurringEventDate is " + 
-                              editRecurringReminder.RecurringEventDate +
-                              " ToString " + editRecurringReminder.RecurringEventDate.ToString());
-            Console.WriteLine("*************");
+
+            //get the reminder times scheduled from the recurringreminder record just retrieved
+            //then get the ID from the RemiderTimes table so we can show that time
+            //in the view for the user to edit
+
+            ReminderTimes firstTime = context.ReminderTimes.FirstOrDefault
+                (
+                  time => time.ReminderTimesName == editRecurringReminder.RecurringReminderFirstAlertTime
+                );
+
+            int secondTime = 0;
+
+            // see if there was a second time schedued
+            if (editRecurringReminder.RecurringReminderSecondAlertTime != "Not Scheduled")
+            {
+                
+                ReminderTimes thereIsASecondTime = context.ReminderTimes.FirstOrDefault
+                    (
+                      time => time.ReminderTimesName == editRecurringReminder.RecurringReminderSecondAlertTime
+                    );
+                secondTime = thereIsASecondTime.ID;
+            }
+
             //create the ViewModel with the list of repeat frequency options ))
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
             EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList())
@@ -463,9 +482,14 @@ namespace RemindMe.Controllers
                 RecurringReminderLastAlertDate = editRecurringReminder.RecurringReminderLastAlertDate,
                 UserCellPhoneNumber = editRecurringReminder.UserCellPhoneNumber,
                 RepeatFrequencyNameID = editRecurringReminder.RepeatFrequencyNameID,
+                ReminderTimesID = firstTime.ID,
+                ReminderTimes2ID = secondTime,
+
                 UserId = editRecurringReminder.UserId
             };
-
+           
+           
+             
             // save the ID for use in the Post method
             HttpContext.Session.SetString("recurringReminderId", recurringReminderId.ToString());
             ViewBag.formattedUserCellPhone = Convert.ToInt64(editRecurringReminder.UserCellPhoneNumber).ToString("(###) ###-####");
@@ -508,28 +532,31 @@ namespace RemindMe.Controllers
                     RecurringReminders editRR = context.RecurringReminders.
                         Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
 
+                    // delete the sendremindertimexxxxx records existing prior to the edit
+
+                    DeleteSendReminderTimeRecords(editRR);
+
                     //get the ReminderTimes the user selected
                     ReminderTimes firstTimeSelected =
                     context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimesID);
-
 
                     //check to see if user chose "Do No Select" for the second daily reminder
                     // if the user did, then a context statement will throw
                     //an exception since we don't have "Do Not Schedule" stored
                     // in the ReminderTimes table
-                    string secondTime = "";
+
+                    ReminderTimes secondTimeSelected = new ReminderTimes();
                     if (recurringReminder.ReminderTimes2ID != 0)
                     {
-                        ReminderTimes secondTimeSelected =
-                        context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimes2ID);
-                        secondTime = secondTimeSelected.ReminderTimesName;
+                        secondTimeSelected = context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimes2ID);
                     }
                     else
                     {
-                        secondTime = "Not Scheduled";
+                        secondTimeSelected.ReminderTimesName = "Not Scheduled";
                     }
+                    
 
-
+                   
 
                     // create new Recurring Reminder with data input from the user from the edit form
 
@@ -543,7 +570,7 @@ namespace RemindMe.Controllers
                                     recurringReminder.RecurringReminderLastAlertDate,
                                     newReminderRepeatFrequency,
                                     firstTimeSelected.ReminderTimesName,
-                                    secondTime,
+                                    secondTimeSelected.ReminderTimesName,
                                     recurringReminder.UserCellPhoneNumber
 
                        );
@@ -552,8 +579,82 @@ namespace RemindMe.Controllers
 
                     
 
-                    //save the recurring reminder with ther revised data 
+                    //save the recurring reminder with the revised data 
                     context.RecurringReminders.Add(revisedRR);
+                    
+                    int newRRID = revisedRR.ID; //capture the ID of the edited recurring reminder for use with the SendTimes records
+                     
+                    //create the appropriate SendReminder records for the First and Second Alert Times
+
+                    //  get the time the user selected id as assigned
+                    // in the AssignSendRemindersTimeFrameID class
+                    
+                    AssignSendRemindersTimeFrameID timeSelectedFirst = new AssignSendRemindersTimeFrameID();
+                    int firstTimeSelectedAsInteger = timeSelectedFirst.DetermineSendReminderTime
+                        (
+                          firstTimeSelected.ReminderTimesName
+                        );
+
+                    //if a second daily reminder was not scheduled the return 
+                    //from this next call will be -99 and no second reminder will be scheduled
+                      
+                    AssignSendRemindersTimeFrameID timeSelectedSecond = new AssignSendRemindersTimeFrameID();
+                       int secondTimeSelectedAsInteger = timeSelectedSecond.DetermineSendReminderTime
+                            (
+                              secondTimeSelected.ReminderTimesName
+                            );
+                   
+                    // a couple of checks to see if the user entered times that fall into
+                    //the same six hour period and to see if the user entered a second time
+                    //that is earlier than the first time
+
+                    //first check to see if the second time selected is earlier than
+                    //the first time selected
+
+                    // save the user selected firstTime info in case we have to swap it with the secondTime
+                    string saveFirstTime = firstTimeSelected.ReminderTimesName;
+                    int savefirstTimeSelectedAsInteger = firstTimeSelectedAsInteger;
+                    string saveSecondTime = secondTimeSelected.ReminderTimesName;
+                    
+                    // get the earliest of the two times selected by the user
+                    saveFirstTime =  ReturnEarliestTime(firstTimeSelected.ReminderTimesName, secondTimeSelected.ReminderTimesName);
+
+                    // if secondTime is earlier than first time then do the  swap
+                    if (firstTimeSelected.ReminderTimesName != saveFirstTime)
+                    {
+                        saveFirstTime = secondTimeSelected.ReminderTimesName;
+                        firstTimeSelectedAsInteger = secondTimeSelectedAsInteger;
+                        saveSecondTime = firstTimeSelected.ReminderTimesName;
+                        secondTimeSelectedAsInteger = savefirstTimeSelectedAsInteger;
+                    }
+
+                    // make sure you save the alert times in the right order
+                    // since you did a check of which time is earlier
+
+                    revisedRR.RecurringReminderFirstAlertTime = saveFirstTime;
+                    revisedRR.RecurringReminderSecondAlertTime = saveSecondTime;
+                    
+                    // save the new event and reminder and ReminderTimes to the data base
+
+                    context.SaveChanges();
+
+                    //save the new Recurring Reminder for entry into the SendRemindersXXXXXX times
+                    //Table
+
+                    RecurringReminders savedNewRecurringReminder = revisedRR;
+
+                    // save the times selected by the user into the SendReminder XXXX times
+                    // and return the IDs of the SendReminder Times for includino in the
+                    //RecurringReminder record
+
+                    SaveSendReminderTimes
+                                           (
+                                          firstTimeSelectedAsInteger, 
+                                          saveFirstTime,
+                                          secondTimeSelectedAsInteger,
+                                          saveSecondTime, 
+                                          ref savedNewRecurringReminder
+                                          );
 
                     // Since editing the event/reminder was successful we will
                     //send a confirming text to the user.
@@ -932,7 +1033,6 @@ namespace RemindMe.Controllers
                         RecurringReminderId = theRecurringReminder.ID
                     };
 
-                    
                     context.SendRemindersMidnightToFiveAm.Add(midnight);
                     context.SaveChanges();  // must do a save so SQL will assign an ID
                     theRecurringReminder.TimeToSendReminderMTFAMID = midnight.ID;
@@ -978,7 +1078,7 @@ namespace RemindMe.Controllers
 
             // Second Time Selected
             // get the time the user selected as integer
-            // first check to see if the user selected two times frm the same group
+            // first check to see if the user selected two times from the same group
 
             if (firstSendRemindersTimeFrameID != secondSendReminderTimeFrameID)
             {
@@ -1052,16 +1152,7 @@ namespace RemindMe.Controllers
 
                         //since the times to send reminders are in the same group
                         // we save the second time to send reminder info here
-                        /*
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[0] = "SendRemindersMidnightToFiveAm";
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[1] = secondReminderTime;
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[2] = midnight.ID;
-                       
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups.Add("SendRemindersMidnightToFiveAm");
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups.Add(secondReminderTime);
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups.Add(midnight.ID.ToString());
-                        context.SaveChanges(); 
-                      */
+                        theRecurringReminder.TimeToSendReminderDuplicatesID = midnight.ID;
                         break;
 
                     case 1:
@@ -1091,12 +1182,7 @@ namespace RemindMe.Controllers
 
                         //since the times to send reminders are in the same group
                         // we save the second time to send reminder info here
-                        /*
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[0] = "SendRemindersNoonToFivePm";
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[1] = secondReminderTime;
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[2] = noonToFivePm.ID.ToString();
-                        */
-                        context.SaveChanges();
+                        theRecurringReminder.TimeToSendReminderDuplicatesID = noonToFivePm.ID;
                         break;
 
                     case 3:
@@ -1111,19 +1197,125 @@ namespace RemindMe.Controllers
 
                         //since the times to send reminders are in the same group
                         // we save the second time to send reminder info here
-                        /*
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[0] = "SendRemindersSixPmToElevenPm";
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[1] = secondReminderTime;
-                        theRecurringReminder.SecondTimeInOneOfTheFourGroups[2] = sixPmToElevenPm.ID.ToString();
-                        */
-                        context.SaveChanges();
-                        
+                        theRecurringReminder.TimeToSendReminderDuplicatesID = sixPmToElevenPm.ID;
+
                         break;
                 }
 
             }
             context.SaveChanges();  // must save the recurring reminder now that the send times xxxx have been assigned into it
             
+        }
+
+        //This method will delete sendremindersXXXXXX records as part of both editing and deleting recurring reminder records
+
+        public void DeleteSendReminderTimeRecords
+            (
+               RecurringReminders theRecurringReminder
+            )
+
+        {
+            //retrieve the sendreminderXXXXX IDs from the recurringreminder record passed to this method
+
+            List<int> times = new List<int>();
+           
+            int numOfTimes = 0;
+
+            if (theRecurringReminder.TimeToSendReminderMTFAMID > 0) { times.Add(0);  numOfTimes += 1; }
+            if (theRecurringReminder.TimeToSendReminderSTEAMID > 0) { times.Add(1); numOfTimes += 1; }
+            if (theRecurringReminder.TimeToSendReminderNTFPMID > 0) { times.Add(2); numOfTimes += 1; }
+            if (theRecurringReminder.TimeToSendReminderSTEPMID > 0) { times.Add(3); numOfTimes += 1; }
+            if (theRecurringReminder.TimeToSendReminderDuplicatesID > 0) numOfTimes += 1;
+
+            switch (times[0])
+            {
+                case 0:
+                    
+                    SendRemindersMidnightToFiveAm removeMTFAM = context.SendRemindersMidnightToFiveAm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderMTFAMID);
+                    context.SendRemindersMidnightToFiveAm.Remove(removeMTFAM);
+                    context.SaveChanges();   
+                    break;
+
+                case 1:
+                    SendRemindersSixAmToElevenAm removeSTEAM = context.SendRemindersSixAmToElevenAm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderSTEAMID);
+                    context.SendRemindersSixAmToElevenAm.Remove(removeSTEAM);
+                    context.SaveChanges();   
+                    break;
+                  
+                case 2:
+                    SendRemindersNoonToFivePm removeNTFPM = context.SendRemindersNoonToFivePm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderNTFPMID);
+                    context.SendRemindersNoonToFivePm.Remove(removeNTFPM);
+                    context.SaveChanges();   
+                    break;
+
+                case 3:
+                    SendRemindersSixPmToElevenPm removeSTEPM = context.SendRemindersSixPmToElevenPm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderSTEPMID);
+                    context.SendRemindersSixPmToElevenPm.Remove(removeSTEPM);
+                    context.SaveChanges();   
+                    break;
+            }
+            if (times.Count==2)
+            {
+                switch (times[1])
+                {
+                    case 0:
+                        SendRemindersMidnightToFiveAm removeMTFAM = context.SendRemindersMidnightToFiveAm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderMTFAMID);
+                        context.SendRemindersMidnightToFiveAm.Remove(removeMTFAM);
+                        context.SaveChanges();   
+                        break;
+
+                    case 1:
+                        SendRemindersSixAmToElevenAm removeSTEAM = context.SendRemindersSixAmToElevenAm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderSTEAMID);
+                        context.SendRemindersSixAmToElevenAm.Remove(removeSTEAM);
+                        context.SaveChanges();   
+                        break;
+
+                    case 2:
+                        SendRemindersNoonToFivePm removeNTFPM = context.SendRemindersNoonToFivePm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderNTFPMID);
+                        context.SendRemindersNoonToFivePm.Remove(removeNTFPM);
+                        context.SaveChanges();   
+                        break;
+
+                    case 3:
+                        SendRemindersSixPmToElevenPm removeSTEPM = context.SendRemindersSixPmToElevenPm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderSTEPMID);
+                        context.SendRemindersSixPmToElevenPm.Remove(removeSTEPM);
+                        context.SaveChanges();   
+                        break;
+
+                }
+            }
+            //here we will check to see if there was a second time withing the same sendtimesxxxx group as the first time
+
+            if (times.Count == 1 && numOfTimes == 2)
+            {
+                switch (times[0])
+                {
+                    case 0:
+
+                        SendRemindersMidnightToFiveAm removeMTFAM = context.SendRemindersMidnightToFiveAm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderDuplicatesID);
+                        context.SendRemindersMidnightToFiveAm.Remove(removeMTFAM);
+                        context.SaveChanges();
+                        break;
+
+                    case 1:
+                        SendRemindersSixAmToElevenAm removeSTEAM = context.SendRemindersSixAmToElevenAm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderDuplicatesID);
+                        context.SendRemindersSixAmToElevenAm.Remove(removeSTEAM);
+                        context.SaveChanges();
+                        break;
+
+                    case 2:
+                        SendRemindersNoonToFivePm removeNTFPM = context.SendRemindersNoonToFivePm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderDuplicatesID);
+                        context.SendRemindersNoonToFivePm.Remove(removeNTFPM);
+                        context.SaveChanges();
+                        break;
+
+                    case 3:
+                        SendRemindersSixPmToElevenPm removeSTEPM = context.SendRemindersSixPmToElevenPm.FirstOrDefault(id => id.ID == theRecurringReminder.TimeToSendReminderDuplicatesID);
+                        context.SendRemindersSixPmToElevenPm.Remove(removeSTEPM);
+                        context.SaveChanges();
+                        break;
+                }
+            }
         }
 
         // These Methods are called from Startup.cs  - that launches Hangfire background tasks

@@ -49,8 +49,8 @@ namespace RemindMe.ViewModels
 
         [Required]
         [Display(Name = "ReminderTimes")]
-        private int reminderTimesID = 10; //setting defaut value in drop down list
-        public int ReminderTimesID { get { return reminderTimesID; } set { reminderTimesID = value; } }// set default value to ID = 10 in List<SelectListItem> - 9:00 Am
+        private int reminderTimesID = 19; //setting defaut value in drop down list
+        public int ReminderTimesID { get { return reminderTimesID; } set { reminderTimesID = value; } }// set default value to ID = 19 in List<SelectListItem> - 9:00 Am
         public List<SelectListItem> ReminderTimes { get; set; }
         
         [Display(Name = "ReminderTimes2")]
