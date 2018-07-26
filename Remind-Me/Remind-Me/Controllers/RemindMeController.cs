@@ -20,6 +20,7 @@ using System.Dynamic;
 using Hangfire;
 using System.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Server.Kestrel.Internal.System.Collections.Sequences;
 
 namespace RemindMe.Controllers
 {
@@ -284,7 +285,7 @@ namespace RemindMe.Controllers
                     RecurringReminders savedNewRecurringReminder = newRecurringReminder;
 
                     // save the times selected by the user into the SendReminder XXXX times
-                    // and return the IDs of the SendReminder Times for includino in the
+                    // and return the IDs of the SendReminder Times for including in the
                     //RecurringReminder record
 
                     SaveSendReminderTimes
@@ -785,18 +786,10 @@ namespace RemindMe.Controllers
             {
                 return View("Index");
             }
-            Console.WriteLine("**************");
-            Console.WriteLine("We are in the Delete Post");
-            Console.WriteLine("**************");
-
-
+            
             //capture recurring events/reminders to delete in a list to 
             //show the user to confirm before actually deleting any 
             // recurring events/reminders
-
-            Console.WriteLine("**************");
-            Console.WriteLine("recurringRemindersCount = " + recurringReminderId.Count().ToString());
-            Console.WriteLine("**************");
 
             List<RecurringReminders> rrToDelete = new List<RecurringReminders>(recurringReminderId.Count());
             int i = 0; // Index for rrToDelete populating
@@ -805,11 +798,6 @@ namespace RemindMe.Controllers
                 {
                     // rrToDelete[i] = context.RecurringReminders.FirstOrDefault(d => d.ID == id);
                     rrToDelete.Add(context.RecurringReminders.FirstOrDefault(d => d.ID == id));
-                    Console.WriteLine("**************");
-                    Console.WriteLine("rrToDelete count = " + rrToDelete.Count.ToString());
-                    Console.WriteLine("rrToDelete.Name = " + rrToDelete[i].RecurringReminderName.ToString());
-                    Console.WriteLine("i = " + i.ToString());
-                    Console.WriteLine("**************");
                     ++i;
                 }
 
@@ -818,15 +806,7 @@ namespace RemindMe.Controllers
             //rrToDelete.Sort((p, q) => p.RecurringReminderName.CompareTo(q.RecurringReminderName));
             ViewBag.deleteTheseReminders = rrToDelete;
             return View("ConfirmDeleteEventsAndRemindersBeforeDeleting", rrToDelete);
-        /*
-        RecurringReminders deleteRR = context.RecurringReminders.
-                Single(id => id.ID.Equals(deleteReminder.recurringReminderId));
-
-            return View("DeleteEventsAndReminders", deleteRR );
-
-
-        return null;
-        */
+        
         }
        
         public IActionResult ConfirmDeleteEventsAndRemindersBeforeDeleting(List<RecurringReminders> rrToDelete)
@@ -836,15 +816,8 @@ namespace RemindMe.Controllers
             {
                 return View("Index");
             }
-            // remove the  recurring reminder the user wants to delete
-            /*
-            foreach (RecurringReminders rr in ViewBag.rrTodelete)
-            {
-                context.RecurringReminders.Remove(rr);
-                context.SaveChanges();
-            }
-            // return View("UserHomePage", HttpContext.Session.GetString("Username"));
-            */
+            // display the  recurring reminder the user wants to delete
+            
             ViewBag.deleteTheseReminders = rrToDelete;
             return View();
         }
@@ -859,18 +832,13 @@ namespace RemindMe.Controllers
 
             foreach (int id in recurringReminderId)
             {
-                // rrToDelete[i] = context.RecurringReminders.FirstOrDefault(d => d.ID == id);
                 rrToDelete.Add(context.RecurringReminders.FirstOrDefault(d => d.ID == id));
-                Console.WriteLine("**************");
-                Console.WriteLine("rrToDelete count = " + rrToDelete.Count.ToString());
-                Console.WriteLine("rrToDelete.Name = " + rrToDelete[i].RecurringReminderName.ToString());
-                Console.WriteLine("i = " + i.ToString());
-                Console.WriteLine("**************");
                 ++i;
             }
 
             foreach (RecurringReminders rr in rrToDelete)
             {
+                DeleteSendReminderTimeRecords(rr);
                 context.RecurringReminders.Remove(rr);
                 context.SaveChanges();
             }
@@ -1030,7 +998,8 @@ namespace RemindMe.Controllers
                     SendRemindersMidnightToFiveAm midnight = new SendRemindersMidnightToFiveAm()
                     {
                         TimeToSendReminderMTFAM = firstReminderTime,
-                        RecurringReminderId = theRecurringReminder.ID
+                        RecurringReminderId = theRecurringReminder.ID,
+                        FirstOrSecondReminderOfTheDay = "First"
                     };
 
                     context.SendRemindersMidnightToFiveAm.Add(midnight);
@@ -1042,7 +1011,8 @@ namespace RemindMe.Controllers
                     SendRemindersSixAmToElevenAm sixToElevenAm = new SendRemindersSixAmToElevenAm()
                     {
                         TimeToSendReminderSTEAM = firstReminderTime,
-                        RecurringReminderId = theRecurringReminder.ID
+                        RecurringReminderId = theRecurringReminder.ID,
+                        FirstOrSecondReminderOfTheDay = "First"
                     };
 
                     context.SendRemindersSixAmToElevenAm.Add(sixToElevenAm);
@@ -1054,7 +1024,8 @@ namespace RemindMe.Controllers
                     SendRemindersNoonToFivePm noonToFivePm = new SendRemindersNoonToFivePm()
                     {
                         TimeToSendReminderNTFPM = firstReminderTime,
-                        RecurringReminderId = theRecurringReminder.ID
+                        RecurringReminderId = theRecurringReminder.ID,
+                        FirstOrSecondReminderOfTheDay = "First"
                     };
 
                     context.SendRemindersNoonToFivePm.Add(noonToFivePm);
@@ -1066,7 +1037,8 @@ namespace RemindMe.Controllers
                     SendRemindersSixPmToElevenPm sixPmToElevenPm = new SendRemindersSixPmToElevenPm()
                     {
                         TimeToSendReminderSTEPM = firstReminderTime,
-                        RecurringReminderId = theRecurringReminder.ID
+                        RecurringReminderId = theRecurringReminder.ID,
+                        FirstOrSecondReminderOfTheDay = "First"
                     };
 
                     context.SendRemindersSixPmToElevenPm.Add(sixPmToElevenPm);
@@ -1088,7 +1060,8 @@ namespace RemindMe.Controllers
                         SendRemindersMidnightToFiveAm midnight = new SendRemindersMidnightToFiveAm()
                         {
                             TimeToSendReminderMTFAM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
 
@@ -1101,7 +1074,8 @@ namespace RemindMe.Controllers
                         SendRemindersSixAmToElevenAm sixToElevenAm = new SendRemindersSixAmToElevenAm()
                         {
                             TimeToSendReminderSTEAM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
                         context.SendRemindersSixAmToElevenAm.Add(sixToElevenAm);
@@ -1113,7 +1087,8 @@ namespace RemindMe.Controllers
                         SendRemindersNoonToFivePm noonToFivePm = new SendRemindersNoonToFivePm()
                         {
                             TimeToSendReminderNTFPM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
                         context.SendRemindersNoonToFivePm.Add(noonToFivePm);
@@ -1125,7 +1100,8 @@ namespace RemindMe.Controllers
                         SendRemindersSixPmToElevenPm sixPmToElevenPm = new SendRemindersSixPmToElevenPm()
                         {
                             TimeToSendReminderSTEPM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
                         
                         context.SendRemindersSixPmToElevenPm.Add(sixPmToElevenPm);
@@ -1144,7 +1120,8 @@ namespace RemindMe.Controllers
                         SendRemindersMidnightToFiveAm midnight = new SendRemindersMidnightToFiveAm()
                         {
                             TimeToSendReminderMTFAM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
                         context.SendRemindersMidnightToFiveAm.Add(midnight);
@@ -1159,7 +1136,8 @@ namespace RemindMe.Controllers
                         SendRemindersSixAmToElevenAm sixToElevenAm = new SendRemindersSixAmToElevenAm()
                         {
                             TimeToSendReminderSTEAM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
                         context.SendRemindersSixAmToElevenAm.Add(sixToElevenAm);
@@ -1174,7 +1152,8 @@ namespace RemindMe.Controllers
                         SendRemindersNoonToFivePm noonToFivePm = new SendRemindersNoonToFivePm()
                         {
                             TimeToSendReminderNTFPM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
                         context.SendRemindersNoonToFivePm.Add(noonToFivePm);
@@ -1189,7 +1168,8 @@ namespace RemindMe.Controllers
                         SendRemindersSixPmToElevenPm sixPmToElevenPm = new SendRemindersSixPmToElevenPm()
                         {
                             TimeToSendReminderSTEPM = secondReminderTime,
-                            RecurringReminderId = theRecurringReminder.ID
+                            RecurringReminderId = theRecurringReminder.ID,
+                            FirstOrSecondReminderOfTheDay = "Second"
                         };
 
                         context.SendRemindersSixPmToElevenPm.Add(sixPmToElevenPm);
@@ -1207,7 +1187,8 @@ namespace RemindMe.Controllers
             
         }
 
-        //This method will delete sendremindersXXXXXX records as part of both editing and deleting recurring reminder records
+        //This method will delete a sendremindersXXXXXX record 
+        //as part of both editing and deleting recurring reminder records
 
         public void DeleteSendReminderTimeRecords
             (
@@ -1284,7 +1265,8 @@ namespace RemindMe.Controllers
 
                 }
             }
-            //here we will check to see if there was a second time withing the same sendtimesxxxx group as the first time
+            //here we will check to see if there was a second time 
+            //within the same sendtimesxxxx group as the first time
 
             if (times.Count == 1 && numOfTimes == 2)
             {
@@ -1320,49 +1302,237 @@ namespace RemindMe.Controllers
 
         // These Methods are called from Startup.cs  - that launches Hangfire background tasks
 
-        public IActionResult LaunchSendRecurringReminderTextsAnnually(Object j)
+        public IActionResult LaunchSendRecurringReminderTexts(Object j)
         {
-
-            BackgroundJob.Enqueue(() => SendRecurringReminderTextsAnnually());
-
-            return null;
-        }
-
-        public IActionResult LaunchSendRecurringReminderTextsOnce(Object j)
-        {
-
-            BackgroundJob.Enqueue(() => SendRecurringReminderTextsOnce());
-
+            BackgroundJob.Enqueue(() => GetTheSendReminderTimesToBeChecked());
             return null;
         }
 
         public IActionResult LaunchResetRecurringReminderDateAndTimeLastAlertSent(Object j)
         {
-
             BackgroundJob.Enqueue(() => ResetRecurringReminderDateAndTimeLastAlertSent());
-
             return null;
         }
+         
+        public void GetTheSendReminderTimesToBeChecked()
+        {
+            List<int> theReminderIDs = new List<int>();
+            string currentTime = DateTime.Now.ToShortTimeString();
 
-      
-        public IActionResult SendRecurringReminderTextsAnnually()
+            //must adjust currentTime for single digit hours
+            if (currentTime.Length == 7) { currentTime = "0" + currentTime; }
+            
+            //we need to convert the times to 24 hour format for comparisons later on
+            //in this method
+            
+            int hourIn24HourFormatAsInt = Int32.Parse(DateTime.Parse(currentTime).ToString("HH"));
+
+            //save the hour and half hour for selecting reminders to be sent 
+            //in the Send Texts Annually and Once methods and AM or PM for
+            //use later on in this method
+            
+            string halfHour = currentTime.Substring(3, 1);
+            string hour = currentTime.Substring(0, 2);
+            string amOrPM = currentTime.Substring(6, 2);
+
+            string firstOrSecondReminderOfTheDay = "";
+
+            //determine which sendremindertimesxxxx model to use
+            //at the current time
+
+            if (hourIn24HourFormatAsInt.CompareTo(0) >= 0 && hourIn24HourFormatAsInt.CompareTo(5) <= 0)
+            {
+                var checkToSeeIfTheseRemindersShouldBeSent = context.SendRemindersMidnightToFiveAm.
+                    Where(ti => ti.TimeToSendReminderMTFAM == currentTime).ToList();
+                foreach (var ID in checkToSeeIfTheseRemindersShouldBeSent)
+                {
+                    if (
+                        ID.TimeToSendReminderMTFAM.Substring(0, 2) == hour &&
+                        ID.TimeToSendReminderMTFAM.Substring(3, 1) == halfHour &&
+                        ID.TimeToSendReminderMTFAM.Substring(6, 2) == amOrPM
+                        
+                        )
+                    {
+                        theReminderIDs.Add(ID.RecurringReminderId);
+                        firstOrSecondReminderOfTheDay = ID.FirstOrSecondReminderOfTheDay;
+                        //sendRemindersTimeFrameID = 1;
+                    }
+                }
+            }
+
+            else if (hourIn24HourFormatAsInt.CompareTo(6) >= 0 && hourIn24HourFormatAsInt.CompareTo(11) <= 0)
+            {
+                var checkToSeeIfTheseRemindersShouldBeSent = context.SendRemindersSixAmToElevenAm.
+                    Where(ti => ti.TimeToSendReminderSTEAM == currentTime).ToList();
+                foreach (var ID in checkToSeeIfTheseRemindersShouldBeSent)
+                {
+                    if (
+                        ID.TimeToSendReminderSTEAM.Substring(0, 2) == hour &&
+                        ID.TimeToSendReminderSTEAM.Substring(3, 1) == halfHour &&
+                        ID.TimeToSendReminderSTEAM.Substring(6, 2) == amOrPM
+                        )
+                    {
+                        theReminderIDs.Add(ID.RecurringReminderId);
+                        firstOrSecondReminderOfTheDay = ID.FirstOrSecondReminderOfTheDay;
+                        //sendRemindersTimeFrameID = 1;
+                    }
+                }
+            }
+
+            else if (hourIn24HourFormatAsInt.CompareTo(12) >= 0 && hourIn24HourFormatAsInt.CompareTo(17) <= 0)
+            {
+                var checkToSeeIfTheseRemindersShouldBeSent = context.SendRemindersNoonToFivePm.ToList();
+                
+
+                /*
+                var checkToSeeIfTheseRemindersShouldBeSent = context.SendRemindersNoonToFivePm.
+                    Where(ti => ti.TimeToSendReminderNTFPM == currentTime).ToList();
+                */
+                foreach (var ID in checkToSeeIfTheseRemindersShouldBeSent)
+                {
+                    if (
+                        ID.TimeToSendReminderNTFPM.Substring(0, 2) == hour &&
+                        ID.TimeToSendReminderNTFPM.Substring(3, 1) == halfHour &&
+                        ID.TimeToSendReminderNTFPM.Substring(6, 2) == amOrPM
+                        )
+                    {
+                        theReminderIDs.Add(ID.RecurringReminderId);
+                        firstOrSecondReminderOfTheDay = ID.FirstOrSecondReminderOfTheDay;
+                        //sendRemindersTimeFrameID = 2;
+                    }
+                }
+            }
+
+            else if (hourIn24HourFormatAsInt.CompareTo(18) >= 0 && hourIn24HourFormatAsInt.CompareTo(23) <= 0)
+            {
+                var checkToSeeIfTheseRemindersShouldBeSent = context.SendRemindersSixPmToElevenPm.
+                    Where(ti => ti.TimeToSendReminderSTEPM == currentTime).ToList();
+                foreach (var ID in checkToSeeIfTheseRemindersShouldBeSent)
+                {
+                    if (
+                        ID.TimeToSendReminderSTEPM.Substring(0, 2) == hour &&
+                        ID.TimeToSendReminderSTEPM.Substring(3, 1) == halfHour &&
+                        ID.TimeToSendReminderSTEPM.Substring(6, 2) == amOrPM
+                        
+                        )
+                    {
+                        theReminderIDs.Add(ID.RecurringReminderId);
+                        firstOrSecondReminderOfTheDay = ID.FirstOrSecondReminderOfTheDay;
+                        //sendRemindersTimeFrameID = 3;
+                    }
+                }
+            }
+            SendRecurringReminderTextsAnnually(theReminderIDs, firstOrSecondReminderOfTheDay);
+            SendRecurringReminderTextsOnce(theReminderIDs, firstOrSecondReminderOfTheDay);
+        }
+
+        
+        public IActionResult SendRecurringReminderTextsAnnually
+            (
+            List<int> theReminderIDsToBeChecked,
+            string firstOrSecondReminderOfTheDay
+            )
 
         {
             // create a list of the annual reminders that are scheduled to go out today
             
-            string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to string for comparison to dates in recurringreminders
+            string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to 
+                                                                //string for comparison to dates 
+                                                                //in recurringreminders
             Console.WriteLine("today = " + today);
             Console.WriteLine("We are before the var statement");
 
-            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Annually" &&
-                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
-                                                               (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 || today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) &&
-                                                               (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
+            /*
+            var rrDueToday = (context.RecurringReminders.Where
+            (
+            rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Annually" &&
+            today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+            (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
+            today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) &&
+            (DateTime.Now.Date.ToString("MM/dd").CompareTo
+                   (rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")
+                   ) > 0 ||
+                   rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   ("2001") == 0)).ToList()
+             );
+            */
 
+            // gather those reminders due at the current Time
 
+            RecurringReminders tempy = new RecurringReminders();
+            List<RecurringReminders> rrsToBeInspected = new List<RecurringReminders>();
+            foreach (int rrID in theReminderIDsToBeChecked)
+            {
+                // rrsToBeInspected.Add(context.RecurringReminders.First(rr => rr.ID == rrID));
+
+                tempy = (context.RecurringReminders.Include( freq => freq.RepeatFrequencyName).Single(rr => rr.ID == rrID));
+                rrsToBeInspected.Add(tempy);
+                     
+            }
+
+            List<RecurringReminders> rrDueToday = new List<RecurringReminders>();
+            //inspect the reminders to see which ones are scheduled to be sent today
+            foreach (RecurringReminders rr in rrsToBeInspected)
+            {
+                if (
+                    rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Annually"  &&
+                   today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+                  (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
+                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) ||
+                  rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   ("2001") == 0)
+                {
+                 //if this is the First Alert of the Day to be sent
+                 
+                    if (firstOrSecondReminderOfTheDay == "First" &&
+                       
+                        (rr.FirstOrSecondAlertOfTheDay == null  || 
+                         rr.FirstOrSecondAlertOfTheDay == "Second") &&
+                         (today.CompareTo(
+                            rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 ||
+                             rr.RecurringReminderDateAndTimeLastAlertSent.ToString() == "01/01")
+                       )
+                    {
+                        rrDueToday.Add(rr);
+                        
+                    }
+                    else if (firstOrSecondReminderOfTheDay == "Second" &&
+                             (rr.FirstOrSecondAlertOfTheDay == null ||
+                             rr.FirstOrSecondAlertOfTheDay == "First")  &&
+                             (today.CompareTo(
+                            rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) == 0 ||
+                            rr.RecurringReminderDateAndTimeLastAlertSent.ToString() == "01/01")
+                            )
+                    {
+                        rrDueToday.Add(rr);
+                    }
+                    
+                }
+            }
+
+            
+            //capture the reminders that are scheduled for the current time
+            //as per GetTheSendReminderTimesToBeChecked method from above
+
+            List<RecurringReminders> rrDueNow = new List<RecurringReminders>();
+            Console.WriteLine("***************");
+            Console.WriteLine("theReminderIDsToBeChecked Count = " + theReminderIDsToBeChecked.Count);
+            Console.WriteLine("***************");
+
+            //determine which of the reminders in rrDueToday should be sent out now
+
+            foreach (RecurringReminders RR in rrDueToday)
+            {  
+               if (theReminderIDsToBeChecked.Contains(RR.ID) == true) 
+                {
+                    rrDueNow.Add(RR);
+                }
+
+            }
+            
             Console.WriteLine("We are after the var statement");
             Console.WriteLine("Count of Annual Reminders in var rrDueToday: " + rrDueToday.Count());
-            
+            Console.WriteLine("Count of Annual Reminders in var rrDueNow: " + rrDueNow.Count());
 
             //Get TextInfo and populate text parameters//
             string TextId = "";
@@ -1385,7 +1555,7 @@ namespace RemindMe.Controllers
             Console.WriteLine("Text From = See PW Doc");                //  + TextFrom);
             //
             // send reminders
-            foreach (var rr in rrDueToday)
+            foreach (RecurringReminders rr in rrDueNow)
             {
                 try
                 {
@@ -1406,8 +1576,10 @@ namespace RemindMe.Controllers
                     Console.WriteLine("We are after the TRY command");
 
                     // Update the current record to reflect the date the latest alert was sent
+                    //and identifyit as the First or Second alert sent
 
                     rr.RecurringReminderDateAndTimeLastAlertSent = DateTime.Now;
+                    rr.FirstOrSecondAlertOfTheDay = firstOrSecondReminderOfTheDay;
                     context.SaveChanges();
 
                 }
@@ -1423,24 +1595,105 @@ namespace RemindMe.Controllers
             return null;
         }
 
-        public IActionResult SendRecurringReminderTextsOnce()
+        public IActionResult SendRecurringReminderTextsOnce
+            (
+            List<int> theReminderIDsToBeChecked,
+            string firstOrSecondReminderOfTheDay
+            )
 
         {
-            // create a list of the Once reminders that are scheduled to go out today
+            // create a list of the annual reminders that are scheduled to go out today
 
-            string today = DateTime.Now.Date.ToString("MM/dd/yyyy"); // convert today's date to string for comparison to dates in recurringreminders
+            string today = DateTime.Now.Date.ToString("MM/dd"); // convert today's date to 
+                                                                //string for comparison to dates 
+                                                                //in recurringreminders
             Console.WriteLine("today = " + today);
             Console.WriteLine("We are before the var statement");
 
-            var rrDueToday = (context.RecurringReminders.Where(rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Once" &&
-                                                               today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd/yyyy")) >= 0 && 
-                                                               today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0 &&
-                                                               (DateTime.Now.Date.ToString("MM/dd").CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 || rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo("2001") == 0)).ToList());
+            /*
+            var rrDueToday = (context.RecurringReminders.Where
+            (
+            rr => rr.RepeatFrequencyName.RepeatFrequencyName == "Annually" &&
+            today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+            (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
+            today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) &&
+            (DateTime.Now.Date.ToString("MM/dd").CompareTo
+                   (rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")
+                   ) > 0 ||
+                   rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   ("2001") == 0)).ToList()
+             );
+            */
 
+            // gather those reminders due at the current Time
+
+            List<RecurringReminders> rrsToBeInspected = new List<RecurringReminders>();
+            foreach (int rrID in theReminderIDsToBeChecked)
+            {
+                rrsToBeInspected.Add(context.RecurringReminders.First(rr => rr.ID == rrID));
+            }
+
+            List<RecurringReminders> rrDueToday = new List<RecurringReminders>();
+            //inspect the reminders to see which ones are scheduled to be sent today
+            foreach (RecurringReminders rr in rrsToBeInspected)
+            {
+                if (
+                    rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Once" &&
+                   today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+                  (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
+                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) ||
+                  rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   ("2001") == 0)
+                {
+                    //if this is the First Alert of the Day to be sent
+
+                    if (firstOrSecondReminderOfTheDay == "First" &&
+
+                        (rr.FirstOrSecondAlertOfTheDay == null ||
+                         rr.FirstOrSecondAlertOfTheDay == "Second") &&
+                         today.CompareTo(
+                            rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0
+                       )
+                    {
+                        rrDueToday.Add(rr);
+
+                    }
+                    else if (firstOrSecondReminderOfTheDay == "Second" &&
+                             (rr.FirstOrSecondAlertOfTheDay == null ||
+                             rr.FirstOrSecondAlertOfTheDay == "First") &&
+                             today.CompareTo(
+                            rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) == 0
+                            )
+                    {
+                        rrDueToday.Add(rr);
+                    }
+
+                }
+            }
+
+
+            //capture the reminders that are scheduled for the current time
+            //as per GetTheSendReminderTimesToBeChecked method from above
+
+            List<RecurringReminders> rrDueNow = new List<RecurringReminders>();
+            Console.WriteLine("***************");
+            Console.WriteLine("theReminderIDsToBeChecked Count = " + theReminderIDsToBeChecked.Count);
+            Console.WriteLine("***************");
+
+            //determine which of the reminders in rrDueToday should be sent out now
+
+            foreach (RecurringReminders RR in rrDueToday)
+            {
+                if (theReminderIDsToBeChecked.Contains(RR.ID) == true)
+                {
+                    rrDueNow.Add(RR);
+                }
+
+            }
 
             Console.WriteLine("We are after the var statement");
-            Console.WriteLine("Count of Once Reminders in var rrDueToday: " + rrDueToday.Count());
-
+            Console.WriteLine("Count of Annual Reminders in var rrDueToday: " + rrDueToday.Count());
+            Console.WriteLine("Count of Annual Reminders in var rrDueNow: " + rrDueNow.Count());
 
             //Get TextInfo and populate text parameters//
             string TextId = "";
@@ -1463,7 +1716,7 @@ namespace RemindMe.Controllers
             Console.WriteLine("Text From = See PW Doc");                //  + TextFrom);
             //
             // send reminders
-            foreach (var rr in rrDueToday)
+            foreach (RecurringReminders rr in rrDueNow)
             {
                 try
                 {
@@ -1484,8 +1737,10 @@ namespace RemindMe.Controllers
                     Console.WriteLine("We are after the TRY command");
 
                     // Update the current record to reflect the date the latest alert was sent
+                    //and identifyit as the First or Second alert sent
 
                     rr.RecurringReminderDateAndTimeLastAlertSent = DateTime.Now;
+                    rr.FirstOrSecondAlertOfTheDay = firstOrSecondReminderOfTheDay;
                     context.SaveChanges();
 
                 }

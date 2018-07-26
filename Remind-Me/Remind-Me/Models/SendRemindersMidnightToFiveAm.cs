@@ -11,9 +11,8 @@ namespace RemindMe.Models
 
        public string TimeToSendReminderMTFAM { get; set; }
        public int RecurringReminderId { get; set; }
-        
-
-
+       public int SendRemindersTimeFrameID { get; } = 0;
+       public string FirstOrSecondReminderOfTheDay { get; set; }
     }
 
 

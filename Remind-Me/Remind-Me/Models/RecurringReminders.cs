@@ -50,6 +50,7 @@ namespace RemindMe.Models
         public string UserCellPhoneNumber { get; set; }
 
         public DateTime RecurringReminderDateAndTimeLastAlertSent { get; set; }  
+        public string FirstOrSecondAlertOfTheDay { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RemindMe.Data;
 
 namespace RemindMe.Migrations
 {
     [DbContext(typeof(RemindMeDbContext))]
-    partial class RemindMeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180715120453_added code to send two texts per day at user specified times")]
+    partial class addedcodetosendtwotextsperdayatuserspecifiedtimes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,8 +110,6 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("FirstOrSecondAlertOfTheDay");
-
                     b.Property<string>("RecuringReminderCreateDate");
 
                     b.Property<DateTime>("RecurringEventDate");
@@ -185,8 +185,6 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("FirstOrSecondReminderOfTheDay");
-
                     b.Property<int>("RecurringReminderId");
 
                     b.Property<string>("TimeToSendReminderMTFAM");
@@ -201,8 +199,6 @@ namespace RemindMe.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FirstOrSecondReminderOfTheDay");
 
                     b.Property<int>("RecurringReminderId");
 
@@ -219,8 +215,6 @@ namespace RemindMe.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("FirstOrSecondReminderOfTheDay");
-
                     b.Property<int>("RecurringReminderId");
 
                     b.Property<string>("TimeToSendReminderSTEAM");
@@ -235,8 +229,6 @@ namespace RemindMe.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FirstOrSecondReminderOfTheDay");
 
                     b.Property<int>("RecurringReminderId");
 
