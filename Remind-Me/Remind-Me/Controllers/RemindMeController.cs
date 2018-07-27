@@ -1496,12 +1496,12 @@ namespace RemindMe.Controllers
                         rrDueToday.Add(rr);
                         
                     }
+
+                    //if this is the second alert of the day
                     else if (firstOrSecondReminderOfTheDay == "Second" &&
                              (rr.FirstOrSecondAlertOfTheDay == null ||
-                             rr.FirstOrSecondAlertOfTheDay == "First")  &&
-                             (today.CompareTo(
-                            rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) == 0 ||
-                            rr.RecurringReminderDateAndTimeLastAlertSent.ToString() == "01/01")
+                             rr.FirstOrSecondAlertOfTheDay == "First" ||
+                             today.CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0) 
                             )
                     {
                         rrDueToday.Add(rr);
@@ -1658,11 +1658,12 @@ namespace RemindMe.Controllers
                         rrDueToday.Add(rr);
 
                     }
+
+                    // if this is the second alert of the day
                     else if (firstOrSecondReminderOfTheDay == "Second" &&
                              (rr.FirstOrSecondAlertOfTheDay == null ||
-                             rr.FirstOrSecondAlertOfTheDay == "First") &&
-                             today.CompareTo(
-                            rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) == 0
+                             rr.FirstOrSecondAlertOfTheDay == "First" ||
+                             today.CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0) 
                             )
                     {
                         rrDueToday.Add(rr);
