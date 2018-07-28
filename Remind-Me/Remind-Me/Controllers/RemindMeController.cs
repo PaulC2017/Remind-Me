@@ -1487,7 +1487,8 @@ namespace RemindMe.Controllers
                     if (firstOrSecondReminderOfTheDay == "First" &&
                        
                         (rr.FirstOrSecondAlertOfTheDay == null  || 
-                         rr.FirstOrSecondAlertOfTheDay == "Second") &&
+                         rr.FirstOrSecondAlertOfTheDay == "Second" ||
+                         rr.RecurringReminderSecondAlertTime == "Not Scheduled") &&
                          (today.CompareTo(
                             rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0 ||
                              rr.RecurringReminderDateAndTimeLastAlertSent.ToString() == "01/01")
