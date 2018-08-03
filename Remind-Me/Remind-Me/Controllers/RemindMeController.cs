@@ -1431,7 +1431,6 @@ namespace RemindMe.Controllers
             SendRecurringReminderTextsAnnually(theReminderIDs, firstOrSecondReminderOfTheDay);
             SendRecurringReminderTextsOnce(theReminderIDs, firstOrSecondReminderOfTheDay);
         }
-
         
         public IActionResult SendRecurringReminderTextsAnnually
             (
