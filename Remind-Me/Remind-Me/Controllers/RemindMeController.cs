@@ -825,6 +825,12 @@ namespace RemindMe.Controllers
         [HttpPost]
         public IActionResult ConfirmDeleteEventsAndRemindersBeforeDeleting(int[] recurringReminderId)
         {
+            // check to see if the user has logged in
+            if (HttpContext.Session.GetString("Username") == "")
+            {
+                return View("Index");
+            }
+            
             // remove the  recurring reminder(s) the user wants to delete
 
             List<RecurringReminders> rrToDelete = new List<RecurringReminders>(recurringReminderId.Count());
@@ -1577,7 +1583,7 @@ namespace RemindMe.Controllers
                     Console.WriteLine("We are after the TRY command");
 
                     // Update the current record to reflect the date the latest alert was sent
-                    //and identifyit as the First or Second alert sent
+                    //and identify it as the First or Second alert sent
 
                     rr.RecurringReminderDateAndTimeLastAlertSent = DateTime.Now;
                     rr.FirstOrSecondAlertOfTheDay = firstOrSecondReminderOfTheDay;
@@ -1587,6 +1593,7 @@ namespace RemindMe.Controllers
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine(ex.Message);
+                    Console.ReadLine();
                 }
 
             }
@@ -1651,7 +1658,8 @@ namespace RemindMe.Controllers
                     if (firstOrSecondReminderOfTheDay == "First" &&
 
                         (rr.FirstOrSecondAlertOfTheDay == null ||
-                         rr.FirstOrSecondAlertOfTheDay == "Second") &&
+                         rr.FirstOrSecondAlertOfTheDay == "Second" ||
+                         rr.RecurringReminderSecondAlertTime == "Not Scheduled") &&
                          today.CompareTo(
                             rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0
                        )
@@ -1749,6 +1757,7 @@ namespace RemindMe.Controllers
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine(ex.Message);
+                    Console.ReadLine();
                 }
 
             }
