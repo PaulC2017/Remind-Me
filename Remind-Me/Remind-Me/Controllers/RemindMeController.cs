@@ -63,7 +63,7 @@ namespace RemindMe.Controllers
             }
             if (ModelState.IsValid)
             {
-                /* temporarily hide google calendar input -  will deal with google calendar in release 2
+                /* temporarily hide google calendar input - will deal with google calendar in release 2
                 User newUser = new User(registerUserViewModel.Username, 
                                          registerUserViewModel.Password, 
                                          registerUserViewModel.GCalEmail, 
