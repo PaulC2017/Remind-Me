@@ -5,7 +5,7 @@ namespace RemindMe.ViewModels
     public class UserLoginViewModel
     {
         [Required(ErrorMessage = "A User Name is Required")]
-        [Display(Name = "User Name")]
+        [Display(Name = "TheReminderFactory\u2122 User Name")]
         public string Username { get; set; }
 
         [Required(ErrorMessage = "A password is Required")]

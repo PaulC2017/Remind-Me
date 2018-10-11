@@ -49,10 +49,12 @@ namespace RemindMe.Controllers
             return View(newUser);
         }
 
+        
+
         [HttpPost]
         public IActionResult RegisterUser(RegisterUserViewModel registerUserViewModel)
         {
-
+            
             //check to see if the user name entered already exists
 
             User checkUserName = context.User.FirstOrDefault(u => u.Username == registerUserViewModel.Username);
@@ -93,12 +95,14 @@ namespace RemindMe.Controllers
 
         public IActionResult UserLogin()
         {
+            
             UserLoginViewModel returningUser = new UserLoginViewModel();
             return View(returningUser);
         }
         [HttpPost]
         public IActionResult Userlogin(UserLoginViewModel userLoginViewModel)
         {
+           
             //  check to see if the user name exists
 
             try
@@ -411,6 +415,7 @@ namespace RemindMe.Controllers
         public IActionResult UserLogout()
         {
             HttpContext.Session.SetString("Username", "");
+            ViewBag.userloggedout = true;
             return View("Index");
         }
 

@@ -12,7 +12,7 @@ namespace Remind_Me.Controllers
     {
         public IActionResult Index()
         {
-            return View("../RemindMe/Index");
+          return View("../RemindMe/Index");
         }
 
         public IActionResult About()
