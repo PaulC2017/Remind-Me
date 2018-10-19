@@ -135,7 +135,46 @@ namespace RemindMe.Controllers
 
         }
 
-        
+        [HttpPost]
+        public IActionResult UserloginWithGoogleId(string googleId)
+        {
+
+            //  check to see if the user name exists
+
+            try
+            {
+                User checkUserLogInUserName = context.User.Single(u => u.Username == googleId);
+            }
+            catch (InvalidOperationException)
+            {
+                ViewBag.userNameNotFound = "User Name was not found";
+                return RedirectToAction("UserLogin");
+            }
+
+            User checkUserLogInInfo = context.User.Single(u => u.Username == googleId);
+
+            HttpContext.Session.SetString("Username", checkUserLogInInfo.Username);  //capture Username for use elsewhere in this app
+            HttpContext.Session.SetInt32("ID", checkUserLogInInfo.ID);  //capture ID for use elsewhere in this app
+
+            return View("UserHomePage", checkUserLogInInfo);
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public IActionResult ScheduleEventsAndReminders()
         {
             // check to see if the user has logged in
