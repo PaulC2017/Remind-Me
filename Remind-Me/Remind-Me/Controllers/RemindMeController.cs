@@ -161,20 +161,6 @@ namespace RemindMe.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public IActionResult ScheduleEventsAndReminders()
         {
             // check to see if the user has logged in
@@ -1526,12 +1512,12 @@ namespace RemindMe.Controllers
             foreach (RecurringReminders rr in rrsToBeInspected)
             {
                 if (
-                    rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Annually"  &&
+                    rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Annually" &&
                    today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
                   (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
                   today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) ||
-                  rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
-                   ("2001") == 0)
+                  (rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   ("2001") == 0 && rr.RecurringReminderLastAlertDate.Date.ToString("yyyy").CompareTo(DateTime.Now.Date.Year.ToString()) >= 0))
                 {
                  //if this is the First Alert of the Day to be sent
                  
