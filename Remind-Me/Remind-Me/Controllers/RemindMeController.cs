@@ -1511,19 +1511,38 @@ namespace RemindMe.Controllers
             //inspect the reminders to see which ones are scheduled to be sent today
             foreach (RecurringReminders rr in rrsToBeInspected)
             {
-                if (
-                    rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Annually" &&
+                // output for troubleshooting
+
+                Console.WriteLine("*****************");
+                Console.WriteLine("rrsToBeInispected.ID = " + rr.ID);
+                Console.WriteLine("First set of tests from line 1535 if statement (line 1537)" + (rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Annually" &&
                    today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
                   (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
-                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) ||
-                  (rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
-                   ("2001") == 0 && rr.RecurringReminderLastAlertDate.Date.ToString("yyyy").CompareTo(DateTime.Now.Date.Year.ToString()) >= 0))
+                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0)));
+                Console.WriteLine("Second set of tests from line 1535 if statement (line 1541)" + (rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   ("2001") == 0 && rr.RecurringReminderLastAlertDate.Date.ToString("yyyy").CompareTo(DateTime.Now.Date.Year.ToString()) <= 0));
+                
+
+
+                if (
+                    (rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Annually" &&
+                   today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
+                  (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
+                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0)))
+                  
+                  // ||
+                  //(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                   //("2001") == 0 && rr.RecurringReminderLastAlertDate.Date.ToString("yyyy").CompareTo(DateTime.Now.Date.Year.ToString()) <= 0))
                 {
-                 //if this is the First Alert of the Day to be sent
-                 
+                    //if this is the First Alert of the Day to be sent
+                    Console.WriteLine("***************");
+                    Console.WriteLine("We should not be here - line 1538");
+                    Console.WriteLine("***************");
+                    //Console.ReadLine();
+
                     if (firstOrSecondReminderOfTheDay == "First" &&
-                       
-                        (rr.FirstOrSecondAlertOfTheDay == null  || 
+
+                        (rr.FirstOrSecondAlertOfTheDay == null ||
                          rr.FirstOrSecondAlertOfTheDay == "Second" ||
                          rr.RecurringReminderSecondAlertTime == "Not Scheduled") &&
                          (today.CompareTo(
@@ -1532,20 +1551,27 @@ namespace RemindMe.Controllers
                        )
                     {
                         rrDueToday.Add(rr);
-                        
+
                     }
 
                     //if this is the second alert of the day
+                    
+
                     else if (firstOrSecondReminderOfTheDay == "Second" &&
-                             (rr.FirstOrSecondAlertOfTheDay == null ||
-                             rr.FirstOrSecondAlertOfTheDay == "First" ||
-                             today.CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0) 
-                            )
+                         (rr.FirstOrSecondAlertOfTheDay == null ||
+                         rr.FirstOrSecondAlertOfTheDay == "First" ||
+                         today.CompareTo(rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("MM/dd")) > 0)
+                        )
                     {
+                        Console.WriteLine("***************");
+                        Console.WriteLine("We should also not be here - line 1566");
+                        Console.WriteLine("***************");
+                        //Console.ReadLine();
+
                         rrDueToday.Add(rr);
                     }
-                    
-                }
+                }  
+                
             }
 
             
@@ -1560,8 +1586,12 @@ namespace RemindMe.Controllers
             //determine which of the reminders in rrDueToday should be sent out now
 
             foreach (RecurringReminders RR in rrDueToday)
-            {  
-               if (theReminderIDsToBeChecked.Contains(RR.ID) == true) 
+            {
+
+                Console.WriteLine("**************");
+                Console.WriteLine("theReminderIDsToBeChecked.Contains(RR.ID) = " + theReminderIDsToBeChecked.Contains(RR.ID));
+                Console.WriteLine("**************");
+                if (theReminderIDsToBeChecked.Contains(RR.ID) == true) 
                 {
                     rrDueNow.Add(RR);
                 }
@@ -1680,9 +1710,11 @@ namespace RemindMe.Controllers
                     rr.RepeatFrequencyName.RepeatFrequencyName.ToString() == "Once" &&
                    today.CompareTo(rr.RecurringReminderStartAlertDate.Date.ToString("MM/dd")) >= 0 &&
                   (today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd")) <= 0 ||
-                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0) ||
-                  rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
-                   ("2001") == 0)
+                  today.CompareTo(rr.RecurringReminderLastAlertDate.Date.ToString("MM/dd/yyyy")) <= 0))
+                  
+                  //||
+                 // rr.RecurringReminderDateAndTimeLastAlertSent.Date.ToString("yyyy").CompareTo
+                  // ("2001") == 0)
                 {
                     //if this is the First Alert of the Day to be sent
 
