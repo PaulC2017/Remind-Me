@@ -13,7 +13,7 @@
     <PackageReference Include="Google.Apis.Auth.Mvc" Version="1.36.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.34.0.1242" />
     <PackageReference Include="Google.Apis.Core" Version="1.36.0" />
-    <PackageReference Include="HangFire" Version="1.6.19" />
+    <PackageReference Include="HangFire" Version="1.6.20" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.0" />

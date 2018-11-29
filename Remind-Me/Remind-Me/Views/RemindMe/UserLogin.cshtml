@@ -46,7 +46,7 @@
     @* Google LogIn*@
     <div class="g-signin2" data-onsuccess="onSignIn">
     </div>
-    <script>
+    <script type="text/javascript">
         function onSignIn(googleUser) {
             // Useful data for your client-side scripts:
             var profile = googleUser.getBasicProfile();
@@ -62,11 +62,25 @@
             var id_token = googleUser.getAuthResponse().id_token;
             console.log("ID Token: " + id_token);
 
-            //write the email ID to a blank web page
-            //document.write("Email: " + profile.getEmail());
+           // The user's google email ID
             var googleId = profile.getEmail();
-            $.post("/RemindMeController/UserloginWithGoogleId"), { googleId: googleId };
-        
+            console.log("Google Email: " + googleId);
+
+            //write the email ID to a blank web page
+           // document.write("Email: " + profile.getEmail());
+           
+            
+            //$.post("RemindMeController/UserloginWithGoogleId", { googleId: googleId });
+
+            $.ajax({
+                'url': '/RemindMe/UserloginWithGoogleId',
+                'type': 'POST',
+                'data': { 'googleId': googleId },
+                'success': function () { console.log("Success"); }//, up to you
+                //'error': function () // up to you
+            })
+
+            console.log("Google Email: " + googleId);
             
         };
     </script>

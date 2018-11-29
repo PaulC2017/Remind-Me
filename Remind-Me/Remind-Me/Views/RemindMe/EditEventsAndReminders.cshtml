@@ -41,7 +41,7 @@
         <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
         <span asp-validation-for="RecurringReminderStartAlertDate"></span>
     </div>
-
+    <p style="color:red"><strong>@ViewBag.LastAlertDateError</strong></p>
     <div class="form-group">
         <label asp-for="RecurringReminderLastAlertDate"></label>
         <input class="form-control" asp-for="RecurringReminderLastAlertDate" />

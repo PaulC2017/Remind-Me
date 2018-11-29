@@ -148,7 +148,8 @@ namespace RemindMe.Controllers
             catch (InvalidOperationException)
             {
                 ViewBag.userNameNotFound = "User Name was not found";
-                return RedirectToAction("UserLogin");
+                //return RedirectToAction("UserLogin");
+                return ("/RemindMe/UserLogin");
             }
 
             User checkUserLogInInfo = context.User.Single(u => u.Username == googleId);
@@ -205,22 +206,28 @@ namespace RemindMe.Controllers
             bool remindersInSameYear = false;
             bool lastAlertDateLaterThanStartAlertDate = false;
 
+            ViewBag.endMMDDChecked = "No";
+
             ViewBag.calendarYearError = "";
             ViewBag.LastAlertDateError = "";
 
             if (startYear == endYear)  //check to make sure the alert dates are scheduled for the same year
             {
                 remindersInSameYear = true;
+                ViewBag.endMMDDChecked = "Yes";
 
-                if (endMMDD.CompareTo(startMMDD) >= 0)
-                {
+                if (endMMDD.CompareTo(startMMDD) >= 0)   //check to make sure lastAlertDateLaterThanStartAlertDate 
+                {                                          // is after the startAlertDate
                     lastAlertDateLaterThanStartAlertDate = true;
-                }
-                if (ModelState.IsValid)
-                {
+
+
+                    if (ModelState.IsValid)
+                    {
+
+
                         //  get the Repeat Frequency Selected by the User
                         ReminderRepeatFrequencies newReminderRepeatFrequency =
-                            context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
+                                context.ReminderRepeatFrequencies.Single(c => c.ID == newEventAndReminder.RepeatFrequencyNameID);
 
                         // save the name of the repeat frequency so it can be sent in the confirmation text message
 
@@ -361,11 +368,12 @@ namespace RemindMe.Controllers
                             );
 
                         return View("RecurringEventsAndReminders", newRecurringReminder);
+                    }
                 }
                 
             }
             // if we get here the model is not valid or the reminders 
-            // are not in the same year or the LastAlertDate is not the same as or laternthan
+            // are not in the same year or the LastAlertDate is not the same as or later than
             // the start alert date. So we need to create
             // a new viewmodel to include the repeat frequency choices
             // and populate it with the data the user entered
@@ -374,7 +382,7 @@ namespace RemindMe.Controllers
                 ViewBag.calendarYearError = "Both the Start and Stop Dates for " +
                                              "Reminders must be in the same year"; 
             }
-            if (lastAlertDateLaterThanStartAlertDate == false)
+            if (lastAlertDateLaterThanStartAlertDate == false && ViewBag.endMMDDChecked == "Yes")
             {
                 ViewBag.LastAlertDateError = "The Stop Date for Reminders must be later than the Start Date";
 
@@ -556,212 +564,260 @@ namespace RemindMe.Controllers
             }
 
             //check to make sure all reminders are scheduled in the current calendar year
+            //and that the Last Alert Date is later than the Start Alert Date
 
-            string start = recurringReminder.RecurringReminderStartAlertDate.ToString("yyyy");
-            string end = recurringReminder.RecurringReminderLastAlertDate.Date.ToString("yyyy");
+            string startYear = recurringReminder.RecurringReminderStartAlertDate.ToString("yyyy");
+            string endYear = recurringReminder.RecurringReminderLastAlertDate.Date.ToString("yyyy");
+            string startMMDD = recurringReminder.RecurringReminderStartAlertDate.ToString("MM/dd");
+            string endMMDD = recurringReminder.RecurringReminderLastAlertDate.Date.ToString("MM/dd");
+
             bool remindersInSameYear = false;
-            ViewBag.calendarYearError = "";
+            bool lastAlertDateLaterThanStartAlertDate = false;
 
-            if (start == end)
+            ViewBag.endMMDDChecked = "No";
+
+            ViewBag.calendarYearError = "";
+            ViewBag.LastAlertDateError = "";
+
+            if (startYear == endYear)
             {
                 remindersInSameYear = true;
-                if (ModelState.IsValid)
-                {
-                    // get the Repeat Frequency selected by the user
-                    ReminderRepeatFrequencies newReminderRepeatFrequency =
-                                         context.ReminderRepeatFrequencies.
-                                         Single(c => c.ID == recurringReminder.RepeatFrequencyNameID);
+                ViewBag.endMMDDChecked = "Yes";
 
-                    // get User info for the recurring reminder
-                    User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+                if (endMMDD.CompareTo(startMMDD) >= 0)   //check to make sure lastAlertDateLaterThanStartAlertDate 
+                {                                          // is after the startAlertDate
+                    lastAlertDateLaterThanStartAlertDate = true;
 
-                    //Get the recurring reminder record the user wants to modify 
-                    //we will delete that record once we add the revised recurring reminder
-                    //with the data entered by the user in the edit form
-
-                    RecurringReminders editRR = context.RecurringReminders.
-                        Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
-
-                    // delete the sendremindertimexxxxx records existing prior to the edit
-
-                    DeleteSendReminderTimeRecords(editRR);
-
-                    //get the ReminderTimes the user selected
-                    ReminderTimes firstTimeSelected =
-                    context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimesID);
-
-                    //check to see if user chose "Do No Select" for the second daily reminder
-                    // if the user did, then a context statement will throw
-                    //an exception since we don't have "Do Not Schedule" stored
-                    // in the ReminderTimes table
-
-                    ReminderTimes secondTimeSelected = new ReminderTimes();
-                    if (recurringReminder.ReminderTimes2ID != 0)
+                    if (ModelState.IsValid)
                     {
-                        secondTimeSelected = context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimes2ID);
-                    }
-                    else
-                    {
-                        secondTimeSelected.ReminderTimesName = "Not Scheduled";
-                    }
+                        // get the Repeat Frequency Selected by the User
+                        ReminderRepeatFrequencies newReminderRepeatFrequency =
+                                             context.ReminderRepeatFrequencies.
+                                             Single(c => c.ID == recurringReminder.RepeatFrequencyNameID);
+
+
+
+                        // get User info for the recurring reminder
+                        User newUser = context.User.Single(u => u.Username == HttpContext.Session.GetString("Username"));
+
+                        //Get the recurring reminder record the user wants to modify 
+                        //we will delete that record once we add the revised recurring reminder
+                        //with the data entered by the user in the edit form
+
+                        RecurringReminders editRR = context.RecurringReminders.
+                            Single(id => id.ID.Equals(Int32.Parse(HttpContext.Session.GetString("recurringReminderId"))));
+
+                        // delete the sendremindertimexxxxx records existing prior to the edit
+
+                        DeleteSendReminderTimeRecords(editRR);
+
+                        //get the ReminderTimes the user selected
+                        ReminderTimes firstTimeSelected =
+                        context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimesID);
                     
 
-                   
+                        //check to see if user chose "Do No Select" for the second daily reminder
+                        // if the user did, then a context statement will throw
+                        //an exception since we don't have "Do Not Schedule" stored
+                        // in the ReminderTimes table
 
-                    // create new Recurring Reminder with data input from the user from the edit form
+                        ReminderTimes secondTimeSelected = new ReminderTimes();
+                        if (recurringReminder.ReminderTimes2ID != 0)
+                        {
+                            secondTimeSelected = context.ReminderTimes.FirstOrDefault(id => id.ID == recurringReminder.ReminderTimes2ID);
+                        }
+                        else
+                        {
+                            secondTimeSelected.ReminderTimesName = "Not Scheduled";
+                        }
 
-                    RecurringReminders revisedRR = new RecurringReminders
-                        (
+                        // create new Recurring Reminder with data input from the user from the edit form
 
-                                    recurringReminder.RecurringEventName,
-                                    recurringReminder.RecurringEventDescription,
-                                    recurringReminder.RecurringEventDate,
-                                    recurringReminder.RecurringReminderStartAlertDate,
-                                    recurringReminder.RecurringReminderLastAlertDate,
-                                    newReminderRepeatFrequency,
-                                    firstTimeSelected.ReminderTimesName,
-                                    secondTimeSelected.ReminderTimesName,
-                                    recurringReminder.UserCellPhoneNumber
-
-                       );
-
-                    revisedRR.User = newUser;
-
-                    
-
-                    //save the recurring reminder with the revised data 
-                    context.RecurringReminders.Add(revisedRR);
-                    
-                    int newRRID = revisedRR.ID; //capture the ID of the edited recurring reminder for use with the SendTimes records
-                     
-                    //create the appropriate SendReminder records for the First and Second Alert Times
-
-                    //  get the time the user selected id as assigned
-                    // in the AssignSendRemindersTimeFrameID class
-                    
-                    AssignSendRemindersTimeFrameID timeSelectedFirst = new AssignSendRemindersTimeFrameID();
-                    int firstTimeSelectedAsInteger = timeSelectedFirst.DetermineSendReminderTime
-                        (
-                          firstTimeSelected.ReminderTimesName
-                        );
-
-                    //if a second daily reminder was not scheduled the return 
-                    //from this next call will be -99 and no second reminder will be scheduled
-                      
-                    AssignSendRemindersTimeFrameID timeSelectedSecond = new AssignSendRemindersTimeFrameID();
-                       int secondTimeSelectedAsInteger = timeSelectedSecond.DetermineSendReminderTime
+                        RecurringReminders revisedRR = new RecurringReminders
                             (
-                              secondTimeSelected.ReminderTimesName
+
+                                        recurringReminder.RecurringEventName,
+                                        recurringReminder.RecurringEventDescription,
+                                        recurringReminder.RecurringEventDate,
+                                        recurringReminder.RecurringReminderStartAlertDate,
+                                        recurringReminder.RecurringReminderLastAlertDate,
+                                        newReminderRepeatFrequency,
+                                        firstTimeSelected.ReminderTimesName,
+                                        secondTimeSelected.ReminderTimesName,
+                                        recurringReminder.UserCellPhoneNumber
+
+                           );
+
+                        revisedRR.User = newUser;
+
+
+
+                        //save the recurring reminder with the revised data 
+                        context.RecurringReminders.Add(revisedRR);
+
+                        int newRRID = revisedRR.ID; //capture the ID of the edited recurring reminder for use with the SendTimes records
+
+                        //create the appropriate SendReminder records for the First and Second Alert Times
+
+                        //  get the time the user selected id as assigned
+                        // in the AssignSendRemindersTimeFrameID class
+
+                        AssignSendRemindersTimeFrameID timeSelectedFirst = new AssignSendRemindersTimeFrameID();
+                        int firstTimeSelectedAsInteger = timeSelectedFirst.DetermineSendReminderTime
+                            (
+                              firstTimeSelected.ReminderTimesName
                             );
-                   
-                    // a couple of checks to see if the user entered times that fall into
-                    //the same six hour period and to see if the user entered a second time
-                    //that is earlier than the first time
 
-                    //first check to see if the second time selected is earlier than
-                    //the first time selected
+                        //if a second daily reminder was not scheduled the return 
+                        //from this next call will be -99 and no second reminder will be scheduled
 
-                    // save the user selected firstTime info in case we have to swap it with the secondTime
-                    string saveFirstTime = firstTimeSelected.ReminderTimesName;
-                    int savefirstTimeSelectedAsInteger = firstTimeSelectedAsInteger;
-                    string saveSecondTime = secondTimeSelected.ReminderTimesName;
-                    
-                    // get the earliest of the two times selected by the user
-                    saveFirstTime =  ReturnEarliestTime(firstTimeSelected.ReminderTimesName, secondTimeSelected.ReminderTimesName);
+                        AssignSendRemindersTimeFrameID timeSelectedSecond = new AssignSendRemindersTimeFrameID();
+                        int secondTimeSelectedAsInteger = timeSelectedSecond.DetermineSendReminderTime
+                             (
+                               secondTimeSelected.ReminderTimesName
+                             );
 
-                    // if secondTime is earlier than first time then do the  swap
-                    if (firstTimeSelected.ReminderTimesName != saveFirstTime)
-                    {
-                        saveFirstTime = secondTimeSelected.ReminderTimesName;
-                        firstTimeSelectedAsInteger = secondTimeSelectedAsInteger;
-                        saveSecondTime = firstTimeSelected.ReminderTimesName;
-                        secondTimeSelectedAsInteger = savefirstTimeSelectedAsInteger;
+                        // a couple of checks to see if the user entered times that fall into
+                        //the same six hour period and to see if the user entered a second time
+                        //that is earlier than the first time
+
+                        //first check to see if the second time selected is earlier than
+                        //the first time selected
+
+                        // save the user selected firstTime info in case we have to swap it with the secondTime
+                        string saveFirstTime = firstTimeSelected.ReminderTimesName;
+                        int savefirstTimeSelectedAsInteger = firstTimeSelectedAsInteger;
+                        string saveSecondTime = secondTimeSelected.ReminderTimesName;
+
+                        // get the earliest of the two times selected by the user
+                        saveFirstTime = ReturnEarliestTime(firstTimeSelected.ReminderTimesName, secondTimeSelected.ReminderTimesName);
+
+                        // if secondTime is earlier than first time then do the  swap
+                        if (firstTimeSelected.ReminderTimesName != saveFirstTime)
+                        {
+                            saveFirstTime = secondTimeSelected.ReminderTimesName;
+                            firstTimeSelectedAsInteger = secondTimeSelectedAsInteger;
+                            saveSecondTime = firstTimeSelected.ReminderTimesName;
+                            secondTimeSelectedAsInteger = savefirstTimeSelectedAsInteger;
+                        }
+
+                        // make sure you save the alert times in the right order
+                        // since you did a check of which time is earlier
+
+                        revisedRR.RecurringReminderFirstAlertTime = saveFirstTime;
+                        revisedRR.RecurringReminderSecondAlertTime = saveSecondTime;
+
+                        // save the new event and reminder and ReminderTimes to the data base
+
+                        context.SaveChanges();
+
+                        //save the new Recurring Reminder for entry into the SendRemindersXXXXXX times
+                        //Table
+
+                        RecurringReminders savedNewRecurringReminder = revisedRR;
+
+                        // save the times selected by the user into the SendReminder XXXX times
+                        // and return the IDs of the SendReminder Times for includino in the
+                        //RecurringReminder record
+
+                        SaveSendReminderTimes
+                                               (
+                                              firstTimeSelectedAsInteger,
+                                              saveFirstTime,
+                                              secondTimeSelectedAsInteger,
+                                              saveSecondTime,
+                                              ref savedNewRecurringReminder
+                                              );
+
+                        // Since editing the event/reminder was successful we will
+                        //send a confirming text to the user.
+                        // first get the text credentials
+                        var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
+
+                        // save the name of the repeat frequency so it can be sent in the confirmation text message
+
+                        string repeatFreqNameUserSelected = newReminderRepeatFrequency.RepeatFrequencyName;
+
+
+
+                        SendTextMessagesController sendConfirmation = new SendTextMessagesController();
+                        sendConfirmation.SendTextMessage
+                            (
+                            recurringReminder.UserCellPhoneNumber,
+                            recurringReminder.RecurringEventName,
+                            recurringReminder.RecurringEventDate.Date,
+                            recurringReminder.RecurringEventDescription,
+                            recurringReminder.RecurringReminderStartAlertDate.Date,
+                            recurringReminder.RecurringReminderLastAlertDate.Date,
+                            textInfo,
+                            repeatFreqNameUserSelected
+                            );
+                        // remove the original recurring reminder the user wanted to edit
+                        context.RecurringReminders.Remove(editRR);
+                        context.SaveChanges();
+                        ViewBag.eventDate = recurringReminder.RecurringEventDate.Date;
+                        return View("RecurringEventsAndReminders", revisedRR);
                     }
-
-                    // make sure you save the alert times in the right order
-                    // since you did a check of which time is earlier
-
-                    revisedRR.RecurringReminderFirstAlertTime = saveFirstTime;
-                    revisedRR.RecurringReminderSecondAlertTime = saveSecondTime;
-                    
-                    // save the new event and reminder and ReminderTimes to the data base
-
-                    context.SaveChanges();
-
-                    //save the new Recurring Reminder for entry into the SendRemindersXXXXXX times
-                    //Table
-
-                    RecurringReminders savedNewRecurringReminder = revisedRR;
-
-                    // save the times selected by the user into the SendReminder XXXX times
-                    // and return the IDs of the SendReminder Times for includino in the
-                    //RecurringReminder record
-
-                    SaveSendReminderTimes
-                                           (
-                                          firstTimeSelectedAsInteger, 
-                                          saveFirstTime,
-                                          secondTimeSelectedAsInteger,
-                                          saveSecondTime, 
-                                          ref savedNewRecurringReminder
-                                          );
-
-                    // Since editing the event/reminder was successful we will
-                    //send a confirming text to the user.
-                    // first get the text credentials
-                    var textInfo = (context.TextInfo.Where(id => id.ID > 0).ToList()); // there is only 1 record in this table
-
-                    // save the name of the repeat frequency so it can be sent in the confirmaiton text message
-
-                    string repeatFreqNameUserSelected = newReminderRepeatFrequency.RepeatFrequencyName;
-
-
-
-                    SendTextMessagesController sendConfirmation = new SendTextMessagesController();
-                    sendConfirmation.SendTextMessage
-                        (
-                        recurringReminder.UserCellPhoneNumber,
-                        recurringReminder.RecurringEventName,
-                        recurringReminder.RecurringEventDate.Date,
-                        recurringReminder.RecurringEventDescription,
-                        recurringReminder.RecurringReminderStartAlertDate.Date,
-                        recurringReminder.RecurringReminderLastAlertDate.Date,
-                        textInfo,
-                        repeatFreqNameUserSelected
-                        );
-                    // remove the original recurring reminder the user wanted to edit
-                    context.RecurringReminders.Remove(editRR);
-                    context.SaveChanges();
-                    ViewBag.eventDate = recurringReminder.RecurringEventDate.Date;
-                    return View("RecurringEventsAndReminders", revisedRR);
                 }
             }
             // if we get here the model is not valid or the reminders 
-            // are not in the current year. So we need to create
+            // are not in the current year. Or the Last AlertDate is not later than teh STartAlertDate.  So we need to create
             // a new viewmodel to include the repeat frequency choices and ReminderTimes choices
             // and populate it with the data the user entered
             if (remindersInSameYear == false)
-            {
-                ViewBag.calendarYearError = "Both the Start and Stop Dates for " +
-                                             "Reminders must be in the current year";
-            }
+                {
+                    ViewBag.calendarYearError = "Both the Start and Stop Dates for " +
+                                                 "Reminders must be in the Same year";
+                }
+
+                if (lastAlertDateLaterThanStartAlertDate == false && ViewBag.endMMDDChecked == "Yes")
+                {
+                  ViewBag.LastAlertDateError = "The Stop Date for Reminders must be later than the Start Date";
+                }
+
+            /*  
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
-            EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList())
-            {
-                // populate the fields for the reminder to be edited
-                RecurringEventName = recurringReminder.RecurringEventName,
-                RecurringEventDescription = recurringReminder.RecurringEventDescription,
-                RecurringEventDate = recurringReminder.RecurringEventDate,
-                RecurringReminderStartAlertDate = recurringReminder.RecurringReminderStartAlertDate,
-                RecurringReminderLastAlertDate = recurringReminder.RecurringReminderLastAlertDate,
-                UserCellPhoneNumber = recurringReminder.UserCellPhoneNumber,
-                RepeatFrequencyNameID = recurringReminder.RepeatFrequencyNameID,
-                ReminderTimes = recurringReminder.ReminderTimes,
-                ReminderTimes2 = recurringReminder.ReminderTimes2,
-                UserId = recurringReminder.UserId
-            };
+                EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList())
+                {
+                    // populate the fields for the reminder to be edited
+                    RecurringEventName = recurringReminder.RecurringEventName,
+                    RecurringEventDescription = recurringReminder.RecurringEventDescription,
+                    RecurringEventDate = recurringReminder.RecurringEventDate,
+                    RecurringReminderStartAlertDate = recurringReminder.RecurringReminderStartAlertDate,
+                    RecurringReminderLastAlertDate = recurringReminder.RecurringReminderLastAlertDate,
+                    UserCellPhoneNumber = recurringReminder.UserCellPhoneNumber,
+                    RepeatFrequencyNameID = recurringReminder.RepeatFrequencyNameID,
+                    ReminderTimes = recurringReminder.ReminderTimes,
+                    ReminderTimes2 = recurringReminder.ReminderTimes2,
+                    UserId = recurringReminder.UserId
+                };
+
+            */
+            EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
+                EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList());
+
+            Console.WriteLine("****** Line 798 to 800 **********");
+            Console.WriteLine("First time (From recurringReminder = " + recurringReminder.ReminderTimes.ToString() +
+                                                                       "second time = from RecureringReminder" + recurringReminder.ReminderTimes2.ToString());
+            Console.WriteLine("******* Line 798 to 800 *********");
+            Console.ReadLine();
+
+
+            // populate the fields for the reminder to be edited
+            editEventsAndReminder.RecurringEventName = recurringReminder.RecurringEventName;
+            editEventsAndReminder.RecurringEventDescription = recurringReminder.RecurringEventDescription;
+            editEventsAndReminder.RecurringEventDate = recurringReminder.RecurringEventDate;
+            editEventsAndReminder.RecurringReminderStartAlertDate = recurringReminder.RecurringReminderStartAlertDate;
+            editEventsAndReminder.RecurringReminderLastAlertDate = recurringReminder.RecurringReminderLastAlertDate;
+            editEventsAndReminder.UserCellPhoneNumber = recurringReminder.UserCellPhoneNumber;
+            editEventsAndReminder.RepeatFrequencyNameID = recurringReminder.RepeatFrequencyNameID;
+            editEventsAndReminder.ReminderTimes = recurringReminder.ReminderTimes;
+            editEventsAndReminder.ReminderTimes2 = recurringReminder.ReminderTimes2;
+            editEventsAndReminder.UserId = recurringReminder.UserId;
+
             ViewBag.formattedUserCellPhone = Convert.ToInt64(recurringReminder.UserCellPhoneNumber).ToString("(###) ###-####");
             return View(editEventsAndReminder);
+            
         }
 
         [HttpGet]
