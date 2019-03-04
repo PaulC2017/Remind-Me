@@ -148,8 +148,8 @@ namespace RemindMe.Controllers
             catch (InvalidOperationException)
             {
                 ViewBag.userNameNotFound = "User Name was not found";
-                //return RedirectToAction("UserLogin");
-                return ("/RemindMe/UserLogin");
+                return RedirectToAction("UserLogin");
+               
             }
 
             User checkUserLogInInfo = context.User.Single(u => u.Username == googleId);
@@ -396,7 +396,16 @@ namespace RemindMe.Controllers
             scheduleEventsAndReminder.RecurringReminderStartAlertDate = newEventAndReminder.RecurringReminderStartAlertDate;
             scheduleEventsAndReminder.RecurringReminderLastAlertDate = newEventAndReminder.RecurringReminderLastAlertDate;
             scheduleEventsAndReminder.UserCellPhoneNumber = newEventAndReminder.UserCellPhoneNumber;
-            
+            scheduleEventsAndReminder.ReminderTimesID = newEventAndReminder.ReminderTimesID;
+            scheduleEventsAndReminder.ReminderTimes2ID = newEventAndReminder.ReminderTimes2ID;
+
+            // we need tomget the ID of the times the user has selected so that when we render the viewmodel
+            // the times are populated for the user
+
+            // place code to do that here
+
+
+            //
             ViewBag.Username = HttpContext.Session.GetString("Username");
             ViewBag.formattedUserCellPhone = Convert.ToInt64(newEventAndReminder.UserCellPhoneNumber).ToString("(###) ###-####");
             
@@ -795,13 +804,13 @@ namespace RemindMe.Controllers
             */
             EditScheduleEventsAndRemindersViewModel editEventsAndReminder = new
                 EditScheduleEventsAndRemindersViewModel(context.ReminderRepeatFrequencies.ToList(), context.ReminderTimes.ToList());
-
+            /*
             Console.WriteLine("****** Line 798 to 800 **********");
             Console.WriteLine("First time (From recurringReminder = " + recurringReminder.ReminderTimes.ToString() +
                                                                        "second time = from RecureringReminder" + recurringReminder.ReminderTimes2.ToString());
             Console.WriteLine("******* Line 798 to 800 *********");
             Console.ReadLine();
-
+            */
 
             // populate the fields for the reminder to be edited
             editEventsAndReminder.RecurringEventName = recurringReminder.RecurringEventName;

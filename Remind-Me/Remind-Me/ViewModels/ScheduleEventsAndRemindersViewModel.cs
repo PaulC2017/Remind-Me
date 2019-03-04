@@ -54,8 +54,8 @@ namespace RemindMe.ViewModels
         public List<SelectListItem> ReminderTimes { get; set; }
         
         [Display(Name = "ReminderTimes2")]
-        private int reminderTimes2ID = 0;  // setting default value in drop down list
-        public int ReminderTimes2ID { get { return reminderTimes2ID; } set { reminderTimes2ID = value; } }  //set default value to ID = 0 (9:00 AM)
+        private int reminderTimes2ID = 0;  // setting default value in drop down list to "Do Not Select" - see code below
+        public int ReminderTimes2ID { get { return reminderTimes2ID; } set { reminderTimes2ID = value; } }  //set default value to ID = 0  
         public List<SelectListItem> ReminderTimes2 { get; set; } 
      
         [Required(ErrorMessage = "Enter the date to stop receiving the Reminders")]
