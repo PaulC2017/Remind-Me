@@ -31,6 +31,7 @@ namespace RemindMe.ViewModels
         [Required(ErrorMessage = "You must enter a date")]
         [DataType(DataType.Date)]
         [Display(Name = "Event Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringEventDate { get; set; }
@@ -46,18 +47,19 @@ namespace RemindMe.ViewModels
         [Display(Name = "Date to Start Sending Reminders")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd-yyyy}")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderStartAlertDate { get; set; }
 
         [Required]
         [Display(Name = "ReminderTimes")]
         // private int reminderTimesID = FirstTime; //setting defaut value in drop down list
-        private int reminderTimesID;
+        private int reminderTimesID = 19;
         public int ReminderTimesID { get { return reminderTimesID; } set { reminderTimesID = value; } }// set default value to what the user selected when creating this reminder
         public List<SelectListItem> ReminderTimes { get; set; }
 
         [Display(Name = "ReminderTimes2")]
         //private int reminderTimes2ID = SecondTime;  // setting default value in drop down list
-        private int reminderTimes2ID;
+        private int reminderTimes2ID = 0;
         public int ReminderTimes2ID { get { return reminderTimes2ID; } set { reminderTimes2ID = value; } }  //set default value to what the user selected when creating this reminder
         public List<SelectListItem> ReminderTimes2 { get; set; }
 
@@ -66,6 +68,7 @@ namespace RemindMe.ViewModels
         [Display(Name = "Date to Stop Sending Reminders")]
         //[DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM-dd}")]
         public DateTime RecurringReminderLastAlertDate { get; set; }
 
         [Required(ErrorMessage = "Enter the cell phone number where you want to receive the text reminders (ie - 2125551212)")]
@@ -159,6 +162,8 @@ namespace RemindMe.ViewModels
             }
 
         }
+
+        // drop down list for users - not used currently
 
         public EditScheduleEventsAndRemindersViewModel(IEnumerable<User> users)
         {

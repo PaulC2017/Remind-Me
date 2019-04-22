@@ -9,17 +9,21 @@
 
     <div class="form-group">
         <label asp-for="RecurringEventName"></label>
-        <input class="form-control" asp-for="RecurringEventName" />
+        <br/>
+        <input class="col-xs-4" asp-for="RecurringEventName" />
         <span asp-validation-for="RecurringEventName"></span>
+        <br/>
     </div>
     <div class="form-group">
         <label asp-for="RecurringEventDescription"></label>
-        <input class="form-control" asp-for="RecurringEventDescription" />
+        <br/>
+        <input class="col-xs-4" asp-for="RecurringEventDescription" />
         <span asp-validation-for="RecurringEventDescription"></span>
+        <br/>
     </div>
     <div class="form-group">
         <label asp-for="RecurringEventDate"></label>
-        <input class="form-control" asp-for="RecurringEventDate" />
+        <input type="date" asp-for="RecurringEventDate" />
         <span asp-validation-for="RecurringEventDate"></span>
     </div>
     <p style="color:blue">
@@ -38,22 +42,22 @@
     <p style="color:red"><strong>@ViewBag.calendarYearError</strong></p>
     <div class="form-group">
         <label asp-for="RecurringReminderStartAlertDate"></label>
-        <input class="form-control" asp-for="RecurringReminderStartAlertDate" />
+        <input type="date" asp-for="RecurringReminderStartAlertDate" />
         <span asp-validation-for="RecurringReminderStartAlertDate"></span>
     </div>
     <p style="color:red"><strong>@ViewBag.LastAlertDateError</strong></p>
     <div class="form-group">
         <label asp-for="RecurringReminderLastAlertDate"></label>
-        <input class="form-control" asp-for="RecurringReminderLastAlertDate" />
+        <input type="date" asp-for="RecurringReminderLastAlertDate" />
         <span asp-validation-for="RecurringReminderLastAlertDate"></span>
     </div>
     <p style="color:blue">You can schedule 1 or 2 Reminders to be sent to you daily.  The first Reminder is required. The second one is optional</p>
     <div class="form-group">
-        <label asp-for="ReminderTimesID">Select the time of day you want the first reminder to be sent to you   </label>
+        <label asp-for="ReminderTimesID">Select the time of day you want the first reminder to be sent to you</label>
         <select asp-for="ReminderTimesID" asp-items="Model.ReminderTimes"></select>
     </div>
     <div class="form-group">
-        <label asp-for="ReminderTimes2ID">Select a time of day if you want the second reminder to be sent to you. If not, select "Do Not Schedule"   </label>
+        <label asp-for="ReminderTimes2ID">Select a time of day if you want the second reminder to be sent to you. If not, select "Do Not Schedule"</label>
         <select asp-for="ReminderTimes2ID" asp-items="Model.ReminderTimes2"></select>
     </div>
 

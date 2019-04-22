@@ -399,13 +399,8 @@ namespace RemindMe.Controllers
             scheduleEventsAndReminder.ReminderTimesID = newEventAndReminder.ReminderTimesID;
             scheduleEventsAndReminder.ReminderTimes2ID = newEventAndReminder.ReminderTimes2ID;
 
-            // we need tomget the ID of the times the user has selected so that when we render the viewmodel
-            // the times are populated for the user
-
-            // place code to do that here
-
-
-            //
+            
+           
             ViewBag.Username = HttpContext.Session.GetString("Username");
             ViewBag.formattedUserCellPhone = Convert.ToInt64(newEventAndReminder.UserCellPhoneNumber).ToString("(###) ###-####");
             
@@ -770,7 +765,7 @@ namespace RemindMe.Controllers
                 }
             }
             // if we get here the model is not valid or the reminders 
-            // are not in the current year. Or the Last AlertDate is not later than teh STartAlertDate.  So we need to create
+            // are not in the current year. Or the Last AlertDate is not later than the StartAlertDate.  So we need to create
             // a new viewmodel to include the repeat frequency choices and ReminderTimes choices
             // and populate it with the data the user entered
             if (remindersInSameYear == false)
@@ -820,8 +815,10 @@ namespace RemindMe.Controllers
             editEventsAndReminder.RecurringReminderLastAlertDate = recurringReminder.RecurringReminderLastAlertDate;
             editEventsAndReminder.UserCellPhoneNumber = recurringReminder.UserCellPhoneNumber;
             editEventsAndReminder.RepeatFrequencyNameID = recurringReminder.RepeatFrequencyNameID;
-            editEventsAndReminder.ReminderTimes = recurringReminder.ReminderTimes;
-            editEventsAndReminder.ReminderTimes2 = recurringReminder.ReminderTimes2;
+            editEventsAndReminder.ReminderTimesID = recurringReminder.ReminderTimesID;
+            editEventsAndReminder.ReminderTimes2ID = recurringReminder.ReminderTimes2ID;
+            //editEventsAndReminder.ReminderTimes = recurringReminder.ReminderTimes;
+            //editEventsAndReminder.ReminderTimes2 = recurringReminder.ReminderTimes2;
             editEventsAndReminder.UserId = recurringReminder.UserId;
 
             ViewBag.formattedUserCellPhone = Convert.ToInt64(recurringReminder.UserCellPhoneNumber).ToString("(###) ###-####");
